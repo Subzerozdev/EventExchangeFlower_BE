@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.eventflowerexchange</groupId>
-	<artifactId>EventFlowerExhange</artifactId>
+	<artifactId>EventFlowerExchange</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>EventFlowerExhange</name>
-	<description>EventFlowerExhange</description>
+	<name>EventFlowerExchange</name>
+	<description>EventFlowerExchange</description>
 	<url/>
 	<licenses>
 		<license/>
