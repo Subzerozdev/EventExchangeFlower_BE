@@ -16,12 +16,18 @@ public class UserAPI {
 
     //DI: Dependency Injection
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity register (@Valid @RequestBody User user) {
-        User newUser  =   userService.register(user);
+    public ResponseEntity<Object> register(@Valid @RequestBody User user) {
+        User newUser = userService.register(user);
         return ResponseEntity.ok(newUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@Valid @RequestBody User user) {
+        User userLogin = userService.login(user);
+        return ResponseEntity.ok(userLogin);
     }
 
 }

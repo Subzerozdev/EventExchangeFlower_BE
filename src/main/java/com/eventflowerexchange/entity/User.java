@@ -3,57 +3,47 @@ package com.eventflowerexchange.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 
-@Data
 @Entity
-
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @JsonIgnore
-@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
- private Long userID;
+    private Long id;
 
-@NotBlank(message = "Email can not  be blank !!!!")
-@Email(message = " Invalid Email !!!! ")
-@Column(unique = true)
-private String email;
+    @Email(message = " Invalid Email !!!! ")
+    @Column(unique = true)
+    private String email;
 
-@NotBlank(message = "Password can not  be blank !!!!")
-@Size(min =3, message = "Password must be  at least  6 character !!!!!")
-private String password;
+    @Size(min = 3, message = "Password must be  at least 3 character !!!!!")
+    private String password;
 
+    private String fullName;
 
+    @Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})", message = "Invalid phone !!!!!")
+    @Column(unique = true)
+    private String phone;
 
-
-
-
-@NotBlank(message = "fullName can not  be blank !!!!")
-private String fullName;
-
-@Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})" , message = "Invalid phone !!!!!")
-@Column(unique = true)
-private String phone;
-
-@NotBlank(message = "  Address can not  be blank !!!!")
-private String address;
+    private String address;
 
     @JsonIgnore
-@DateTimeFormat
-private LocalDateTime registerDate;
+    @DateTimeFormat
+    private LocalDateTime registerDate;
+
     @JsonIgnore
-private int roleID;
-
-
-
+    private int roleID;
 }
