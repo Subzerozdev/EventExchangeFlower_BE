@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserAPI {
 
     //DI: Dependency Injection
@@ -27,6 +27,9 @@ public class UserAPI {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody User user) {
         User userLogin = userService.login(user);
+        if (userLogin == null) {
+            return ResponseEntity.badRequest().body("Invalid email or password");
+        }
         return ResponseEntity.ok(userLogin);
     }
 

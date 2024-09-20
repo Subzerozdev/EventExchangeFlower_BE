@@ -17,7 +17,7 @@ create table `user`
     `password` nvarchar(100) not null,
     full_name nvarchar(100) not null,
     phone nvarchar(10) unique,
-    address nvarchar(250) not null,
+    address nvarchar(250),
     register_date datetime,
     roleID int not null,
     foreign key (roleID) references `role`(id)
