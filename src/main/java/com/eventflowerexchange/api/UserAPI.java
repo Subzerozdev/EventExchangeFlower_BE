@@ -1,14 +1,12 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
@@ -33,4 +31,11 @@ public class UserAPI {
         return ResponseEntity.ok(userLogin);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUserProfile(
+            @Valid @RequestBody UserRequestDTO userRequest,
+            @PathVariable("id") Long id) {
+        User user = userService.updateUserById(id, userRequest);
+        return ResponseEntity.ok(user);
+    }
 }
