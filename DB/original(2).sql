@@ -19,6 +19,7 @@ create table `user`
     phone nvarchar(10) unique,
     address nvarchar(250),
     register_date datetime,
+    is_deleted bit,
     roleID int not null,
     foreign key (roleID) references `role`(id)
 );

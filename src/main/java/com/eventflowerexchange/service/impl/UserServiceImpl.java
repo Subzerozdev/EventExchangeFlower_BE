@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService {
         try {
             user.setRegisterDate(LocalDateTime.now());
             user.setRoleID(3);
+            user.setDeleted(false);
             // Save account to DB
             User newUser = userRepository.save(user);
             return newUser;

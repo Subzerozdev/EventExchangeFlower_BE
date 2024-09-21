@@ -44,7 +44,8 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @DateTimeFormat
     private LocalDateTime registerDate;
-
+    @JsonIgnore
+    private boolean isDeleted;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int roleID;
 }
