@@ -21,7 +21,7 @@ public class UserAPI {
         User newUser = userService.register(user);
         return ResponseEntity.ok(newUser);
     }
-
+    
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody User user) {
         User userLogin = userService.login(user);

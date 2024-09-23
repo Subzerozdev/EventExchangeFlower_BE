@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userUpdate);
     }
 
+
     @Override
     public User getUserById(Long id) throws EntityNotFoundException {
         Optional<User> user = userRepository.findById(id);
