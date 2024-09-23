@@ -6,7 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 
 public interface UserService {
     public User register(User user);
-    public User login(User user);
+    public User login(User user) throws Exception;
     public User updateUserById(Long id, UserRequestDTO userRequest);
+    public User getUserByEmail(String email);
     public User getUserById(Long id) throws EntityNotFoundException;
 }

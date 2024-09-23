@@ -20,31 +20,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
-        try {
-            user.setRegisterDate(LocalDateTime.now());
-            user.setRoleID(3);
-            user.setDeleted(false);
-            // Save account to DB
-            User newUser = userRepository.save(user);
-            return newUser;
-        } catch (Exception e) {
-            if (e.getMessage().contains(user.getEmail())) {
-                throw new DuplicateEntity("Duplicate email!!!!");
-            }
-            if (e.getMessage().contains(user.getPhone())) {
-                throw new DuplicateEntity("Duplicate phone!!!!");
-            }
+        // check if phone is existed
+        if (userRepository.existsByPhone(user.getPhone())) {
+            throw new DuplicateEntity("Duplicate phone!");
         }
-        return null;
+        // check if email is existed
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new DuplicateEntity("Duplicate email!");
+        }
+        // set other fields
+        user.setRegisterDate(LocalDateTime.now());
+        user.setRoleID(3);
+        user.setDeleted(false);
+        // Save account to DB
+        return userRepository.save(user);
     }
 
     @Override
-    public User login(User user) {
+    public User login(User user) throws Exception{
         User isExistedUser = userRepository.findUserByEmail(user.getEmail());
+        // Check if email is incorrect
         if (isExistedUser == null) {
-            return null;
+            throw new EntityNotFoundException("Incorrect email!");
+        }
+        // Check if password is incorrect
+        if (!isExistedUser.getPassword().equals(user.getPassword())) {
+            throw new Exception("Incorrect password!");
         }
         return isExistedUser;
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found!");
+        }
+        return user;
     }
 
     @Override

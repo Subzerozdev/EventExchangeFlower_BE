@@ -23,11 +23,8 @@ public class UserAPI {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@Valid @RequestBody User user) {
+    public ResponseEntity<Object> login(@Valid @RequestBody User user) throws Exception {
         User userLogin = userService.login(user);
-        if (userLogin == null) {
-            return ResponseEntity.badRequest().body("Invalid email or password");
-        }
         return ResponseEntity.ok(userLogin);
     }
 
