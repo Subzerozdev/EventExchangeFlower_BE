@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
         User userUpdate = getUserById(id);
         userUpdate.setAddress(userRequest.getAddress());
         userUpdate.setFullName(userRequest.getFullName());
+        userUpdate.setPhone(userRequest.getPhone());
         return userRepository.save(userUpdate);
     }
 
