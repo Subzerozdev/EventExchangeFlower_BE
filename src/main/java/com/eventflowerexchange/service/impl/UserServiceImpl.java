@@ -1,5 +1,6 @@
 package com.eventflowerexchange.service.impl;
 
+import com.eventflowerexchange.dto.request.LoginRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.exception.DuplicateEntity;
@@ -37,7 +38,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(User user) throws Exception{
+    public User login(LoginRequestDTO user) throws Exception{
         User isExistedUser = userRepository.findUserByEmail(user.getEmail());
         // Check if email is incorrect
         if (isExistedUser == null) {

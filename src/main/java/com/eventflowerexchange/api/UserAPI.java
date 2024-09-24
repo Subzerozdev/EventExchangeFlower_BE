@@ -1,5 +1,6 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.request.LoginRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.UserService;
@@ -23,7 +24,7 @@ public class UserAPI {
     }
     
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@Valid @RequestBody User user) throws Exception {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequestDTO user) throws Exception {
         User userLogin = userService.login(user);
         return ResponseEntity.ok(userLogin);
     }
