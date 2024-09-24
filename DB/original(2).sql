@@ -119,3 +119,13 @@ create table `flowercolorofflowertype`
     foreign key (flowerColorID) references `flowercolor`(id),
     foreign key (flowerTypeID) references `flowertype`(id)
 );
+create table OTPEmail
+(
+id int auto_increment not null primary key,
+OTP int not null,
+expiry_date datetime,
+user_id int ,
+foreign key (user_id) references `user`(id)
+
+
+);

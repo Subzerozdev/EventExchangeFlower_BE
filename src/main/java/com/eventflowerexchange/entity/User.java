@@ -49,4 +49,6 @@ public class User {
     private boolean isDeleted;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int roleID;
+    @OneToOne(mappedBy = "user")
+    OTPEmail otpEmail;
 }
