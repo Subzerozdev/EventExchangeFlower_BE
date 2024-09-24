@@ -1,6 +1,7 @@
 package com.eventflowerexchange.service.impl;
 
 import com.eventflowerexchange.dto.request.LoginRequestDTO;
+import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.exception.DuplicateEntity;
@@ -61,11 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserById(Long id, UserRequestDTO userRequest) {
+    public User updateUserById(Long id, UpdateRequestDTO updateRequestDTO) {
         User userUpdate = getUserById(id);
-        userUpdate.setAddress(userRequest.getAddress());
-        userUpdate.setFullName(userRequest.getFullName());
-        userUpdate.setPhone(userRequest.getPhone());
+        userUpdate.setAddress(updateRequestDTO.getAddress());
+        userUpdate.setFullName(updateRequestDTO.getFullName());
+        userUpdate.setPhone(updateRequestDTO.getPhone());
         return userRepository.save(userUpdate);
     }
 
