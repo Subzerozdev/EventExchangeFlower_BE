@@ -40,15 +40,17 @@ public class User {
     private String phone;
 
     private String address;
-
+    @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @DateTimeFormat
     private LocalDateTime registerDate;
 
     @JsonIgnore
     private boolean isDeleted;
+    @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int roleID;
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     OTPEmail otpEmail;
 }

@@ -1,6 +1,7 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.LoginRequestDTO;
+import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.UserService;
@@ -31,9 +32,9 @@ public class UserAPI {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateUserProfile(
-            @Valid @RequestBody UserRequestDTO userRequest,
-            @PathVariable("id") Long id) {
-        User user = userService.updateUserById(id, userRequest);
+            @Valid @RequestBody UpdateRequestDTO updateRequestDTO,
+            @PathVariable("id") Long id)  {
+        User user = userService.updateUserById(id, updateRequestDTO);
         return ResponseEntity.ok(user);
     }
 }
