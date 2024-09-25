@@ -33,11 +33,11 @@ private OTPEmailRepository otpEmailRepository;
         Long OTP  = emailService.generateOTP();
         MailBody mailBody =MailBody.builder()
                 .to(email)
-                .subject("OTP")
-                .body("This is your OTP"+OTP)
+                .subject("Verify the user's email")
+                .body("E-"+OTP + " là mã xác minh Email của bạn.")
                 .build();
         emailService.sendEmail(mailBody);
-        System.out.println("2");
+
 
         OTPEmail otpEmail = OTPEmail.builder()
                 .OTP(OTP)
@@ -54,7 +54,7 @@ private OTPEmailRepository otpEmailRepository;
     public ResponseEntity <String> VerifyOTP (@PathVariable Long otp, @PathVariable String email) {
         User user = userService.getUserByEmail(email);
         OTPEmail otpEmail = otpEmailRepository.findByOtpAndUser(otp, user).get();
-            System.out.println("2");
+
         if ( otpEmail.getExpiryDate().isBefore(LocalDateTime.now()) ) {
            otpEmailRepository.delete(otpEmail);
            return  new ResponseEntity<>("OTP has expired", HttpStatus.EXPECTATION_FAILED);
