@@ -62,8 +62,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserById(Long id, UpdateRequestDTO updateRequestDTO) {
-        User userUpdate = getUserById(id);
+    public User updateUserById(String email, UpdateRequestDTO updateRequestDTO) {
+        User userUpdate = getUserByEmail(email);
         userUpdate.setAddress(updateRequestDTO.getAddress());
         userUpdate.setFullName(updateRequestDTO.getFullName());
         userUpdate.setPhone(updateRequestDTO.getPhone());

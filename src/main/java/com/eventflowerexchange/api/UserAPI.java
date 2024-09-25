@@ -30,11 +30,11 @@ public class UserAPI {
         return ResponseEntity.ok(userLogin);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{email}")
     public ResponseEntity<Object> updateUserProfile(
             @Valid @RequestBody UpdateRequestDTO updateRequestDTO,
-            @PathVariable("id") Long id)  {
-        User user = userService.updateUserById(id, updateRequestDTO);
+            @PathVariable("email") String email)  {
+        User user = userService.updateUserById(email, updateRequestDTO);
         return ResponseEntity.ok(user);
     }
 }
