@@ -28,12 +28,15 @@ public class UserServiceImpl implements UserService {
         }
         // check if email is existed
         if (userRepository.existsByEmail(user.getEmail())) {
+//            User userExisted = userRepository.findUserByEmail(user.getEmail());
+//            if (!userExisted.isActive()) {
+//                return
+//            }
             throw new DuplicateEntity("Duplicate email!");
         }
         // set other fields
         user.setRegisterDate(LocalDateTime.now());
         user.setRoleID(3);
-        user.setDeleted(false);
         // Save account to DB
         return userRepository.save(user);
     }
@@ -48,6 +51,10 @@ public class UserServiceImpl implements UserService {
         // Check if password is incorrect
         if (!isExistedUser.getPassword().equals(user.getPassword())) {
             throw new Exception("Incorrect password!");
+        }
+        // Check if user is not active
+        if (!isExistedUser.isActive()){
+            throw new Exception("User is not active!");
         }
         return isExistedUser;
     }

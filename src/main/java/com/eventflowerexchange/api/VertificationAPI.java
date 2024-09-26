@@ -19,22 +19,22 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/api/vertification")
 public class VertificationAPI {
-@Autowired
-private UserService userService;
-@Autowired
-private EmailService emailService;
-@Autowired
-private OTPEmailRepository otpEmailRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private OTPEmailRepository otpEmailRepository;
 
-    @PostMapping ("/{email}")
-        public ResponseEntity <String> VerifyEmail (@PathVariable String email) {
+    @PostMapping("/{email}")
+    public ResponseEntity<String> VerifyEmail(@PathVariable String email) {
 
-        User user =userService.getUserByEmail(email);
-        Long OTP  = emailService.generateOTP();
-        MailBody mailBody =MailBody.builder()
+        User user = userService.getUserByEmail(email);
+        Long OTP = emailService.generateOTP();
+        MailBody mailBody = MailBody.builder()
                 .to(email)
                 .subject("Verify the user's email")
-                .body("E-"+OTP + " là mã xác minh Email của bạn.")
+                .body("E-" + OTP + " là mã xác minh Email của bạn.")
                 .build();
         emailService.sendEmail(mailBody);
 
@@ -45,20 +45,20 @@ private OTPEmailRepository otpEmailRepository;
                 .user(user)
                 .build();
 
-       otpEmailRepository.save(otpEmail);
+        otpEmailRepository.save(otpEmail);
 
-        return  ResponseEntity.ok("Please check your email!!!");
-        }
+        return ResponseEntity.ok("Please check your email!!!");
+    }
 
-        @PostMapping("/{otp}/{email}")
-    public ResponseEntity <String> VerifyOTP (@PathVariable Long otp, @PathVariable String email) {
+    @PostMapping("/{otp}/{email}")
+    public ResponseEntity<String> VerifyOTP(@PathVariable Long otp, @PathVariable String email) {
         User user = userService.getUserByEmail(email);
         OTPEmail otpEmail = otpEmailRepository.findByOtpAndUser(otp, user).get();
 
-        if ( otpEmail.getExpiryDate().isBefore(LocalDateTime.now()) ) {
-           otpEmailRepository.delete(otpEmail);
-           return  new ResponseEntity<>("OTP has expired", HttpStatus.EXPECTATION_FAILED);
+        if (otpEmail.getExpiryDate().isBefore(LocalDateTime.now())) {
+            otpEmailRepository.delete(otpEmail);
+            return new ResponseEntity<>("OTP has expired", HttpStatus.EXPECTATION_FAILED);
         }
         return ResponseEntity.ok("OTP Verify!!");
-        }
+    }
 }

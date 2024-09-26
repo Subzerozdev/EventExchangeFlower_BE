@@ -46,7 +46,7 @@ public class User {
     private LocalDateTime registerDate;
 
     @JsonIgnore
-    private boolean isDeleted;
+    private boolean isActive;
     @JsonIgnore
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int roleID;
