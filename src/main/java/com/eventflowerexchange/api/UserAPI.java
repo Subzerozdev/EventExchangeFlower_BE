@@ -19,8 +19,8 @@ public class UserAPI {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody User user) {
-        User newUser = userService.register(user);
+    public ResponseEntity<Object> register(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        User newUser = userService.register(userRequestDTO);
         return ResponseEntity.ok(newUser);
     }
     
@@ -34,7 +34,7 @@ public class UserAPI {
     public ResponseEntity<Object> updateUserProfile(
             @Valid @RequestBody UpdateRequestDTO updateRequestDTO,
             @PathVariable("email") String email)  {
-        User user = userService.updateUserById(email, updateRequestDTO);
+        User user = userService.updateUserByEmail(email, updateRequestDTO);
         return ResponseEntity.ok(user);
     }
 }

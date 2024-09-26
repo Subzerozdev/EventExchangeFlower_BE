@@ -7,9 +7,8 @@ import com.eventflowerexchange.entity.User;
 import jakarta.persistence.EntityNotFoundException;
 
 public interface UserService {
-    public User register(User user);
+    public User register(UserRequestDTO userRequestDTO);
     public User login(LoginRequestDTO loginRequestDTO) throws Exception;
-    public User updateUserById(String email, UpdateRequestDTO updateRequestDTO)  ;
+    public User updateUserByEmail(String email, UpdateRequestDTO updateRequestDTO)  ;
     public User getUserByEmail(String email);
-    public User getUserById(Long id) throws EntityNotFoundException;
 }

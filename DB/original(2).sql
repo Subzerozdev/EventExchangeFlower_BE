@@ -18,9 +18,9 @@ create table `user`
     full_name nvarchar(100) not null,
     phone nvarchar(10) unique,
     address nvarchar(250),
-    register_date datetime,
-    is_deleted bit,
-    roleID int not null,
+    register_date datetime default current_timestamp,
+    is_active bit default 0,
+    roleID int default 3,
     foreign key (roleID) references `role`(id)
 );
 

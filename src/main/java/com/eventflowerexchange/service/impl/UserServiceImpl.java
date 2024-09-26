@@ -5,6 +5,7 @@ import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.exception.DuplicateEntity;
+import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,21 +20,24 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
-    public User register(User user) {
+    public User register(UserRequestDTO userRequestDTO) {
         // check if phone is existed
-        if (userRepository.existsByPhone(user.getPhone())) {
+        if (userRepository.existsByPhone(userRequestDTO.getPhone())) {
             throw new DuplicateEntity("Duplicate phone!");
         }
         // check if email is existed
-        if (userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(userRequestDTO.getEmail())) {
 //            User userExisted = userRepository.findUserByEmail(user.getEmail());
 //            if (!userExisted.isActive()) {
 //                return
 //            }
             throw new DuplicateEntity("Duplicate email!");
         }
+        User user = userMapper.toUser(userRequestDTO);
         // set other fields
         user.setRegisterDate(LocalDateTime.now());
         user.setRoleID(3);
@@ -69,24 +73,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUserById(String email, UpdateRequestDTO updateRequestDTO) {
+    public User updateUserByEmail(String email, UpdateRequestDTO updateRequestDTO) {
         User userUpdate = getUserByEmail(email);
-        userUpdate.setAddress(updateRequestDTO.getAddress());
-        userUpdate.setFullName(updateRequestDTO.getFullName());
-        userUpdate.setPhone(updateRequestDTO.getPhone());
+        userMapper.updateUser(userUpdate, updateRequestDTO);
+//        userUpdate.setAddress(updateRequestDTO.getAddress());
+//        userUpdate.setFullName(updateRequestDTO.getFullName());
+//        userUpdate.setPhone(updateRequestDTO.getPhone());
         return userRepository.save(userUpdate);
     }
-
-
-    @Override
-    public User getUserById(Long id) throws EntityNotFoundException {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        return user.get();
-    }
-
-
 }
 
