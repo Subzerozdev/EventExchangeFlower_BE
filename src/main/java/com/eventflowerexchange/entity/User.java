@@ -52,6 +52,6 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private int roleID;
     @JsonIgnore
-    @OneToOne(mappedBy = "users")
+    @OneToOne(mappedBy = "user")
     OTPEmail otpEmail;
 }

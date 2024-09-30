@@ -9,12 +9,10 @@ import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
