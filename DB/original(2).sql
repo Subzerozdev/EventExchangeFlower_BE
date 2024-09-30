@@ -1,131 +1,154 @@
 create database eventflowerexchange;
 use eventflowerexchange;
-create table `role`
+create table `roles`
 (
-	id int auto_increment not null primary key,
-    role_name nvarchar(50) not null
+	id INT AUTO_INCREMENT   NOT  NULL PRIMARY KEY,
+    name NVARCHAR(50) NOT  NULL
 );
 
-insert into `role`(role_name) value("Admin");
-insert into `role`(role_name) value("Seller");
-insert into `role`(role_name) value("Customer");
+insert into `roles`(name) value("Admin");
+insert into `roles`(name) value("Seller");
+insert into `roles`(name) value("Customer");
 
-create table `user`
+create table `users`
 (
-	id int auto_increment not null primary key,
-    email nvarchar(100) not null unique,
-    `password` nvarchar(100) not null,
-    full_name nvarchar(100) not null,
+	id char(36) NOT  NULL PRIMARY KEY,
+    email nvarchar(100) NOT  NULL unique,
+    `password` nvarchar(100) NOT  NULL,
+    full_name nvarchar(100)  NOT  NULL,
     phone nvarchar(10) unique,
     address nvarchar(250),
-    register_date datetime default current_timestamp,
+	created_at DATETIME  default current_timestamp,
+    updated_at DATETIME   default current_timestamp,
     is_active bit default 0,
-    roleID int default 3,
-    foreign key (roleID) references `role`(id)
+    role_id INT default 3,
+    date_of_birth DATE,
+    facebook_account_id INT DEFAULT 0,  
+    google_account_id INT DEFAULT 0,
+     FOREIGN KEY (role_id) REFERENCES `roles`(id)
 );
 
-create table `blog`
+
+
+create table `eventcategories`
 (
-	id int auto_increment not null primary key,
-    title nvarchar(100),
-    content nvarchar(250) ,
-    create_date datetime,
-    userID int not null UNIQUE,
-    foreign key (userID) references `user`(id)
+	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+    name nvarchar(100)
 );
 
-create table `eventcategory`
+create table `types`
 (
-	id int auto_increment not null primary key,
-    category_name nvarchar(100)
+	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+    name NVARCHAR(100)
 );
 
-create table `flowertype`
+create table `colors`
 (
-	id int auto_increment not null primary key,
-    type_name nvarchar(100)
+	id int AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+    name NVARCHAR(100)
 );
 
-create table `flowercolor`
+create table `posts`
 (
-	id int auto_increment not null primary key,
-    color_name nvarchar(100)
+	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+	name VARCHAR(350) COMMENT 'Tên sản phẩm',
+    `description` LONGTEXT ,
+    thumbnail VARCHAR(300) ,
+    address NVARCHAR(250) ,
+    start_date DATETIME,
+    end_date DATETIME,    
+	price FLOAT NOT NULL CHECK(price >= 0),   
+    is_deleted BIT,
+    user_id CHAR(36) NOT NULL,
+    category_id INT NOT NULL,
+    FOREIGN KEY  (user_id) REFERENCES `users`(id),
+    FOREIGN KEY (category_id) REFERENCES `eventcategories`(id)
 );
 
-create table `post`
+CREATE TABLE post_images (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    post_id INT, -- CHỈ RA BỨC ẢNH NÀY SẼ THUỘC SẢN PHẨM NÀO
+     CONSTRAINT fk_post_images_post_id
+     FOREIGN KEY (post_id) REFERENCES  posts(id) ON DELETE CASCADE, -- posts xóa thì image sẽ bị xóa theo
+     image_url VARCHAR(300)
+);
+
+
+create table `orders`
 (
-	id int auto_increment not null primary key,
-    title nvarchar(100),
-    `description` text ,
-    address nvarchar(250) ,
-    start_date datetime,
-    end_date datetime,
-    image nvarchar(1000) ,
-    price bigint ,
-    discount bigint ,
-    is_deleted bit,
-    userID int not null,
-    eventCategoryID int not null,
-    foreign key (userID) references `user`(id),
-    foreign key (eventCategoryID) references `eventcategory`(id)
+	id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	fullname VARCHAR(100) NOT NULL DEFAULT '',
+	phone_number VARCHAR(20) NOT NULL,
+	email VARCHAR(100) NOT NULL DEFAULT '',
+	address VARCHAR(200) NOT NULL,
+	note VARCHAR(100) DEFAULT '',
+    order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+	total_money FLOAT CHECK (total_money >=0),
+    `status` BIT ,
+	user_id CHAR(36),
+     payment_method NVARCHAR(100),
+   FOREIGN KEY (user_id) REFERENCES `users`(id)
+   
 );
 
-create table `payment`
+create table `order_details`
 (
-	id int auto_increment not null primary key,
-    payment_method nvarchar(100)
+	id INT  auto_increment not null,
+    number_of_products INT CHECK(number_of_products >0),
+    total_money float check (total_money >=0),
+    order_id INT NOT NULL,
+    post_id INT NOT NULL,
+    primary key (id, order_id, post_id),
+    foreign key (order_id) references `orders`(id),
+    foreign key (post_id) references `posts`(id)
 );
 
-create table `order`
-(
-	id int auto_increment not null primary key,
-    `date` datetime,
-    total bigint ,
-    `status` bigint ,
-    userOrderID int not null,
-    paymentID int not null,
-    foreign key (userOrderID) references `user`(id),
-    foreign key (paymentID) references `payment`(id)
-);
-
-create table `orderdetail`
-(
-	id int auto_increment not null,
-    quantity int,
-    total bigint ,
-    orderID int not null,
-    postID int not null,
-    primary key (id, orderID, postID),
-    foreign key (orderID) references `order`(id),
-    foreign key (postID) references `post`(id)
-);
-
-create table `flowertypeinpost`
-(
-	id int auto_increment not null,
-    flowerTypeID int not null,
-    postID int not null,
-    primary key (id, flowerTypeID, postID),
-    foreign key (flowerTypeID) references `flowertype`(id),
-    foreign key (postID) references `post`(id)
-);
-
-create table `flowercolorofflowertype`
+create table `typeandpost`
 (
 	id int auto_increment not null,
-    flowerColorID int not null,
-    flowerTypeID int not null,
-    primary key (id, flowerColorID, flowerTypeID),
-    foreign key (flowerColorID) references `flowercolor`(id),
-    foreign key (flowerTypeID) references `flowertype`(id)
+    type_id INT NOT NULL,
+    post_id INT NOT NULL,
+    primary key (id, type_id, post_id),
+    foreign key (type_id) references `types`(id),
+    foreign key (post_id) references `posts`(id)
+);
+
+create table `colorandtype`
+(
+	id int auto_increment not null,
+    color_id int not null,
+	type_id int not null,
+    primary key (id, color_id, type_id ),
+    foreign key (color_id) references `colors`(id),
+    foreign key (type_id) references `types`(id)
 );
 create table OTPEmail
 (
 id int auto_increment not null primary key,
 OTP int not null,
 expiry_date datetime,
-user_id int ,
-foreign key (user_id) references `user`(id)
+user_id char(36) ,
+foreign key (user_id) references `users`(id)
 
+);
 
+CREATE TABLE tokens (
+    id int PRIMARY KEY AUTO_INCREMENT,
+    token varchar(255) UNIQUE NOT NULL,
+    token_type varchar(50) NOT NULL,
+    expiration_date DATETIME,
+    revoked tinyint(1) NOT NULL,
+    expired tinyint(1) NOT NULL,
+    user_id char(36), 
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE social_accounts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    provider VARCHAR(20) NOT NULL COMMENT 'Tên nhà social network',
+    provider_id VARCHAR(50) NOT NULL,
+    email VARCHAR(150) NOT NULL COMMENT 'Email tài khoản',
+    name VARCHAR(100) NOT NULL COMMENT 'Tên người dùng',
+    user_id char(36),   -- 1 người sẽ có nhiều tài khoản google và facebook
+     FOREIGN KEY (user_id) REFERENCES users(id)
 );
