@@ -1,14 +1,16 @@
 package com.eventflowerexchange.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class MailBody {
-
-    String to;
-    String subject;
-    String body;
-
+    private String to;
+    private String subject;
+    private String body;
 }

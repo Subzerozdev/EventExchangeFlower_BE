@@ -1,13 +1,15 @@
 package com.eventflowerexchange.service;
 
+import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.LoginRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
+import com.eventflowerexchange.dto.response.AuthResponseDTO;
 import com.eventflowerexchange.entity.User;
 
 public interface UserService {
-    public User register(UserRequestDTO userRequestDTO);
-    public User login(LoginRequestDTO loginRequestDTO) throws Exception;
-    public User updateUserByEmail(String email, UpdateRequestDTO updateRequestDTO)  ;
-    public User getUserByEmail(String email);
+    public AuthResponseDTO register(UserRequestDTO userRequestDTO);
+    public AuthResponseDTO login(AuthRequestDTO authRequestDTO);
+    public User updateUserById(String userID, UpdateRequestDTO updateRequestDTO)  ;
+    public User findUserById(String userID);
 }

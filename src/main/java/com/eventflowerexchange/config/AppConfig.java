@@ -1,25 +1,34 @@
 package com.eventflowerexchange.config;
 
+import com.eventflowerexchange.entity.USER_ROLE;
+import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.AuthorizeHttpRequestsDsl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
-
 public class AppConfig {
+    @Autowired
+    private UserRepository userRepository;
     @Bean // Mark this method of Bean to be managed in Spring IoC Container and be hold all by App Context
         /* SecurityFilterChain (request will be here first):
          * Request Filtering
@@ -36,13 +45,14 @@ public class AppConfig {
                 // Define rules for endpoints
                 .authorizeHttpRequests(Authorize -> Authorize
                         // Only user with below roles can access the path
-//                        .requestMatchers("/api/admin/**").hasAnyRole("RESTAURENT_OWNER", "ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/seller/**").hasRole("SELLER")
                         // Only user have logged in can access the path
-//                        .requestMatchers("/api/**").authenticated()
+                        .requestMatchers("/api/**").authenticated()
                         // Allow any request to another path
                         .anyRequest().permitAll())
                 // Add custom Filter before BasicAuthenticationFilter
-//                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 // Disabling CSRF Protection
                 .csrf(csrf -> csrf.disable())
                 // Enabling CORS
@@ -68,5 +78,25 @@ public class AppConfig {
         };
     }
 
+    @Bean
+    ApplicationRunner applicationRunner(){
+        return args -> {
+            if (userRepository.findUserByEmail("hoaloicuofficial@gmail.com")==null){
+                User user = User.builder()
+                        .email("hoaloicuofficial@gmail.com")
+                        .password(passwordEncoder().encode("12345678"))
+                        .isActive(true)
+                        .fullName("Admin")
+                        .createdAt(LocalDateTime.now())
+                        .role(USER_ROLE.ROLE_ADMIN)
+                        .build();
+                userRepository.save(user);
+            }
+        };
+    }
 
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

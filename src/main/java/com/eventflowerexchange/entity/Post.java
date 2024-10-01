@@ -25,7 +25,6 @@ public class Post {
     @Column(name = "description")
     private String description;
 
-
     @Column(name = "thumbnail", length = 300)
     private String thumbnail;
 
@@ -35,7 +34,6 @@ public class Post {
     @Column(name ="start_date")
     private Date startDate;
 
-
     @Column(name ="end_date")
     private Date endDate;
 
@@ -43,7 +41,6 @@ public class Post {
 
     @Column(name= "is_deleted")
     private boolean isDeleted ;
-
 
     @ManyToOne()
     @JoinColumn(name="category_id")

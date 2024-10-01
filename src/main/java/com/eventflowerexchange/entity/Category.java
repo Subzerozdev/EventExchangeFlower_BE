@@ -3,10 +3,10 @@ package com.eventflowerexchange.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Data
-@Setter
-@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,8 +16,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(name= "name", nullable = false)
     private String  name;
 
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
 }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface OTPEmailRepository extends JpaRepository<OTPEmail, Long> {
-
+    public OTPEmail findByUserId(String userId);
     @Query("SELECT otp " +
             "FROM OTPEmail otp " +
             "WHERE otp.OTP=?1 " +

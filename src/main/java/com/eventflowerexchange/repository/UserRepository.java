@@ -11,12 +11,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
     public boolean existsByPhone(String phone);
     public boolean existsByEmail(String email);
     public User findUserByEmail(String email);
-
-
+    public User findUserById(String id);
 }
 

@@ -2,17 +2,17 @@ create database eventflowerexchange;
 use eventflowerexchange;
 create table `roles`
 (
-	id INT AUTO_INCREMENT   NOT  NULL PRIMARY KEY,
+	id INT NOT NULL PRIMARY KEY,
     name NVARCHAR(50) NOT  NULL
 );
 
-insert into `roles`(name) value("Admin");
-insert into `roles`(name) value("Seller");
-insert into `roles`(name) value("Customer");
+insert into `roles`(id,name) value(0,"Admin");
+insert into `roles`(id,name) value(1,"Seller");
+insert into `roles`(id,name) value(2,"Customer");
 
 create table `users`
 (
-	id INT NOT  NULL PRIMARY KEY,
+	id CHAR(36) NOT NULL PRIMARY KEY,
     email nvarchar(100) NOT  NULL unique,
     `password` nvarchar(100) NOT  NULL,
     full_name nvarchar(100)  NOT  NULL,
@@ -59,7 +59,7 @@ create table `posts`
     end_date DATETIME,    
 	price FLOAT NOT NULL CHECK(price >= 0),   
     is_deleted BIT,
-    user_id INT NOT NULL,
+    user_id CHAR(36) NOT NULL,
     category_id INT NOT NULL,
     FOREIGN KEY  (user_id) REFERENCES `users`(id),
     FOREIGN KEY (category_id) REFERENCES `eventcategories`(id)
@@ -85,7 +85,7 @@ create table `orders`
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 	total_money FLOAT CHECK (total_money >=0),
     `status` BIT ,
-	user_id INT,
+	user_id CHAR(36),
      payment_method NVARCHAR(100),
    FOREIGN KEY (user_id) REFERENCES `users`(id)
    
@@ -127,9 +127,8 @@ create table OTPEmail
 id int auto_increment not null primary key,
 OTP int not null,
 expiry_date datetime,
-user_id INT ,
+user_id CHAR(36) ,
 foreign key (user_id) references `users`(id)
-
 );
 
 CREATE TABLE tokens (
@@ -139,7 +138,7 @@ CREATE TABLE tokens (
     expiration_date DATETIME,
     revoked tinyint(1) NOT NULL,
     expired tinyint(1) NOT NULL,
-    user_id INT, 
+    user_id CHAR(36), 
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -149,6 +148,6 @@ CREATE TABLE social_accounts (
     provider_id VARCHAR(50) NOT NULL,
     email VARCHAR(150) NOT NULL COMMENT 'Email tài khoản',
     name VARCHAR(100) NOT NULL COMMENT 'Tên người dùng',
-    user_id INT,   -- 1 người sẽ có nhiều tài khoản google và facebook
+    user_id CHAR(36),   -- 1 người sẽ có nhiều tài khoản google và facebook
      FOREIGN KEY (user_id) REFERENCES users(id)
 );

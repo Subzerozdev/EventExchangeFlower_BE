@@ -7,19 +7,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "otpemail")
 public class OTPEmail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    Long OTP;
-    LocalDateTime expiryDate;
+    private Long id;
+    private Long OTP;
+    private LocalDateTime expiryDate;
     @OneToOne
-    User user;
-
+    private User user;
 }

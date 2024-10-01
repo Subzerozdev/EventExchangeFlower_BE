@@ -1,15 +1,24 @@
 package com.eventflowerexchange.service.impl;
 
+import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.LoginRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
+import com.eventflowerexchange.dto.response.AuthResponseDTO;
+import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.exception.DuplicateEntity;
 import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
+import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -20,64 +29,71 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
-    public User register(UserRequestDTO userRequestDTO) {
-        // check if phone is existed
-        if (userRepository.existsByPhone(userRequestDTO.getPhone())) {
-            throw new DuplicateEntity("Duplicate phone!");
-        }
-        // check if email is existed
-        if (userRepository.existsByEmail(userRequestDTO.getEmail())) {
-//            User userExisted = userRepository.findUserByEmail(user.getEmail());
-//            if (!userExisted.isActive()) {
-//                return
-//            }
-            throw new DuplicateEntity("Duplicate email!");
+    public AuthResponseDTO register(UserRequestDTO userRequestDTO) {
+        // Check if phone or email is existed
+        if (userRepository.existsByPhone(userRequestDTO.getPhone())
+                || userRepository.existsByEmail(userRequestDTO.getEmail())) {
+            throw new DuplicateEntity("Duplicate phone or email!");
         }
         User user = userMapper.toUser(userRequestDTO);
-        // set other fields
-        user.setRegisterDate(LocalDateTime.now());
-        user.setRoleID(3);
+        // Encode password
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        // Set other fields
+        user.setCreatedAt(LocalDateTime.now());
+        user.setRole(USER_ROLE.ROLE_CUSTOMER);
         // Save account to DB
-        return userRepository.save(user);
+        userRepository.save(user);
+        return getAuthResponse(null, "Register Success", user.getId());
     }
 
     @Override
-    public User login(LoginRequestDTO user) throws Exception{
-        User isExistedUser = userRepository.findUserByEmail(user.getEmail());
-        // Check if email is incorrect
-        if (isExistedUser == null) {
-            throw new EntityNotFoundException("Incorrect email!");
-        }
-        // Check if password is incorrect
-        if (!isExistedUser.getPassword().equals(user.getPassword())) {
-            throw new Exception("Incorrect password!");
-        }
-        // Check if user is not active
-        if (!isExistedUser.isActive()){
-            throw new Exception("User is not active!");
-        }
-        return isExistedUser;
+    public AuthResponseDTO login(AuthRequestDTO authRequestDTO){
+        //
+        Authentication authentication = authenticate(authRequestDTO.getEmail(), authRequestDTO.getPassword());
+        // Generate Jwt Token
+        String jwt = jwtService.generateToken(authentication);
+        // Setup and return Auth Response
+        return getAuthResponse(jwt, "Login Success",null);
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        User user = userRepository.findUserByEmail(email);
-        if (user == null) {
-            throw new EntityNotFoundException("User not found!");
-        }
-        return user;
+    public User findUserById(String userID) {
+        return userRepository.findUserById(userID);
     }
 
     @Override
-    public User updateUserByEmail(String email, UpdateRequestDTO updateRequestDTO) {
-        User userUpdate = getUserByEmail(email);
+    public User updateUserById(String userID, UpdateRequestDTO updateRequestDTO) {
+        User userUpdate = userRepository.findUserById(userID);
         userMapper.updateUser(userUpdate, updateRequestDTO);
-//        userUpdate.setAddress(updateRequestDTO.getAddress());
-//        userUpdate.setFullName(updateRequestDTO.getFullName());
-//        userUpdate.setPhone(updateRequestDTO.getPhone());
+        userUpdate.setUpdatedAt(LocalDateTime.now());
         return userRepository.save(userUpdate);
+    }
+
+    private AuthResponseDTO getAuthResponse(String jwtToken, String message, String userID){
+        return AuthResponseDTO.builder()
+                .jwtToken(jwtToken)
+                .message(message)
+                .userID(userID)
+                .build();
+    }
+
+    private Authentication authenticate(String email, String password){
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
+        if (userDetails == null) {
+            throw new BadCredentialsException("Invalid email...");
+        }
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException("Invalid password...");
+        }
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }
 

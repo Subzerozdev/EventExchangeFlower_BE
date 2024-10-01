@@ -14,27 +14,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserAPI {
 
-    //DI: Dependency Injection
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public ResponseEntity<Object> register(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        User newUser = userService.register(userRequestDTO);
-        return ResponseEntity.ok(newUser);
-    }
-    
-    @PostMapping("/login")
-    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequestDTO user) throws Exception {
-        User userLogin = userService.login(user);
-        return ResponseEntity.ok(userLogin);
-    }
-
-    @PutMapping("/{email}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateUserProfile(
             @Valid @RequestBody UpdateRequestDTO updateRequestDTO,
-            @PathVariable("email") String email)  {
-        User user = userService.updateUserByEmail(email, updateRequestDTO);
+            @PathVariable("id") String id)  {
+        User user = userService.updateUserById(id, updateRequestDTO);
         return ResponseEntity.ok(user);
     }
 }
