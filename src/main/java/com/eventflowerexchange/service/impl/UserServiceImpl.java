@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private CustomUserDetailsService customUserDetailsService;
 
     @Override
-    public AuthResponseDTO register(UserRequestDTO userRequestDTO) {
+    public String register(UserRequestDTO userRequestDTO) {
         // Check if phone or email is existed
         if (userRepository.existsByPhone(userRequestDTO.getPhone())
                 || userRepository.existsByEmail(userRequestDTO.getEmail())) {
@@ -51,7 +51,8 @@ public class UserServiceImpl implements UserService {
         user.setRole(USER_ROLE.ROLE_CUSTOMER);
         // Save account to DB
         userRepository.save(user);
-        return getAuthResponse(null, "Register Success", user.getId());
+        // Return userID
+        return user.getId();
     }
 
     @Override
@@ -60,8 +61,10 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = authenticate(authRequestDTO.getEmail(), authRequestDTO.getPassword());
         // Generate Jwt Token
         String jwt = jwtService.generateToken(authentication);
+        // Get user by Email
+        User user = userRepository.findUserByEmail(authRequestDTO.getEmail());
         // Setup and return Auth Response
-        return getAuthResponse(jwt, "Login Success",null);
+        return getAuthResponse(jwt, user);
     }
 
     @Override
@@ -77,11 +80,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userUpdate);
     }
 
-    private AuthResponseDTO getAuthResponse(String jwtToken, String message, String userID){
+    private AuthResponseDTO getAuthResponse(String jwtToken, User user){
         return AuthResponseDTO.builder()
                 .jwtToken(jwtToken)
-                .message(message)
-                .userID(userID)
+                .user(user)
                 .build();
     }
 

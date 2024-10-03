@@ -20,8 +20,8 @@ public class AuthAPI {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDTO> register(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        AuthResponseDTO response = userService.register(userRequestDTO);
+    public ResponseEntity<String> register(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        String response = userService.register(userRequestDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

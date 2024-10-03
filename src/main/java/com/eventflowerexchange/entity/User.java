@@ -35,6 +35,7 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     @Size(min = 3, message = "Password must be  at least 3 character !!!!!")
     private String password;
 
@@ -45,11 +46,9 @@ public class User {
     @Column(unique = true)
     private String phone;
 
-    @JsonIgnore
     @DateTimeFormat
     private LocalDateTime createdAt;
 
-    @JsonIgnore
     @DateTimeFormat
     private LocalDateTime updatedAt;
 
@@ -72,6 +71,7 @@ public class User {
     @OneToOne(mappedBy = "user")
     private OTPEmail otpEmail;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 }

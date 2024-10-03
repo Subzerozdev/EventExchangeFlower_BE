@@ -1,5 +1,6 @@
 package com.eventflowerexchange.dto.response;
 
+import com.eventflowerexchange.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuthResponseDTO {
     private String jwtToken;
-    private String message;
-    private String userID;
+    private User user;
 }
