@@ -45,14 +45,14 @@ public class AppConfig {
                 // Define rules for endpoints
                 .authorizeHttpRequests(Authorize -> Authorize
                         // Only user with below roles can access the path
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/seller/**").hasRole("SELLER")
+//                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+//                        .requestMatchers("/api/seller/**").hasRole("SELLER")
                         // Only user have logged in can access the path
-                        .requestMatchers("/api/**").authenticated()
+//                        .requestMatchers("/api/**").authenticated()
                         // Allow any request to another path
                         .anyRequest().permitAll())
                 // Add custom Filter before BasicAuthenticationFilter
-                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
+//                .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
                 // Disabling CSRF Protection
                 .csrf(csrf -> csrf.disable())
                 // Enabling CORS

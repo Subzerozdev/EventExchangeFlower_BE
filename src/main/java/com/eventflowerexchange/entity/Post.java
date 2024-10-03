@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Auditable;
 
 import java.util.Date;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "posts")
-public class Post {
+public class Post  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,12 +31,6 @@ public class Post {
 
     @Column(name = "address")
     private String address;
-
-    @Column(name ="start_date")
-    private Date startDate;
-
-    @Column(name ="end_date")
-    private Date endDate;
 
     private Float price;
 

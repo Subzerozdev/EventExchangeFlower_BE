@@ -19,6 +19,4 @@ public class Category {
     @Column(name= "name", nullable = false)
     private String  name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts;
 }
