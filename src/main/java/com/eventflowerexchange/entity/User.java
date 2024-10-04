@@ -36,7 +36,7 @@ public class User {
     private String email;
 
     @JsonIgnore
-    @Size(min = 3, message = "Password must be  at least 3 character !!!!!")
+    @Size(min = 8, message = "Password must be  at least 8 character !!!!!")
     private String password;
 
     private String fullName;
@@ -47,6 +47,7 @@ public class User {
     private String phone;
 
     @DateTimeFormat
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @DateTimeFormat
@@ -74,4 +75,8 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 }

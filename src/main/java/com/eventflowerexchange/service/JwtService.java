@@ -1,8 +1,10 @@
 package com.eventflowerexchange.service;
 
+import com.eventflowerexchange.entity.User;
 import org.springframework.security.core.Authentication;
 
 public interface JwtService {
-    public String generateToken(Authentication authentication);
-    public String getUserIdFromJwtToken(String jwtToken);
+    String generateToken(Authentication authentication);
+    String getUserIdFromJwtToken(String jwtToken);
+    User getUserFromJwtToken(String jwtToken);
 }

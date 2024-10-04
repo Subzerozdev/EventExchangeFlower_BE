@@ -1,10 +1,14 @@
 package com.eventflowerexchange.service.impl;
 
+import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
+import com.eventflowerexchange.service.UserService;
 import com.eventflowerexchange.util.JwtConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +16,9 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Service
+@RequiredArgsConstructor
 public class JwtServiceImpl implements JwtService {
+    private final UserRepository userRepository;
     // *1 JwtConstant.SECRET_KEY.getBytes(): Encodes String (SECRET_KEY) into bytes arr
     // *2 Keys.hmacShaKeyFor(): Use algorithm HmacSHA384 to encode bytes arr
     private final SecretKey secretKey = Keys.hmacShaKeyFor(JwtConstant.SECRET_KEY.getBytes());
@@ -40,5 +46,11 @@ public class JwtServiceImpl implements JwtService {
                 .parseClaimsJws(jwtToken) // Return Jws<Claims> if successful verifying JWT Token
                 .getBody(); // Extracts the Claims Obj from Jws<Claims>
         return String.valueOf(claims.get("userID"));
+    }
+
+    @Override
+    public User getUserFromJwtToken(String jwtToken) {
+        String userID = getUserIdFromJwtToken(jwtToken);
+        return userRepository.findUserById(userID);
     }
 }

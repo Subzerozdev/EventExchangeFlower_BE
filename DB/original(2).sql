@@ -76,14 +76,14 @@ CREATE TABLE post_images (
 create table `orders`
 (
 	id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	fullname VARCHAR(100) NOT NULL DEFAULT '',
+	full_name VARCHAR(100) NOT NULL DEFAULT '',
 	phone_number VARCHAR(20) NOT NULL,
 	email VARCHAR(100) NOT NULL DEFAULT '',
 	address VARCHAR(200) NOT NULL,
 	note VARCHAR(100) DEFAULT '',
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 	total_money FLOAT CHECK (total_money >=0),
-    `status` BIT ,
+    `status` VARCHAR(50) ,
 	user_id CHAR(36),
      payment_method NVARCHAR(100),
    FOREIGN KEY (user_id) REFERENCES `users`(id)

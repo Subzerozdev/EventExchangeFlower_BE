@@ -1,5 +1,6 @@
 package com.eventflowerexchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,4 +17,15 @@ public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private int numberOfProducts;
+    private Long totalMoney;
+
+    @JsonIgnore
+    @ManyToOne
+    private Order order;
+
+    @JsonIgnore
+    @ManyToOne
+    private Post post;
 }

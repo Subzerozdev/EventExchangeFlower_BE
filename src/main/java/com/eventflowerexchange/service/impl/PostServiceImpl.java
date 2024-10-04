@@ -25,23 +25,24 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private  final PostRepository postRepository;
-    private  final PostImageRepository postImageRepository;
+    private final PostRepository postRepository;
+    private final PostImageRepository postImageRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+
     @Override
     public Post createPost(PostRequestDTO postRequestDTO) throws Exception {
         Category existingCategory = categoryRepository
                 .findById(postRequestDTO.getCategoryId())
                 .orElseThrow(() ->
                         new DataNotFoundException(
-                                "Cannot find category with id: "+postRequestDTO.getCategoryId()));
+                                "Cannot find category with id: " + postRequestDTO.getCategoryId()));
 
         User existingUser = userRepository
                 .findById(postRequestDTO.getUserId())
                 .orElseThrow(() ->
                         new DataNotFoundException(
-                                "Cannot find user with id: "+postRequestDTO.getUserId()));
+                                "Cannot find user with id: " + postRequestDTO.getUserId()));
 
         Post newPost = Post.builder()
                 .name(postRequestDTO.getName())
@@ -53,20 +54,20 @@ public class PostServiceImpl implements PostService {
                 .user(existingUser)
                 .build();
 
-            return postRepository.save(newPost);
+        return postRepository.save(newPost);
     }
 
     @Override
     public Post getPostById(long postId) throws Exception {
         return postRepository.findById(postId).
-                orElseThrow(()-> new DataNotFoundException(
-                        "Cannot find product with id ="+postId));
+                orElseThrow(() -> new DataNotFoundException(
+                        "Cannot find product with id =" + postId));
     }
 
     @Override
     public Page<PostResponse> getAllPosts(PageRequest pageRequest) {
         // Lấy danh sách sản phẩm theo trang(page) và giới hạn(limit)
-        return postRepository.findAll(pageRequest).map (post -> {
+        return postRepository.findAll(pageRequest).map(post -> {
             PostResponse postResponse = PostResponse.builder()
                     .name(post.getName())
                     .price(post.getPrice())
@@ -75,8 +76,8 @@ public class PostServiceImpl implements PostService {
                     .address(post.getAddress())
                     .categoryId(post.getCategory().getId())
                     .build();
-            postResponse.setCreatedAt(post.getCreatedAt());
-            postResponse.setUpdatedAt(post.getUpdatedAt());
+//            postResponse.setCreatedAt(post.getCreatedAt());
+//            postResponse.setUpdatedAt(post.getUpdatedAt());
             return postResponse;
         });
     }
@@ -84,20 +85,20 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post updatePost(long id, PostRequestDTO postRequestDTO) throws Exception {
         Post existingPost = getPostById(id);
-        if(existingPost != null) {
+        if (existingPost != null) {
             //copy các thuộc tính từ DTO -> Post
             //Có thể sử dụng ModelMapper
             Category existingCategory = categoryRepository
                     .findById(postRequestDTO.getCategoryId())
                     .orElseThrow(() ->
                             new DataNotFoundException(
-                                    "Cannot find category with id: "+postRequestDTO.getCategoryId()));
+                                    "Cannot find category with id: " + postRequestDTO.getCategoryId()));
 
             User existingUser = userRepository
                     .findById(postRequestDTO.getUserId())
                     .orElseThrow(() ->
                             new DataNotFoundException(
-                                    "Cannot find user with id: "+postRequestDTO.getUserId()));
+                                    "Cannot find user with id: " + postRequestDTO.getUserId()));
             existingPost.setName(postRequestDTO.getName());
             existingPost.setCategory(existingCategory);
             existingPost.setUser(existingUser);
@@ -123,20 +124,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostImage createPostImage(Long productId, PostImageDTO postImageDTO) throws Exception { Post existingPost = postRepository
-            .findById(productId)
-            .orElseThrow(() ->
-                    new DataNotFoundException(
-                            "Cannot find product with id: "+postImageDTO.getPostId()));
+    public PostImage createPostImage(Long productId, PostImageDTO postImageDTO) throws Exception {
+        Post existingPost = postRepository
+                .findById(productId)
+                .orElseThrow(() ->
+                        new DataNotFoundException(
+                                "Cannot find product with id: " + postImageDTO.getPostId()));
         PostImage newProductImage = PostImage.builder()
                 .post(existingPost)
                 .imageUrl(postImageDTO.getImageUrl())
                 .build();
         //Ko cho insert quá 5 ảnh cho 1 sản phẩm
         int size = postImageRepository.findByPostId(productId).size();
-        if(size >= PostImage.MAXIMUM_IMAGES_PER_PRODUCT) {
+        if (size >= PostImage.MAXIMUM_IMAGES_PER_PRODUCT) {
             throw new InvalidParamException("Number of images must be <=" +
-                    " "+PostImage.MAXIMUM_IMAGES_PER_PRODUCT);
+                    " " + PostImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
         return postImageRepository.save(newProductImage);
     }
