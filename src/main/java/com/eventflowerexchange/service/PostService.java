@@ -5,23 +5,19 @@ import com.eventflowerexchange.dto.request.PostRequestDTO;
 import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.PostImage;
-import org.hibernate.sql.results.jdbc.internal.JdbcValuesMappingProducerStandard;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.Map;
+
 public interface PostService {
-    Post createPost(PostRequestDTO postRequestDTO) throws Exception;
-
-    Post getPostById(long id) throws Exception;
-
-    Page<PostResponse> getAllPosts(PageRequest pageRequest);
-
-    Post updatePost(long id, PostRequestDTO postRequestDTO) throws Exception;
-
-    void deletePost(long id);
-
+    Post createPost(PostRequestDTO postRequestDTO, String userID) throws Exception;
+    Post getPostById(Long id) throws Exception;
+//    Page<PostResponse> getAllPosts(PageRequest pageRequest);
+    Page<Post> getAllPosts(Map<String, Object> params);
+    Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID) throws Exception;
+    void deletePost(Long id);
     boolean existsByName(String name);
-
     PostImage createPostImage(
             Long productId,
             PostImageDTO postImageDTO) throws Exception;

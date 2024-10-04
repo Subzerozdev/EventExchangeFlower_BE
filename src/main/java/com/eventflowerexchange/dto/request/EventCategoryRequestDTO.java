@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventCategoryRequestDTO {
-
     @NotEmpty(message = "Category name can't not be empty")
     private String name;
 }

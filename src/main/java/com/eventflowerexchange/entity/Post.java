@@ -39,15 +39,10 @@ public class Post {
 
     private LocalDateTime endDate;
 
-//    @Column(name = "is_deleted")
-//    private boolean isDeleted;
-
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

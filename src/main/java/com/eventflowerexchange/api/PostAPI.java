@@ -6,6 +6,9 @@ import com.eventflowerexchange.dto.response.PostListResponse;
 import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.PostImage;
+import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.repository.PostRepository;
+import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -25,32 +29,34 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostAPI {
     private final PostService postService;
+    private final JwtService jwtService;
+    private final PostRepository postRepository;
 
     @PostMapping("")
-    //POST http://localhost:8088/v1/api/products
-    public ResponseEntity<?> createProduct(
+    //POST http://localhost:8088/api/products
+    public ResponseEntity<?> createPost(
             @Valid @RequestBody PostRequestDTO postRequestDTO,
+            @RequestHeader("Authorization") String jwt,
             BindingResult result
     ) {
         try {
             if (result.hasErrors()) {
+                System.out.println("error");
                 List<String> errorMessages = result.getFieldErrors()
                         .stream()
                         .map(FieldError::getDefaultMessage)
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessages);
             }
-            Post newPost = postService.createPost(postRequestDTO);
+            String userID = jwtService.getUserIdFromJwtToken(jwt);
+            Post newPost = postService.createPost(postRequestDTO, userID);
             return ResponseEntity.ok(newPost);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -129,37 +135,46 @@ public class PostAPI {
         return contentType != null && contentType.startsWith("image/");
     }
 
+//    @GetMapping("")
+//    public ResponseEntity<PostListResponse> getPosts(
+//            @RequestParam("page") int page,
+//            @RequestParam("limit") int limit
+//    ) {
+//        // Tạo Pageable từ thông tin trang và giới hạn
+//        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("startDate").descending());
+//
+//        Page<PostResponse> productPage = postService.getAllPosts(pageRequest);
+//
+//        // lấy tổng số trang
+//        int totalPages = productPage.getTotalPages();
+//
+//        List<PostResponse> posts = productPage.getContent();
+//        return ResponseEntity.ok(PostListResponse.builder()
+//                .posts(posts)
+//                .totalPages(totalPages)
+//                .build());
+//    }
+
     @GetMapping("")
-    public ResponseEntity<PostListResponse> getProducts(
-            @RequestParam("page") int page,
-            @RequestParam("limit") int limit
+    public ResponseEntity<Page<Post>> getPosts(
+            @RequestParam Map<String, Object> params
     ) {
-        // Tạo Pageable từ thông tin trang và giới hạn
-        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("createdAt").descending());
-
-
-        Page<PostResponse> productPage = postService.getAllPosts(pageRequest);
-
-        // lấy tổng số trang
-        int totalPages = productPage.getTotalPages();
-
-        List<PostResponse> products = productPage.getContent();
-        return ResponseEntity.ok(PostListResponse.builder()
-                .products(products)
-                .totalPages(totalPages)
-                .build());
+        Page<Post> posts = postService.getAllPosts(params);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
 
     //http://localhost:8088/api/v1/products/6
     @GetMapping("/{id}")
-    public ResponseEntity<String> getProductById(
-            @PathVariable("id") String productId
-    ) {
+    public ResponseEntity<String> getPostById(
+            @PathVariable("id") Long productId
+    ) throws Exception {
+        Post post = postService.getPostById(productId);
         return ResponseEntity.ok("Product with ID: " + productId);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable long id) {
+    public ResponseEntity<String> deletePost(@PathVariable long id) {
         return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
     }
 }

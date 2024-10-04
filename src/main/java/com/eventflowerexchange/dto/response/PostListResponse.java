@@ -4,13 +4,11 @@ import lombok.*;
 
 import java.util.List;
 
-@Data//toString
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class PostListResponse {
-    private List<PostResponse> products;
+    private List<PostResponse> posts;
     private int totalPages;
 }

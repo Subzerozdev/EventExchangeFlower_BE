@@ -12,16 +12,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-
     private final CategoryRepository categoryRepository;
 
-
     @Override
-    public Category createCategory(EventCategoryRequestDTO categoryDTO) {
+    public void createCategory(EventCategoryRequestDTO categoryDTO) {
         Category newCategory = Category.builder()
                 .name(categoryDTO.getName())
                 .build(); // map đói tượng DTO thành category   ( nhớ là phải có @Builder )
-        return categoryRepository.save(newCategory);
+        categoryRepository.save(newCategory);
     }
 
     @Override

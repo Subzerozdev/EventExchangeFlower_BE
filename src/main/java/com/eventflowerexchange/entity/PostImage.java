@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Table(name = "post_images")
 
 
- // làm ăn đừng có sửa cái này define rất kỹ rồi nha
+// làm ăn đừng có sửa cái này define rất kỹ rồi nha
 //  1 product sẽ có nhiều images nên ở dưới có ManyToOne kìa
 public class PostImage {
 
-    public  static final int MAXIMUM_IMAGES_PER_PRODUCT = 5;
+    public static final int MAXIMUM_IMAGES_PER_PRODUCT = 5;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

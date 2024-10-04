@@ -1,7 +1,6 @@
 package com.eventflowerexchange.service.impl;
 
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
-import com.eventflowerexchange.dto.request.LoginRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
@@ -12,7 +11,6 @@ import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

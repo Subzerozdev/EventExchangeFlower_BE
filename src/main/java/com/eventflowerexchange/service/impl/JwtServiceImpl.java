@@ -10,10 +10,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +29,28 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public String generateToken(Authentication authentication) {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        String roles = populateAuthorities(authorities);
         String jwt = Jwts.builder() //Create instance jwt
                 .setIssuedAt(new Date()) // Set start time
                 .setExpiration(new Date(new Date().getTime() + (1000 * 60 * 60 * 24))) // Set end time (one day)
                 .claim("userID", authentication.getName()) // Add new claim "userID" with value username/email
-                .claim("authorities", authentication.getAuthorities().toString()) // Add new claim "authorities" with value role/permission
+                .claim("authorities", roles) // Add new claim "authorities" with value role/permission
                 .signWith(secretKey) // Sign key using algorithm HmacSHA384
                 .compact(); // Compact JWT to single String
         return jwt;
+    }
+
+    // Convert authorities to String with format "auth1,auth2,auth3"
+    private String populateAuthorities(Collection<? extends GrantedAuthority> authorities) {
+        // Create HashSet - every item is unique
+        Set<String> authoritySet = new HashSet<>();
+        // Add each authority in authorities to HashSet
+        for (GrantedAuthority authority : authorities) {
+            authoritySet.add(authority.getAuthority());
+        }
+        // Join each authority name to String
+        return String.join(",", authoritySet);
     }
 
     @Override

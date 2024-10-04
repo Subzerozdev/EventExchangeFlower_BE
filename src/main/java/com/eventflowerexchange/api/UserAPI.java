@@ -1,8 +1,6 @@
 package com.eventflowerexchange.api;
 
-import com.eventflowerexchange.dto.request.LoginRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
-import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.UserService;
 import jakarta.validation.Valid;
