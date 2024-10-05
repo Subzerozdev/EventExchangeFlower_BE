@@ -35,6 +35,9 @@ public class PostRequestDTO {
     @JsonProperty("category_id")
     private Long categoryId;
 
+    @JsonProperty("type_id")
+    private List<Long> typeId;
+
 //    // có nhiều file bỏ vào List
 //    private List<MultipartFile> files;
 }

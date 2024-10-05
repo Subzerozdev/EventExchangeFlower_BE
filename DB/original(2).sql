@@ -41,12 +41,12 @@ create table `types`
 	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
     name NVARCHAR(100)
 );
-
-create table `colors`
-(
-	id int AUTO_INCREMENT NOT  NULL PRIMARY KEY,
-    name NVARCHAR(100)
-);
+-- comment cho nó đẹp thôi, với chắc được nhiều code hơn, nên làm thế.
+-- create table `colors`
+-- (
+-- 	id int AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+--     name NVARCHAR(100)
+-- );
 
 create table `posts`
 (
@@ -75,7 +75,7 @@ CREATE TABLE post_images (
 
 create table `orders`
 (
-	id char(10) NOT NULL PRIMARY KEY,
+	id INT NOT NULL auto_increment PRIMARY KEY,
 	full_name VARCHAR(100) NOT NULL DEFAULT '',
 	phone_number VARCHAR(20) NOT NULL,
 	email VARCHAR(100) NOT NULL DEFAULT '',
@@ -111,16 +111,16 @@ create table `typeandpost`
     foreign key (type_id) references `types`(id),
     foreign key (post_id) references `posts`(id)
 );
-
-create table `colorandtype`
-(
-	id int auto_increment not null,
-    color_id int not null,
-	type_id int not null,
-    primary key (id, color_id, type_id ),
-    foreign key (color_id) references `colors`(id),
-    foreign key (type_id) references `types`(id)
-);
+-- này là Khánh comment thôi chứ không có ý gì đâu.
+-- create table `colorandtype`
+-- (
+-- 	id int auto_increment not null,
+--     color_id int not null,
+-- 	type_id int not null,
+--     primary key (id, color_id, type_id ),
+--     foreign key (color_id) references `colors`(id),
+--     foreign key (type_id) references `types`(id)
+-- );
 create table OTPEmail
 (
 id int auto_increment not null primary key,
