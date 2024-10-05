@@ -33,16 +33,18 @@ public class Post {
     @Column(name = "address")
     private String address;
 
-    private Float price;
+    private Long price;
 
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

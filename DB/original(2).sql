@@ -75,7 +75,7 @@ CREATE TABLE post_images (
 
 create table `orders`
 (
-	id int AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	id char(10) NOT NULL PRIMARY KEY,
 	full_name VARCHAR(100) NOT NULL DEFAULT '',
 	phone_number VARCHAR(20) NOT NULL,
 	email VARCHAR(100) NOT NULL DEFAULT '',

@@ -2,23 +2,17 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.PostImageDTO;
 import com.eventflowerexchange.dto.request.PostRequestDTO;
-import com.eventflowerexchange.dto.response.PostListResponse;
-import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.PostImage;
-import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -37,7 +31,6 @@ import java.util.*;
 public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
-    private final PostRepository postRepository;
 
     @PostMapping("")
     //POST http://localhost:8088/api/products
@@ -63,7 +56,7 @@ public class PostAPI {
         }
     }
 
-    @PostMapping(value = "uploads/{id}",
+    @PostMapping(value = "/uploads/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //POST http://localhost:8088/v1/api/products
     public ResponseEntity<?> uploadImages(
@@ -163,18 +156,27 @@ public class PostAPI {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-
     //http://localhost:8088/api/v1/products/6
     @GetMapping("/{id}")
-    public ResponseEntity<String> getPostById(
-            @PathVariable("id") Long productId
-    ) throws Exception {
-        Post post = postService.getPostById(productId);
-        return ResponseEntity.ok("Product with ID: " + productId);
+    public ResponseEntity<Object> getPostById(@PathVariable Long id) throws Exception {
+        Post post = postService.getPostById(id);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePost(@PathVariable long id) {
+        postService.deletePost(id);
         return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePost(
+            @PathVariable Long id,
+            @RequestBody PostRequestDTO postRequestDTO,
+            @RequestHeader("Authorization") String jwt
+    ) throws Exception {
+        String userID = jwtService.getUserIdFromJwtToken(jwt);
+        Post post = postService.updatePost(id, postRequestDTO, userID);
+        return new ResponseEntity<>(post, HttpStatus.OK);
     }
 }

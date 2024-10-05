@@ -6,10 +6,9 @@ import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderDetailRepository;
 import com.eventflowerexchange.repository.OrderRepository;
+import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final OrderDetailRepository orderDetailRepository;
+    private final OrderDetailService orderDetailService;
     private final OrderMapper orderMapper;
 
     @Override
@@ -56,4 +55,5 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getSellerOrders(String userID) {
         return List.of();
     }
+
 }

@@ -33,11 +33,8 @@ public class Order {
     private String address;
     private String note;
     private String paymentMethod;
-
-    private LocalDateTime orderDate;
-
     private Long totalMoney;
-
+    private LocalDateTime orderDate;
     private String status;
 
     @JsonIgnore

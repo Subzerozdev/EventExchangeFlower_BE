@@ -100,9 +100,9 @@ public class PostServiceImpl implements PostService {
     ) {
         Specification<Post> specification = ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if (!params.get("eventCategory").toString().isEmpty()) {
+            if (!params.get("categoryID").toString().isEmpty()) {
                 Join<Post, Category> postCategoryJoin = root.join("category");
-                predicates.add(criteriaBuilder.equal(postCategoryJoin.get("id"), params.get("eventCategory")));
+                predicates.add(criteriaBuilder.equal(postCategoryJoin.get("id"), params.get("categoryID")));
             }
 //            if (flowerType != null) {
 //                Join<Post,Category> postCategoryJoin = root.join("category");
@@ -156,6 +156,8 @@ public class PostServiceImpl implements PostService {
             existingPost.setDescription(postRequestDTO.getDescription());
             existingPost.setThumbnail(postRequestDTO.getThumbnail());
             existingPost.setAddress(postRequestDTO.getAddress());
+            existingPost.setStartDate(postRequestDTO.getStartDate());
+            existingPost.setEndDate(postRequestDTO.getEndDate());
             return postRepository.save(existingPost);
         }
         return null;

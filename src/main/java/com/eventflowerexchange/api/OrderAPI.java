@@ -2,8 +2,10 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.entity.Order;
+import com.eventflowerexchange.entity.OrderDetail;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
+import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,16 +20,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAPI {
     private final OrderService orderService;
-    private final UserService userService;
     private final JwtService jwtService;
+    private final OrderDetailService orderDetailService;
 
     @PostMapping("")
-    public ResponseEntity<Object> createOrder(
+    public ResponseEntity<Object> placeOrder(
             @RequestBody OrderRequestDTO orderRequestDTO,
             @RequestHeader("Authorization") String jwt
     ){
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
+        orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
@@ -55,5 +58,11 @@ public class OrderAPI {
     ){
         orderService.cancelOrder(id);
         return new ResponseEntity<>("Delete Success", HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getOrderDetails(@PathVariable("id") Long id){
+        List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderId(id);
+        return new ResponseEntity<>(orderDetails,HttpStatus.OK);
     }
 }
