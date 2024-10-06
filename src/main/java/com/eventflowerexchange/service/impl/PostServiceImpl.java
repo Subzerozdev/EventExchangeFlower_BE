@@ -2,18 +2,10 @@ package com.eventflowerexchange.service.impl;
 
 import com.eventflowerexchange.dto.request.PostImageDTO;
 import com.eventflowerexchange.dto.request.PostRequestDTO;
-import com.eventflowerexchange.dto.request.UserRequestDTO;
-import com.eventflowerexchange.dto.response.PostResponse;
-import com.eventflowerexchange.entity.Category;
-import com.eventflowerexchange.entity.Post;
-import com.eventflowerexchange.entity.PostImage;
-import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.exception.DataNotFoundException;
 import com.eventflowerexchange.exception.InvalidParamException;
-import com.eventflowerexchange.repository.CategoryRepository;
-import com.eventflowerexchange.repository.PostImageRepository;
-import com.eventflowerexchange.repository.PostRepository;
-import com.eventflowerexchange.repository.UserRepository;
+import com.eventflowerexchange.repository.*;
 import com.eventflowerexchange.service.PostService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -34,9 +26,40 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final TypeRepository typeRepository;
+
+//    @Override
+//    public Post createPost(PostRequestDTO postRequestDTO, String userID) throws Exception {
+//        // Get Category by ID
+//        Category existingCategory = categoryRepository
+//                .findById(postRequestDTO.getCategoryId())
+//                .orElseThrow(() ->
+//                        new DataNotFoundException(
+//                                "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+//        // Get User by Id
+//        User existingUser = userRepository
+//                .findById(userID)
+//                .orElseThrow(() ->
+//                        new DataNotFoundException(
+//                                "Cannot find user with id: " + userID));
+//        // Create Post
+//        Post newPost = Post.builder()
+//                .name(postRequestDTO.getName())
+//                .price(postRequestDTO.getPrice())
+//                .thumbnail(postRequestDTO.getThumbnail())
+//                .address(postRequestDTO.getAddress())
+//                .description(postRequestDTO.getDescription())
+//                .startDate(postRequestDTO.getStartDate())
+//                .endDate(postRequestDTO.getEndDate())
+//                .category(existingCategory)
+//                .user(existingUser)
+//                .build();
+//        // Save to DB and return
+//        return postRepository.save(newPost);
+//    }
 
     @Override
-    public Post createPost(PostRequestDTO postRequestDTO, String userID) throws Exception {
+    public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         // Get Category by ID
         Category existingCategory = categoryRepository
                 .findById(postRequestDTO.getCategoryId())
@@ -49,6 +72,13 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() ->
                         new DataNotFoundException(
                                 "Cannot find user with id: " + userID));
+        // Get Type by Id
+        List<Type> existingType = typeRepository.findByIdIn(typeID);
+        if (existingType.isEmpty()) {
+            throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+        }
+
+
         // Create Post
         Post newPost = Post.builder()
                 .name(postRequestDTO.getName())
@@ -60,6 +90,10 @@ public class PostServiceImpl implements PostService {
                 .endDate(postRequestDTO.getEndDate())
                 .category(existingCategory)
                 .user(existingUser)
+                // này khánh mới code thêm nè
+                // yên tâm nha
+                // mọi chuyện tính ra giờ khá đơn giản mà
+                .types(existingType)
                 .build();
         // Save to DB and return
         return postRepository.save(newPost);
@@ -133,11 +167,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID) throws Exception {
+    public Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         Post existingPost = getPostById(id);
         if (existingPost != null) {
             //copy các thuộc tính từ DTO -> Post
             //Có thể sử dụng ModelMapper
+            // tui nghĩ là không nên dùng tại vì tui chưa học
             Category existingCategory = categoryRepository
                     .findById(postRequestDTO.getCategoryId())
                     .orElseThrow(() ->
@@ -149,9 +184,16 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() ->
                             new DataNotFoundException(
                                     "Cannot find user with id: " + userID));
+
+            // Get Type by Id
+            List<Type> existingType = typeRepository.findByIdIn(typeID);
+            if (existingType.isEmpty()) {
+                throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+            }
             existingPost.setName(postRequestDTO.getName());
             existingPost.setCategory(existingCategory);
             existingPost.setUser(existingUser);
+            existingPost.setTypes(existingType);
             existingPost.setPrice(postRequestDTO.getPrice());
             existingPost.setDescription(postRequestDTO.getDescription());
             existingPost.setThumbnail(postRequestDTO.getThumbnail());
@@ -176,22 +218,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostImage createPostImage(Long productId, PostImageDTO postImageDTO) throws Exception {
+    public PostImage createPostImage(Long postId, PostImageDTO postImageDTO) throws Exception {
         Post existingPost = postRepository
-                .findById(productId)
+                .findById(postId)
                 .orElseThrow(() ->
                         new DataNotFoundException(
                                 "Cannot find product with id: " + postImageDTO.getPostId()));
-        PostImage newProductImage = PostImage.builder()
+        PostImage newPostImage = PostImage.builder()
                 .post(existingPost)
                 .imageUrl(postImageDTO.getImageUrl())
                 .build();
         //Ko cho insert quá 5 ảnh cho 1 sản phẩm
-        int size = postImageRepository.findByPostId(productId).size();
+
+        int size = postImageRepository.findByPostId(postId).size();
         if (size >= PostImage.MAXIMUM_IMAGES_PER_PRODUCT) {
             throw new InvalidParamException("Number of images must be <=" +
                     " " + PostImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
-        return postImageRepository.save(newProductImage);
+        return postImageRepository.save(newPostImage);
     }
 }

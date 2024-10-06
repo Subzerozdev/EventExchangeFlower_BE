@@ -4,9 +4,11 @@ import com.eventflowerexchange.dto.request.PostImageDTO;
 import com.eventflowerexchange.dto.request.PostRequestDTO;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.PostImage;
+import com.eventflowerexchange.entity.Type;
 import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
+import com.eventflowerexchange.service.TypeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ import java.util.*;
 public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
+    private final TypeService typeService;
 
     @PostMapping("")
     //POST http://localhost:8088/api/products
@@ -49,7 +52,8 @@ public class PostAPI {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             String userID = jwtService.getUserIdFromJwtToken(jwt);
-            Post newPost = postService.createPost(postRequestDTO, userID);
+            // Khánh mới thêm vào
+            Post newPost = postService.createPost(postRequestDTO, userID,postRequestDTO.getTypeId());
             return ResponseEntity.ok(newPost);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -176,7 +180,7 @@ public class PostAPI {
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
         String userID = jwtService.getUserIdFromJwtToken(jwt);
-        Post post = postService.updatePost(id, postRequestDTO, userID);
+        Post post = postService.updatePost(id, postRequestDTO, userID,postRequestDTO.getTypeId());
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 }

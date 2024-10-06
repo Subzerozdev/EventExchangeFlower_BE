@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data//toString
 @Getter
@@ -29,5 +30,8 @@ public class PostResponse  {
 
     @JsonProperty("user_id")
     private Long userId;
+    // cái này Khánh mới code nè.
+    @JsonProperty("type_id")
+    private List<Long> typeId;
 
 }

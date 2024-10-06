@@ -39,7 +39,7 @@ public class Post {
 
     private LocalDateTime endDate;
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;

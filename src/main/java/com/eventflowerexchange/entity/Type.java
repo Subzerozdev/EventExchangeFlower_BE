@@ -25,5 +25,5 @@ public class Type {
     // cái này là Khánh mới code
     // Khánh thêm comment vào cho nó dài dòng văn tự thôi .
     @ManyToMany(mappedBy = "types", fetch = FetchType.LAZY)
-    private List<Post> posts;
+    private  List<Post> posts;
 }
