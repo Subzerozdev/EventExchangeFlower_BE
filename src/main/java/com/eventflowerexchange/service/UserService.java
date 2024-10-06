@@ -7,8 +7,9 @@ import com.eventflowerexchange.dto.response.AuthResponseDTO;
 import com.eventflowerexchange.entity.User;
 
 public interface UserService {
-    public String register(UserRequestDTO userRequestDTO);
-    public AuthResponseDTO login(AuthRequestDTO authRequestDTO);
-    public User updateUserById(String userID, UpdateRequestDTO updateRequestDTO)  ;
-    public User findUserById(String userID);
+    String register(UserRequestDTO userRequestDTO);
+    AuthResponseDTO login(AuthRequestDTO authRequestDTO);
+    User updateUserById(String userID, UpdateRequestDTO updateRequestDTO);
+    User findUserById(String userID);
+    void updatePasswordById(String userID, String password);
 }

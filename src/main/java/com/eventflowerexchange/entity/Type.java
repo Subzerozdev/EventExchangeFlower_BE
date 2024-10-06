@@ -22,8 +22,6 @@ public class Type {
     @Column(name = "name", nullable = false)
     private String name;
 
-    // cái này là Khánh mới code
-    // Khánh thêm comment vào cho nó dài dòng văn tự thôi .
     @ManyToMany(mappedBy = "types", fetch = FetchType.LAZY)
     private  List<Post> posts;
 }

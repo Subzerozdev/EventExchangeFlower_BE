@@ -19,9 +19,29 @@ public class UserAPI {
     @PutMapping("")
     public ResponseEntity<Object> updateUserProfile(
             @Valid @RequestBody UpdateRequestDTO updateRequestDTO,
-            @RequestHeader("Authorization") String jwt)  {
+            @RequestHeader("Authorization") String jwt) {
         String userID = jwtService.getUserIdFromJwtToken(jwt);
         User user = userService.updateUserById(userID, updateRequestDTO);
         return ResponseEntity.ok(user);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<Object> updateUserPassword(
+            @RequestBody String password,
+            @RequestHeader("Authorization") String jwt
+    ) {
+        String userID = jwtService.getUserIdFromJwtToken(jwt);
+        userService.updatePasswordById(userID, password);
+        return ResponseEntity.ok("Update password!");
+    }
+
+    @PutMapping("/upgrade")
+    public ResponseEntity<Object> updateUserRole(
+            @RequestBody String role,
+            @RequestHeader("Authorization") String jwt
+    ){
+        String userID = jwtService.getUserIdFromJwtToken(jwt);
+
+        return ResponseEntity.ok(("User upgrade"));
     }
 }

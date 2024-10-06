@@ -53,14 +53,10 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetail> orderDetails;
 
-
-
-    // cái này là Khánh mới code
-    // Khánh thêm comment vào cho nó dài dòng văn tự thôi .
     @JsonIgnore
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name ="typeandpost",joinColumns = @JoinColumn(name="type_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "post_id", nullable = false))
+    @JoinTable(name ="typeandpost",inverseJoinColumns = @JoinColumn(name="type_id", nullable = false),
+            joinColumns = @JoinColumn(name = "post_id", nullable = false))
     private List<Type> types;
 
 }

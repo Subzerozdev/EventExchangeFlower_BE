@@ -39,7 +39,7 @@ public class TypeAPI {
                     .toList();
             return ResponseEntity.badRequest().body(errorMessages);
         }
-        // Tạo Category
+        // Tạo type
         typeService.createType(typeRequestDTO); // chỗ này là truyền vào nè.
         return ResponseEntity.ok("Insert type successfully");
     }

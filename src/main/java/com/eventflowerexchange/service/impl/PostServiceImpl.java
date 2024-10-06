@@ -95,7 +95,12 @@ public class PostServiceImpl implements PostService {
                 // mọi chuyện tính ra giờ khá đơn giản mà
                 .types(existingType)
                 .build();
-        // Save to DB and return
+//        // Save to DB and return
+//        existingType.forEach(type -> {
+//            List<Post> posts= type.getPosts();
+//            posts.add(newPost);
+//            type.setPosts(posts);
+//        });
         return postRepository.save(newPost);
     }
 

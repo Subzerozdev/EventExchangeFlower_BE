@@ -71,6 +71,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePasswordById(String userID, String password) {
+        User user = userRepository.findUserById(userID);
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    @Override
     public User updateUserById(String userID, UpdateRequestDTO updateRequestDTO) {
         User userUpdate = userRepository.findUserById(userID);
         userMapper.updateUser(userUpdate, updateRequestDTO);
