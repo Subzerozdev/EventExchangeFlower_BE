@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     public Category updateCategory(long id, EventCategoryRequestDTO categoryDTO) {
         Category existingCategory = getCategoryById(id);
         existingCategory.setName(categoryDTO.getName());   // category thì chỉ có mỗi trường name mà thôi
-        categoryRepository.save(existingCategory);   // update xong  phải save lại nhé
+        categoryRepository.save(existingCategory);   // update xong phải save lại nhé
         return existingCategory;
     }
 

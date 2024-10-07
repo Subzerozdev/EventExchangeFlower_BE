@@ -35,13 +35,5 @@ public class UserAPI {
         return ResponseEntity.ok("Update password!");
     }
 
-    @PutMapping("/upgrade")
-    public ResponseEntity<Object> updateUserRole(
-            @RequestBody String role,
-            @RequestHeader("Authorization") String jwt
-    ){
-        String userID = jwtService.getUserIdFromJwtToken(jwt);
 
-        return ResponseEntity.ok(("User upgrade"));
-    }
 }

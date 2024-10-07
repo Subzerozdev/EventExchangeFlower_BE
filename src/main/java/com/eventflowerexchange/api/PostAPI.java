@@ -28,15 +28,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/posts")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
     private final TypeService typeService;
 
-    @PostMapping("")
-    //POST http://localhost:8088/api/products
+    @PostMapping("/seller/post")
     public ResponseEntity<?> createPost(
             @Valid @RequestBody PostRequestDTO postRequestDTO,
             @RequestHeader("Authorization") String jwt,
@@ -52,7 +51,6 @@ public class PostAPI {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             String userID = jwtService.getUserIdFromJwtToken(jwt);
-            // Khánh mới thêm vào
             Post newPost = postService.createPost(postRequestDTO, userID,postRequestDTO.getTypeId());
             return ResponseEntity.ok(newPost);
         } catch (Exception e) {
@@ -60,7 +58,7 @@ public class PostAPI {
         }
     }
 
-    @PostMapping(value = "/uploads/{id}",
+    @PostMapping(value = "/user/post/uploads/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //POST http://localhost:8088/v1/api/products
     public ResponseEntity<?> uploadImages(
@@ -152,13 +150,15 @@ public class PostAPI {
 //                .build());
 //    }
 
-    @GetMapping("")
+
+    @GetMapping("/user/post")
     public ResponseEntity<Page<Post>> getPosts(
             @RequestParam Map<String, Object> params
     ) {
         Page<Post> posts = postService.getAllPosts(params);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
 
     //http://localhost:8088/api/v1/products/6
     @GetMapping("/{id}")
@@ -182,5 +182,14 @@ public class PostAPI {
         String userID = jwtService.getUserIdFromJwtToken(jwt);
         Post post = postService.updatePost(id, postRequestDTO, userID,postRequestDTO.getTypeId());
         return new ResponseEntity<>(post, HttpStatus.OK);
+    }
+
+    // Get tat ca Post Cho Seller
+    @GetMapping("/seller")
+    public ResponseEntity<Object> getSellerPosts(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

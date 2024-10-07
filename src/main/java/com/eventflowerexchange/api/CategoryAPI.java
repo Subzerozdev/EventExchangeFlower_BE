@@ -3,7 +3,6 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.dto.request.EventCategoryRequestDTO;
 import com.eventflowerexchange.entity.Category;
 import com.eventflowerexchange.service.CategoryService;
-import com.eventflowerexchange.service.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryAPI {
     private final CategoryService categoryService;
-    private final JwtService jwtService;
 
     @PostMapping("")
     // Nếu tham số truyền vào là 1 object thì sao??? => Data Transfer Object = Request Object
@@ -37,13 +35,13 @@ public class CategoryAPI {
             return ResponseEntity.badRequest().body(errorMessages);
         }
         // Tạo Category
-        categoryService.createCategory(categoryDTO); // chỗ này là truyền vào nè.
+        categoryService.createCategory(categoryDTO);
         return ResponseEntity.ok("Insert category successfully");
     }
 
     // Hiển thị tất cả các categories.
     @GetMapping("")   //   http://localhost:8088/api/categories?page=1&limit=10
-    public ResponseEntity<List<Category>> getAllCategories(  // đổi kiểu dữ liệu trả về
+    public ResponseEntity<List<Category>> getAllCategories(
             @RequestParam("page") int page,
             @RequestParam("limit") int limit
     ) {
@@ -52,17 +50,16 @@ public class CategoryAPI {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable Long id,
-                                                 @Valid @RequestBody EventCategoryRequestDTO categoryDTO) {
-
+    public ResponseEntity<String> updateCategory(
+            @PathVariable Long id,
+            @Valid @RequestBody EventCategoryRequestDTO categoryDTO
+    ) {
         categoryService.updateCategory(id, categoryDTO);// truyền vào id vào 1 cái category mới
-
         return ResponseEntity.ok("Update category successfully");
-
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCatogory(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Delete Category with id =     " + id + " successfully");
     }

@@ -78,6 +78,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updateRole(User user) {
+        user.setRole(USER_ROLE.ROLE_SELLER);
+        userRepository.save(user);
+    }
+
+
+    @Override
     public User updateUserById(String userID, UpdateRequestDTO updateRequestDTO) {
         User userUpdate = userRepository.findUserById(userID);
         userMapper.updateUser(userUpdate, updateRequestDTO);
