@@ -1,5 +1,6 @@
 package com.eventflowerexchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Shop {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,6 +22,7 @@ public class Shop {
     private String qrCode;
     private String shopImage;
 
+    @JsonIgnore
     @OneToOne
     private User user;
 }

@@ -189,7 +189,6 @@ public class PostAPI {
     public ResponseEntity<Object> getSellerPosts(
             @RequestHeader("Authorization") String jwt
     ) {
-        
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

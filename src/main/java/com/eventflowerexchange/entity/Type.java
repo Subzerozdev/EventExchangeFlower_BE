@@ -1,5 +1,6 @@
 package com.eventflowerexchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Type {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "types", fetch = FetchType.LAZY)
     private  List<Post> posts;
 }

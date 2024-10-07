@@ -11,14 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/shop")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class ShopAPI {
     private final ShopService shopService;
     private final JwtService jwtService;
     private final UserService userService;
 
-    @PostMapping("")
+    @PostMapping("/shop")
     public ResponseEntity<Object> createShop(
             @RequestBody ShopRequestDTO shopRequestDTO,
             @RequestHeader("Authorization") String jwt
@@ -29,21 +29,20 @@ public class ShopAPI {
         return ResponseEntity.ok(shop);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getShopById(@PathVariable Long id) {
-        Shop shop = shopService.getShop(id);
+    @GetMapping("/seller/shop")
+    public ResponseEntity<Object> getShopById(@RequestHeader("Authorization") String jwt) {
+        User user = jwtService.getUserFromJwtToken(jwt);
+        Shop shop = shopService.getShop(user);
         return ResponseEntity.ok(shop);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateShop(@PathVariable Long id, @RequestBody ShopRequestDTO shopRequestDTO) {
-        Shop shop = shopService.updateShop(id, shopRequestDTO);
+    @PutMapping("/seller/shop")
+    public ResponseEntity<Object> updateShop(
+            @RequestBody ShopRequestDTO shopRequestDTO,
+            @RequestHeader("Authorization") String jwt
+    ) {
+        User user = jwtService.getUserFromJwtToken(jwt);
+        Shop shop = shopService.updateShop(user, shopRequestDTO);
         return ResponseEntity.ok(shop);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteShop(@PathVariable Long id) {
-        shopService.deleteShop(id);
-        return ResponseEntity.ok().build();
     }
 }

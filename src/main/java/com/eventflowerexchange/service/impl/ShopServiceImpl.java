@@ -5,7 +5,6 @@ import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.mapper.ShopMapper;
 import com.eventflowerexchange.repository.ShopRepository;
-import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,21 +24,15 @@ public class ShopServiceImpl implements ShopService {
     }
 
     @Override
-    public Shop updateShop(Long id, ShopRequestDTO shopRequestDTO) {
-        Shop shop = shopRepository.findShopById(id);
+    public Shop updateShop(User user, ShopRequestDTO shopRequestDTO) {
+        Shop shop = shopRepository.findShopByUser(user);
         shopMapper.updateShop(shop, shopRequestDTO);
         shopRepository.save(shop);
         return shop;
     }
 
     @Override
-    public Shop getShop(Long id) {
-        return shopRepository.findShopById(id);
-    }
-
-    @Override
-    public void deleteShop(Long id) {
-        Shop shop = shopRepository.findShopById(id);
-        shopRepository.delete(shop);
+    public Shop getShop(User user) {
+        return shopRepository.findShopByUser(user);
     }
 }
