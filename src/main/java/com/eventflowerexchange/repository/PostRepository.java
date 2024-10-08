@@ -13,5 +13,6 @@ public interface PostRepository extends JpaRepository<Post, Long>,
         JpaSpecificationExecutor<Post> {
     boolean existsByName(String name);
     Post findPostById(Long id);
+    List<Post> findPostsByUserId(String sellerID);
     Page<Post> findAll(Pageable pageable);  // phân trang
 }

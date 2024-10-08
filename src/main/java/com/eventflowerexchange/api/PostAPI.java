@@ -33,9 +33,8 @@ import java.util.*;
 public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
-    private final TypeService typeService;
 
-    @PostMapping("/seller/post")
+    @PostMapping("/seller/posts")
     public ResponseEntity<?> createPost(
             @Valid @RequestBody PostRequestDTO postRequestDTO,
             @RequestHeader("Authorization") String jwt,
@@ -153,7 +152,7 @@ public class PostAPI {
 //    }
 
 
-    @GetMapping("/user/post")
+    @GetMapping("/posts")
     public ResponseEntity<Page<Post>> getPosts(
             @RequestParam Map<String, Object> params
     ) {
@@ -169,13 +168,13 @@ public class PostAPI {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/seller/posts/{id}")
     public ResponseEntity<String> deletePost(@PathVariable long id) {
         postService.deletePost(id);
         return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/seller/posts/{id}")
     public ResponseEntity<Object> updatePost(
             @PathVariable Long id,
             @RequestBody PostRequestDTO postRequestDTO,
@@ -186,11 +185,13 @@ public class PostAPI {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    // Get tat ca Post Cho Seller
-    @GetMapping("/seller")
+    // Get All Posts of Seller
+    @GetMapping("/seller/posts")
     public ResponseEntity<Object> getSellerPosts(
             @RequestHeader("Authorization") String jwt
     ) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        String sellerID = jwtService.getUserIdFromJwtToken(jwt);
+        List<Post> posts = postService.getSellerPosts(sellerID);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 }

@@ -172,6 +172,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> getSellerPosts(String sellerID) {
+        return postRepository.findPostsByUserId(sellerID);
+    }
+
+    @Override
     public Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         Post existingPost = getPostById(id);
         if (existingPost != null) {
