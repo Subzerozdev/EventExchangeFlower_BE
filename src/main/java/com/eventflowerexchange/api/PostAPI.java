@@ -58,12 +58,13 @@ public class PostAPI {
         }
     }
 
-    @PostMapping(value = "/user/post/uploads/{id}",
+    @PostMapping(value = "/seller/post/uploads/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //POST http://localhost:8088/v1/api/products
     public ResponseEntity<?> uploadImages(
             @PathVariable("id") Long postId,
             @ModelAttribute("files") List<MultipartFile> files
+
     ) {
         try {
             Post existingPost = postService.getPostById(postId);
@@ -78,15 +79,15 @@ public class PostAPI {
                     continue;
                 }
                 // Kiểm tra kích thước file và định dạng
-                if (file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
-                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                            .body("File is too large! Maximum size is 10MB");
-                }
-                String contentType = file.getContentType();
-                if (contentType == null || !contentType.startsWith("image/")) {
-                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                            .body("File must be an image");
-                }
+//                if (file.getSize() > 10 * 1024 * 1024) { // Kích thước > 10MB
+//                    return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+//                            .body("File is too large! Maximum size is 10MB");
+//                }
+//                String contentType = file.getContentType();
+//                if (contentType == null || !contentType.startsWith("image/")) {
+//                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+//                            .body("File must be an image");
+//                }
                 // Lưu file và cập nhật thumbnail trong DTO
                 String filename = storeFile(file); // Thay thế hàm này với code của bạn để lưu file
                 //lưu vào đối tượng product trong DB
@@ -110,7 +111,7 @@ public class PostAPI {
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
-        String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
+       // String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
         // Đường dẫn đến thư mục mà bạn muốn lưu file
         java.nio.file.Path uploadDir = Paths.get("uploads");
         // Kiểm tra và tạo thư mục nếu nó không tồn tại
@@ -118,16 +119,17 @@ public class PostAPI {
             Files.createDirectories(uploadDir);
         }
         // Đường dẫn đầy đủ đến file
-        java.nio.file.Path destination = Paths.get(uploadDir.toString(), uniqueFilename);
+        java.nio.file.Path destination = Paths.get(uploadDir.toString(), filename);
         // Sao chép file vào thư mục đích
         Files.copy(file.getInputStream(), destination, StandardCopyOption.REPLACE_EXISTING);
-        return uniqueFilename;
+        return filename;
     }
 
     // kiểm tra đây có phải là file ảnh
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();
-        return contentType != null && contentType.startsWith("image/");
+        return contentType != null;
+                //&& contentType.startsWith("image/");
     }
 
 //    @GetMapping("")
