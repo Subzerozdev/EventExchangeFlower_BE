@@ -5,6 +5,7 @@ import com.eventflowerexchange.dto.request.PostRequestDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.exception.DataNotFoundException;
 import com.eventflowerexchange.exception.InvalidParamException;
+import com.eventflowerexchange.mapper.PostMapper;
 import com.eventflowerexchange.repository.*;
 import com.eventflowerexchange.service.PostService;
 import jakarta.persistence.criteria.Join;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class PostServiceImpl implements PostService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TypeRepository typeRepository;
+    private final PostMapper postMapper;
 
 //    @Override
 //    public Post createPost(PostRequestDTO postRequestDTO, String userID) throws Exception {
@@ -61,11 +64,13 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         // Get Category by ID
-        Category existingCategory = categoryRepository
-                .findById(postRequestDTO.getCategoryId())
-                .orElseThrow(() ->
-                        new DataNotFoundException(
-                                "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+        if (postRequestDTO.getCategoryId() != null) {
+            Category existingCategory = categoryRepository
+                    .findById(postRequestDTO.getCategoryId())
+                    .orElseThrow(() ->
+                            new DataNotFoundException(
+                                    "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+        }
         // Get User by Id
         User existingUser = userRepository
                 .findById(userID)
@@ -73,34 +78,15 @@ public class PostServiceImpl implements PostService {
                         new DataNotFoundException(
                                 "Cannot find user with id: " + userID));
         // Get Type by Id
-        List<Type> existingType = typeRepository.findByIdIn(typeID);
-        if (existingType.isEmpty()) {
-            throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+        if (typeID != null) {
+            List<Type> existingType = typeRepository.findByIdIn(typeID);
+            if (existingType.isEmpty()) {
+                throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+            }
         }
-
-
         // Create Post
-        Post newPost = Post.builder()
-                .name(postRequestDTO.getName())
-                .price(postRequestDTO.getPrice())
-                .thumbnail(postRequestDTO.getThumbnail())
-                .address(postRequestDTO.getAddress())
-                .description(postRequestDTO.getDescription())
-                .startDate(postRequestDTO.getStartDate())
-                .endDate(postRequestDTO.getEndDate())
-                .category(existingCategory)
-                .user(existingUser)
-                // này khánh mới code thêm nè
-                // yên tâm nha
-                // mọi chuyện tính ra giờ khá đơn giản mà
-                .types(existingType)
-                .build();
-//        // Save to DB and return
-//        existingType.forEach(type -> {
-//            List<Post> posts= type.getPosts();
-//            posts.add(newPost);
-//            type.setPosts(posts);
-//        });
+        Post newPost = postMapper.toPost(postRequestDTO);
+        // Save to DB and return
         return postRepository.save(newPost);
     }
 
@@ -168,7 +154,7 @@ public class PostServiceImpl implements PostService {
         } else {
             pageable = PageRequest.of(pageNumber, 10, Sort.unsorted());
         }
-        return postRepository.findAll(specification,pageable);
+        return postRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -180,14 +166,13 @@ public class PostServiceImpl implements PostService {
     public Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         Post existingPost = getPostById(id);
         if (existingPost != null) {
-            //copy các thuộc tính từ DTO -> Post
-            //Có thể sử dụng ModelMapper
-            // tui nghĩ là không nên dùng tại vì tui chưa học
-            Category existingCategory = categoryRepository
-                    .findById(postRequestDTO.getCategoryId())
-                    .orElseThrow(() ->
-                            new DataNotFoundException(
-                                    "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+            if (postRequestDTO.getCategoryId() != null) {
+                Category existingCategory = categoryRepository
+                        .findById(postRequestDTO.getCategoryId())
+                        .orElseThrow(() ->
+                                new DataNotFoundException(
+                                        "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+            }
 
             User existingUser = userRepository
                     .findById(userID)
@@ -196,20 +181,14 @@ public class PostServiceImpl implements PostService {
                                     "Cannot find user with id: " + userID));
 
             // Get Type by Id
-            List<Type> existingType = typeRepository.findByIdIn(typeID);
-            if (existingType.isEmpty()) {
-                throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+            if (typeID != null) {
+                List<Type> existingType = typeRepository.findByIdIn(typeID);
+                if (existingType.isEmpty()) {
+                    throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+                }
             }
-            existingPost.setName(postRequestDTO.getName());
-            existingPost.setCategory(existingCategory);
-            existingPost.setUser(existingUser);
-            existingPost.setTypes(existingType);
-            existingPost.setPrice(postRequestDTO.getPrice());
-            existingPost.setDescription(postRequestDTO.getDescription());
-            existingPost.setThumbnail(postRequestDTO.getThumbnail());
-            existingPost.setAddress(postRequestDTO.getAddress());
-            existingPost.setStartDate(postRequestDTO.getStartDate());
-            existingPost.setEndDate(postRequestDTO.getEndDate());
+            // Update Post
+            postMapper.updatePost(existingPost, postRequestDTO);
             return postRepository.save(existingPost);
         }
         return null;

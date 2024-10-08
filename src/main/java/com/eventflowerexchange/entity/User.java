@@ -42,7 +42,7 @@ public class User {
     private String fullName;
     private String address;
 
-    @Pattern(regexp = "(84|0[3|5|7|8|9])+(\\d{8})", message = "Invalid phone !!!!!")
+    @Pattern(regexp = "(^0(3|5|7|8|9)[0-9]{8,9}$)", message = "Invalid phone !!!!!")
     @Column(unique = true)
     private String phone;
 
