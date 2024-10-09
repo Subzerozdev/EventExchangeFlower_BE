@@ -37,15 +37,15 @@ public class UserAPI {
         return ResponseEntity.ok("Update password!");
     }
 
-//    @PostMapping("/token")
-//    public ResponseEntity<Object> updateSellerToken(
-//            @RequestHeader("Authorization") String jwt
-//    ){
-//        User user = jwtService.getUserFromJwtToken(jwt);
-//        if (user.getRole().equals(USER_ROLE.ROLE_SELLER)){
-//            AuthResponseDTO authResponseDTO = userService.updateSellerToken(user);
-//            return ResponseEntity.ok(authResponseDTO);
-//        }
-//        return ResponseEntity.ok("Cannot get token!");
-//    }
+    @PostMapping("/token")
+    public ResponseEntity<Object> updateSellerToken(
+            @RequestHeader("Authorization") String jwt
+    ){
+        User user = jwtService.getUserFromJwtToken(jwt);
+        if (user.getRole().equals(USER_ROLE.ROLE_SELLER)){
+            AuthResponseDTO authResponseDTO = userService.updateSellerToken(user);
+            return ResponseEntity.ok(authResponseDTO);
+        }
+        return ResponseEntity.ok("Cannot get token!");
+    }
 }

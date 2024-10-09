@@ -2,6 +2,8 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.PostImageDTO;
 import com.eventflowerexchange.dto.request.PostRequestDTO;
+import com.eventflowerexchange.dto.response.PostListResponse;
+import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.PostImage;
 import com.eventflowerexchange.entity.Type;
@@ -153,11 +155,17 @@ public class PostAPI {
 
 
     @GetMapping("/posts")
-    public ResponseEntity<Page<Post>> getPosts(
+    public ResponseEntity<Object> getPosts(
             @RequestParam Map<String, Object> params
     ) {
-        Page<Post> posts = postService.getAllPosts(params);
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        Page<Post> postsPage = postService.getAllPosts(params);
+        int totalPages = postsPage.getTotalPages();
+        List<Post> posts = postsPage.getContent();
+        PostListResponse postListResponse = PostListResponse.builder()
+                .posts(posts)
+                .totalPages(totalPages)
+                .build();
+        return new ResponseEntity<>(postListResponse, HttpStatus.OK);
     }
 
 

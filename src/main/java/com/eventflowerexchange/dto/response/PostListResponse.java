@@ -1,5 +1,6 @@
 package com.eventflowerexchange.dto.response;
 
+import com.eventflowerexchange.entity.Post;
 import lombok.*;
 
 import java.util.List;
@@ -9,6 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PostListResponse {
-    private List<PostResponse> posts;
+    private List<Post> posts;
     private int totalPages;
 }

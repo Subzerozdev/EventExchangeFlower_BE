@@ -82,11 +82,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AuthResponseDTO updateSellerToken(User user) {
-        Authentication authentication = authenticate(user.getEmail(), user.getPassword());
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         // Generate Jwt Token
         String jwt = jwtService.generateToken(authentication);
         // Setup and return Auth Response
-        return getAuthResponse(jwt, user);
+        return getAuthResponse(jwt, null);
     }
 
 
