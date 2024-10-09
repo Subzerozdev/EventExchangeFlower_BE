@@ -30,13 +30,13 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
 
-    @PostMapping("/seller/posts")
+    @PostMapping("/api/seller/posts")
     public ResponseEntity<?> createPost(
             @Valid @RequestBody PostRequestDTO postRequestDTO,
             @RequestHeader("Authorization") String jwt,
@@ -59,7 +59,7 @@ public class PostAPI {
         }
     }
 
-    @PostMapping(value = "/seller/post/uploads/{id}",
+    @PostMapping(value = "/api/seller/post/uploads/{id}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     //POST http://localhost:8088/v1/api/products
     public ResponseEntity<?> uploadImages(
@@ -153,7 +153,6 @@ public class PostAPI {
 //                .build());
 //    }
 
-
     @GetMapping("/posts")
     public ResponseEntity<Object> getPosts(
             @RequestParam Map<String, Object> params
@@ -168,21 +167,20 @@ public class PostAPI {
         return new ResponseEntity<>(postListResponse, HttpStatus.OK);
     }
 
-
     //http://localhost:8088/api/v1/products/6
-    @GetMapping("/{id}")
+    @GetMapping("/posts/{id}")
     public ResponseEntity<Object> getPostById(@PathVariable Long id) throws Exception {
         Post post = postService.getPostById(id);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @DeleteMapping("/seller/posts/{id}")
+    @DeleteMapping("/api/seller/posts/{id}")
     public ResponseEntity<String> deletePost(@PathVariable long id) {
         postService.deletePost(id);
         return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
     }
 
-    @PutMapping("/seller/posts/{id}")
+    @PutMapping("/api/seller/posts/{id}")
     public ResponseEntity<Object> updatePost(
             @PathVariable Long id,
             @RequestBody PostRequestDTO postRequestDTO,
@@ -194,7 +192,7 @@ public class PostAPI {
     }
 
     // Get All Posts of Seller
-    @GetMapping("/seller/posts")
+    @GetMapping("/api/seller/posts")
     public ResponseEntity<Object> getSellerPosts(
             @RequestHeader("Authorization") String jwt
     ) {

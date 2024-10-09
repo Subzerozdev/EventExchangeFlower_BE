@@ -8,6 +8,7 @@ import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orders")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class OrderAPI {
     private final OrderService orderService;
     private final JwtService jwtService;
     private final OrderDetailService orderDetailService;
 
-    @PostMapping("")
+    @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
             @RequestBody OrderRequestDTO orderRequestDTO,
             @RequestHeader("Authorization") String jwt
@@ -33,7 +34,7 @@ public class OrderAPI {
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}")
+    @PostMapping("/orders/{id}")
     public ResponseEntity<Object> updateOrder(
             @RequestBody OrderRequestDTO orderRequestDTO,
             @PathVariable("id") Long id
@@ -42,7 +43,7 @@ public class OrderAPI {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @GetMapping("")
+    @GetMapping("/orders")
     public ResponseEntity<Object> getUserOrders(
             @RequestHeader("Authorization") String jwt
     ){
@@ -51,7 +52,7 @@ public class OrderAPI {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/orders/{id}")
     public ResponseEntity<Object> deleteOrder(
             @PathVariable("id") Long id
     ){
@@ -59,9 +60,27 @@ public class OrderAPI {
         return new ResponseEntity<>("Delete Success", HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/orders/{id}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable("id") Long id){
         List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderId(id);
         return new ResponseEntity<>(orderDetails,HttpStatus.OK);
+    }
+
+    @GetMapping("/seller/orders")
+    public ResponseEntity<Object> getSellerOrders(
+            @RequestHeader("Authorization") String jwt
+    ){
+        String userID = jwtService.getUserIdFromJwtToken(jwt);
+        List<Order> orders = orderService.getSellerOrders(userID);
+        return new ResponseEntity<>(orders,HttpStatus.OK);
+    }
+
+    @PutMapping("/seller/orders/{id}/{status}")
+    public ResponseEntity<Object> updateOrder(
+            @PathVariable("id") Long id,
+            @PathVariable("status") String status
+    ){
+        orderService.updateOrderStatus(id, status);
+        return new ResponseEntity<>("Update Success", HttpStatus.OK);
     }
 }

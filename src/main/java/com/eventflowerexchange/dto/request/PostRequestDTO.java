@@ -32,10 +32,8 @@ public class PostRequestDTO {
     @Max(value = 100000000, message = "Price must be less than or equal to 100,000,000")
     private Long price;
 
-    @JsonProperty("category_id")
     private Long categoryId;
 
-    @JsonProperty("type_id")
     private List<Long> typeId;
 
 //    // có nhiều file bỏ vào List

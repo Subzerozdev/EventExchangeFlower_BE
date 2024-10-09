@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order updateOrder(Long orderID, OrderRequestDTO orderRequestDTO) {
         Order order = orderRepository.findOrderById(orderID);
-        orderMapper.updateOrder(order,orderRequestDTO);
+        orderMapper.updateOrder(order, orderRequestDTO);
         return orderRepository.save(order);
     }
 
@@ -52,8 +52,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getSellerOrders(String userID) {
-        return List.of();
+    public List<Order> getSellerOrders(String sellerID) {
+        return orderRepository.findOrdersBySeller(sellerID);
+    }
+
+    @Override
+    public void updateOrderStatus(Long orderID, String status) {
+        Order order = orderRepository.findOrderById(orderID);
+        if (status.equals("0")) {
+            order.setStatus("Không được duyệt");
+        } else if (status.equals("1")) {
+            order.setStatus("Đã duyệt");
+        }
     }
 
 }

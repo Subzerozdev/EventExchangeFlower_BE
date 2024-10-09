@@ -11,5 +11,6 @@ public interface OrderService {
     Order updateOrder(Long orderID, OrderRequestDTO orderRequestDTO);
     void cancelOrder(Long orderID);
     List<Order> getCustomerOrders(String userID);
-    List<Order> getSellerOrders(String userID);
+    List<Order> getSellerOrders(String sellerID);
+    void updateOrderStatus(Long orderID, String status);
 }
