@@ -14,4 +14,5 @@ public interface UserService {
     User findUserById(String userID);
     void updatePasswordById(String userID, String password);
     void updateRole(User user);
+    AuthResponseDTO updateSellerToken(User user);
 }

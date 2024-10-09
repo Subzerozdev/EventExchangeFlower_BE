@@ -11,6 +11,7 @@ import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,17 +23,13 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Override
     public String register(UserRequestDTO userRequestDTO) {
@@ -81,6 +78,15 @@ public class UserServiceImpl implements UserService {
     public void updateRole(User user) {
         user.setRole(USER_ROLE.ROLE_SELLER);
         userRepository.save(user);
+    }
+
+    @Override
+    public AuthResponseDTO updateSellerToken(User user) {
+        Authentication authentication = authenticate(user.getEmail(), user.getPassword());
+        // Generate Jwt Token
+        String jwt = jwtService.generateToken(authentication);
+        // Setup and return Auth Response
+        return getAuthResponse(jwt, user);
     }
 
 

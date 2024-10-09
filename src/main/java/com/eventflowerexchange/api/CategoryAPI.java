@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/categories")
+@RequestMapping("")
 @RequiredArgsConstructor
 public class CategoryAPI {
     private final CategoryService categoryService;
 
-    @PostMapping("")
+    @PostMapping("api/admin/categories")
     // Nếu tham số truyền vào là 1 object thì sao??? => Data Transfer Object = Request Object
     // BindingResult bindingResult dùng cái này thì bắt validate tại hàm và trả về tên lỗi kèm theo vì dùng  @NotEmpty(message = "Category name can't not be empty") bên DTO
     // Đổi thành dấu chấm  ? vì kiểu trả về là có cả String và List of String nha
@@ -40,16 +40,13 @@ public class CategoryAPI {
     }
 
     // Hiển thị tất cả các categories.
-    @GetMapping("")   //   http://localhost:8088/api/categories?page=1&limit=10
-    public ResponseEntity<List<Category>> getAllCategories(
-            @RequestParam("page") int page,
-            @RequestParam("limit") int limit
-    ) {
-        List<Category> categories = categoryService.getAllCategories();   // lấy ra 1 cái list categoríes
-        return ResponseEntity.ok(categories);  // trả về client 1 chuỗi xe kiểu mỹ
+    @GetMapping("/categories")
+    public ResponseEntity<List<Category>> getAllCategories() {
+        List<Category> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(categories);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("api/admin/categories/{id}")
     public ResponseEntity<String> updateCategory(
             @PathVariable Long id,
             @Valid @RequestBody EventCategoryRequestDTO categoryDTO
@@ -58,7 +55,7 @@ public class CategoryAPI {
         return ResponseEntity.ok("Update category successfully");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("api/admin/categories/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Delete Category with id =     " + id + " successfully");

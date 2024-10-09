@@ -1,6 +1,8 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
+import com.eventflowerexchange.dto.response.AuthResponseDTO;
+import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
@@ -35,5 +37,15 @@ public class UserAPI {
         return ResponseEntity.ok("Update password!");
     }
 
-
+//    @PostMapping("/token")
+//    public ResponseEntity<Object> updateSellerToken(
+//            @RequestHeader("Authorization") String jwt
+//    ){
+//        User user = jwtService.getUserFromJwtToken(jwt);
+//        if (user.getRole().equals(USER_ROLE.ROLE_SELLER)){
+//            AuthResponseDTO authResponseDTO = userService.updateSellerToken(user);
+//            return ResponseEntity.ok(authResponseDTO);
+//        }
+//        return ResponseEntity.ok("Cannot get token!");
+//    }
 }
