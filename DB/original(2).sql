@@ -28,11 +28,21 @@ create table `users`
      FOREIGN KEY (role_id) REFERENCES `roles`(id)
 );
 
-
+create table `shop`
+(
+	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    `description` text,
+    qr_code varchar(255),
+    shop_address varchar(255),
+    shop_image varchar(255),
+    shop_name varchar(150),
+    user_id CHAR(36) NOT NULL,
+    FOREIGN KEY  (user_id) REFERENCES `users`(id)
+);
 
 create table `eventcategories`
 (
-	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
     name nvarchar(100)
 );
 
@@ -59,7 +69,7 @@ create table `posts`
     end_date DATETIME,    
 	price FLOAT NOT NULL CHECK(price >= 0),  
     user_id CHAR(36) NOT NULL,
-    category_id INT NOT NULL,
+    category_id INT,
     FOREIGN KEY  (user_id) REFERENCES `users`(id),
     FOREIGN KEY (category_id) REFERENCES `eventcategories`(id)
 );

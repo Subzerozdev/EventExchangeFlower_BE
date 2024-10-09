@@ -31,38 +31,10 @@ public class PostServiceImpl implements PostService {
     private final TypeRepository typeRepository;
     private final PostMapper postMapper;
 
-//    @Override
-//    public Post createPost(PostRequestDTO postRequestDTO, String userID) throws Exception {
-//        // Get Category by ID
-//        Category existingCategory = categoryRepository
-//                .findById(postRequestDTO.getCategoryId())
-//                .orElseThrow(() ->
-//                        new DataNotFoundException(
-//                                "Cannot find category with id: " + postRequestDTO.getCategoryId()));
-//        // Get User by Id
-//        User existingUser = userRepository
-//                .findById(userID)
-//                .orElseThrow(() ->
-//                        new DataNotFoundException(
-//                                "Cannot find user with id: " + userID));
-//        // Create Post
-//        Post newPost = Post.builder()
-//                .name(postRequestDTO.getName())
-//                .price(postRequestDTO.getPrice())
-//                .thumbnail(postRequestDTO.getThumbnail())
-//                .address(postRequestDTO.getAddress())
-//                .description(postRequestDTO.getDescription())
-//                .startDate(postRequestDTO.getStartDate())
-//                .endDate(postRequestDTO.getEndDate())
-//                .category(existingCategory)
-//                .user(existingUser)
-//                .build();
-//        // Save to DB and return
-//        return postRepository.save(newPost);
-//    }
-
     @Override
     public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
+        // Create Post
+        Post newPost = postMapper.toPost(postRequestDTO);
         // Get Category by ID
         if (postRequestDTO.getCategoryId() != null) {
             Category existingCategory = categoryRepository
@@ -70,6 +42,7 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() ->
                             new DataNotFoundException(
                                     "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+            newPost.setCategory(existingCategory);
         }
         // Get User by Id
         User existingUser = userRepository
@@ -77,15 +50,15 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() ->
                         new DataNotFoundException(
                                 "Cannot find user with id: " + userID));
+        newPost.setUser(existingUser);
         // Get Type by Id
         if (typeID != null) {
             List<Type> existingType = typeRepository.findByIdIn(typeID);
             if (existingType.isEmpty()) {
                 throw new DataNotFoundException("Cannot find types with ids: " + typeID);
             }
+            newPost.setTypes(existingType);
         }
-        // Create Post
-        Post newPost = postMapper.toPost(postRequestDTO);
         // Save to DB and return
         return postRepository.save(newPost);
     }
@@ -172,6 +145,7 @@ public class PostServiceImpl implements PostService {
                         .orElseThrow(() ->
                                 new DataNotFoundException(
                                         "Cannot find category with id: " + postRequestDTO.getCategoryId()));
+                existingPost.setCategory(existingCategory);
             }
 
             User existingUser = userRepository
@@ -186,6 +160,7 @@ public class PostServiceImpl implements PostService {
                 if (existingType.isEmpty()) {
                     throw new DataNotFoundException("Cannot find types with ids: " + typeID);
                 }
+                existingPost.setTypes(existingType);
             }
             // Update Post
             postMapper.updatePost(existingPost, postRequestDTO);
