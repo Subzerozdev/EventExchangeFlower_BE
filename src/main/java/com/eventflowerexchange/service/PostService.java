@@ -5,6 +5,7 @@ import com.eventflowerexchange.dto.request.PostRequestDTO;
 import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.PostImage;
+import com.eventflowerexchange.exception.DataNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -25,4 +26,5 @@ public interface PostService {
     PostImage createPostImage(
             Long productId,
             PostImageDTO postImageDTO) throws Exception;
+    void updatePostStatus (Long id, Boolean status) throws DataNotFoundException;
 }

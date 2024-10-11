@@ -39,7 +39,8 @@ public class Post {
     private LocalDateTime startDate;
     @JsonProperty("end_date")
     private LocalDateTime endDate;
-
+    @Column(name = "status")
+    private Boolean status;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
@@ -58,5 +59,11 @@ public class Post {
     @JoinTable(name ="typeandpost",inverseJoinColumns = @JoinColumn(name="type_id", nullable = false),
             joinColumns = @JoinColumn(name = "post_id", nullable = false))
     private List<Type> types;
+
+
+
+    @JsonProperty("imageUrls")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> imgaes;
 
 }

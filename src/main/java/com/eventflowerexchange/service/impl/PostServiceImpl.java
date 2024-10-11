@@ -35,6 +35,7 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         // Create Post
         Post newPost = postMapper.toPost(postRequestDTO);
+        newPost.setStatus(false);
         // Get Category by ID
         if (postRequestDTO.getCategoryId() != null) {
             Category existingCategory = categoryRepository
@@ -59,8 +60,21 @@ public class PostServiceImpl implements PostService {
             }
             newPost.setTypes(existingType);
         }
-        // Save to DB and return
-        return postRepository.save(newPost);
+
+
+        // Save image to DB
+        List<PostImage> images =new ArrayList<>();
+        if (postRequestDTO.getImageUrls() != null && !postRequestDTO.getImageUrls().isEmpty()) {
+            for (String imageUrl : postRequestDTO.getImageUrls()) {
+                PostImage postImage = PostImage.builder()
+                        .imageUrl(imageUrl)
+                        .post(newPost)
+                        .build();
+                images.add(postImage);
+            }
+            newPost.setImgaes(images);
+        }
+      return  postRepository.save(newPost);
     }
 
     @Override
@@ -200,5 +214,16 @@ public class PostServiceImpl implements PostService {
                     " " + PostImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
         return postImageRepository.save(newPostImage);
+    }
+
+    @Override
+    public void updatePostStatus(Long id, Boolean status) throws DataNotFoundException {
+        Post post =postRepository.findById(id).get();
+        if (post == null) {
+                     throw  new DataNotFoundException(
+                    "Cannot find post with id: " + id);
+        }
+        post.setStatus(status);
+
     }
 }
