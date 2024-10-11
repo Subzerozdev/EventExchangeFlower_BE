@@ -1,6 +1,7 @@
 package com.eventflowerexchange.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,9 +35,9 @@ public class Post {
     private String address;
 
     private Long price;
-
+    @JsonProperty("start_date")
     private LocalDateTime startDate;
-
+    @JsonProperty("end_date")
     private LocalDateTime endDate;
 
     @ManyToOne
