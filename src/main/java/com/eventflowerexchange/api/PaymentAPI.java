@@ -2,6 +2,7 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.config.BankingConfig;
 import com.eventflowerexchange.dto.request.PaymentRequestDTO;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,34 +16,32 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/payment")
 public class PaymentAPI {
     @GetMapping("/createPayment")
-    public ResponseEntity<?> createPayment() throws UnsupportedEncodingException {
-
-
-    //    String orderType = "other";
-    //    long amount = Integer.parseInt(req.getParameter("amount"))*100;
-     //   String bankCode = req.getParameter("bankCode");
-
-        long  amount =1000000;
-
+    public ResponseEntity<?> createPayment(
+            HttpServletRequest req
+    ) throws UnsupportedEncodingException {
+        String orderType = "other";
+        long amount = Integer.parseInt(req.getParameter("amount"))*100;
+        String bankCode = req.getParameter("bankCode");
         String vnp_TxnRef = BankingConfig.getRandomNumber(8);
-    //    String vnp_IpAddr = BankingConfig.getIpAddress(req);
-
+        String vnp_IpAddr = BankingConfig.getIpAddress(req);
         String vnp_TmnCode = BankingConfig.vnp_TmnCode;
-
         Map<String, String> vnp_Params = new HashMap<>();
         vnp_Params.put("vnp_Version", BankingConfig.vnp_Version);
         vnp_Params.put("vnp_Command", BankingConfig.vnp_Command);
         vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
         vnp_Params.put("vnp_Amount", String.valueOf(amount));
         vnp_Params.put("vnp_CurrCode", "VND");
-        vnp_Params.put("vnp_BankCode", "NCB");
+
+        if (bankCode != null && !bankCode.isEmpty()) {
+            vnp_Params.put("vnp_BankCode", bankCode);
+        }
+
         vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
         vnp_Params.put("vnp_OrderInfo", "Thanh toan don hang:" + vnp_TxnRef);
         vnp_Params.put("vnp_Locale", "vn");
-
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -77,7 +76,7 @@ public class PaymentAPI {
             }
         }
         String queryUrl = query.toString();
-        String vnp_SecureHash = BankingConfig.hmacSHA512(BankingConfig.secretKey, hashData.toString());
+        String vnp_SecureHash = BankingConfig.hmacSHA512(BankingConfig.vnp_HashSecret, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = BankingConfig.vnp_PayUrl + "?" + queryUrl;
 
@@ -85,7 +84,6 @@ public class PaymentAPI {
         paymentRequestDTO.setStatus("OK");
         paymentRequestDTO.setMessage("Successfully");
         paymentRequestDTO.setURL(paymentUrl);
-
     return ResponseEntity.status(HttpStatus.OK).body(paymentRequestDTO);
     }
 }

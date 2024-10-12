@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         // Create Post
         Post newPost = postMapper.toPost(postRequestDTO);
-        newPost.setStatus(false);
+        newPost.setStatus(POST_STATUS.PENDING);
         // Get Category by ID
         if (postRequestDTO.getCategoryId() != null) {
             Category existingCategory = categoryRepository
@@ -63,7 +62,7 @@ public class PostServiceImpl implements PostService {
 
 
         // Save image to DB
-        List<PostImage> images =new ArrayList<>();
+        List<PostImage> images = new ArrayList<>();
         if (postRequestDTO.getImageUrls() != null && !postRequestDTO.getImageUrls().isEmpty()) {
             for (String imageUrl : postRequestDTO.getImageUrls()) {
                 PostImage postImage = PostImage.builder()
@@ -74,7 +73,7 @@ public class PostServiceImpl implements PostService {
             }
             newPost.setImgaes(images);
         }
-      return  postRepository.save(newPost);
+        return postRepository.save(newPost);
     }
 
     @Override
@@ -181,7 +180,6 @@ public class PostServiceImpl implements PostService {
             return postRepository.save(existingPost);
         }
         return null;
-
     }
 
     @Override
@@ -218,12 +216,15 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updatePostStatus(Long id, Boolean status) throws DataNotFoundException {
-        Post post =postRepository.findById(id).get();
+        Post post = postRepository.findPostById(id);
         if (post == null) {
-                     throw  new DataNotFoundException(
-                    "Cannot find post with id: " + id);
+            throw new DataNotFoundException("Cannot find post with id: " + id);
         }
-        post.setStatus(status);
-
+        if (status){
+            post.setStatus(POST_STATUS.APPROVE);
+        }else {
+            post.setStatus(POST_STATUS.DISAPPROVE);
+        }
+        postRepository.save(post);
     }
 }

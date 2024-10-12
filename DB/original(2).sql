@@ -69,7 +69,7 @@ create table `posts`
     end_date DATETIME,    
 	price FLOAT NOT NULL CHECK(price >= 0),  
     user_id CHAR(36) NOT NULL,
-    status bit,
+    `status` INT DEFAULT 0,
     category_id INT,
     FOREIGN KEY  (user_id) REFERENCES `users`(id),
     FOREIGN KEY (category_id) REFERENCES `eventcategories`(id)

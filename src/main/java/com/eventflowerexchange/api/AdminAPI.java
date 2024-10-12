@@ -1,9 +1,7 @@
 package com.eventflowerexchange.api;
 
-import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,13 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminAPI {
     private final PostService postService;
 
-
     @PutMapping("/posts/{id}/{status}")
-    public ResponseEntity<?> updatePostStatus(
+    public ResponseEntity<Object> updatePostStatus(
             @PathVariable("id") Long id,
             @PathVariable("status") Boolean status
     ) throws Exception {
         postService.updatePostStatus(id, status);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>("Successfully Update Status", HttpStatus.OK);
     }
 }
