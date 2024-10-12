@@ -1,6 +1,8 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.config.BankingConfig;
+import com.eventflowerexchange.dto.request.PaymentRequestDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,9 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/payment")
 public class PaymentAPI {
-    @GetMapping("/create_payment")
+    @GetMapping("/createPayment")
     public ResponseEntity<?> createPayment() throws UnsupportedEncodingException {
 
 
@@ -78,11 +80,12 @@ public class PaymentAPI {
         String vnp_SecureHash = BankingConfig.hmacSHA512(BankingConfig.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = BankingConfig.vnp_PayUrl + "?" + queryUrl;
-//        com.google.gson.JsonObject job = new JsonObject();
-//        job.addProperty("code", "00");
-//        job.addProperty("message", "success");
-//        job.addProperty("data", paymentUrl);
-//        Gson gson = new Gson();
-//        resp.getWriter().write(gson.toJson(job));
+
+        PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO();
+        paymentRequestDTO.setStatus("OK");
+        paymentRequestDTO.setMessage("Successfully");
+        paymentRequestDTO.setURL(paymentUrl);
+
+    return ResponseEntity.status(HttpStatus.OK).body(paymentRequestDTO);
     }
 }
