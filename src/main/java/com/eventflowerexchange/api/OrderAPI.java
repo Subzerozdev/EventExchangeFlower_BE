@@ -7,6 +7,7 @@ import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
+import com.eventflowerexchange.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAPI {
     private final OrderService orderService;
+    private final OrderServiceImpl orderService2;
     private final JwtService jwtService;
     private final OrderDetailService orderDetailService;
 
@@ -27,11 +29,13 @@ public class OrderAPI {
     public ResponseEntity<Object> placeOrder(
             @RequestBody OrderRequestDTO orderRequestDTO,
             @RequestHeader("Authorization") String jwt
-    ){
+    ) throws Exception {
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
+        String vnPayURL = orderService2.createUrl(orderRequestDTO, user);
         orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
-        return new ResponseEntity<>(order, HttpStatus.CREATED);
+       // return new ResponseEntity<>(order, HttpStatus.CREATED);
+        return ResponseEntity.ok(vnPayURL);
     }
 
     @PostMapping("/orders/{id}")
