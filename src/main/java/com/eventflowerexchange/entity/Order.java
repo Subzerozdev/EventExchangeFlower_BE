@@ -44,4 +44,8 @@ public class Order {
     @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetail> orderDetails;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "order")
+    Payment payment;
 }

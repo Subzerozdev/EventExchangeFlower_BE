@@ -161,3 +161,21 @@ CREATE TABLE social_accounts (
     user_id CHAR(36),   -- 1 người sẽ có nhiều tài khoản google và facebook
      FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+CREATE TABLE payment(
+id INT PRIMARY KEY AUTO_INCREMENT,
+create_at datetime,
+ `payment_Method` INT DEFAULT 0,
+ order_id INT,
+ FOREIGN KEY (order_id) REFERENCES orders(id)
+);
+
+CREATE TABLE transactions (
+	id CHAR(36) NOT NULL PRIMARY KEY ,
+    from_id CHAR(36),
+    FOREIGN KEY (from_id) REFERENCES users(id),
+    to_id CHAR(36),
+    FOREIGN KEY (to_id) REFERENCES users(id),
+    
+    
+)

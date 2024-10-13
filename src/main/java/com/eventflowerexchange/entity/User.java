@@ -16,7 +16,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -83,4 +85,10 @@ public class User {
 //    @JsonIgnore
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private RefreshToken refreshToken;
+
+    @OneToMany (mappedBy = "from")
+    Set<Transactions> transactionsFrom;
+
+    @OneToMany (mappedBy = "to")
+    Set<Transactions> transactionsTo;
 }
