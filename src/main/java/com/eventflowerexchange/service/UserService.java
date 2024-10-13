@@ -10,6 +10,7 @@ import com.eventflowerexchange.entity.User;
 public interface UserService {
     String register(UserRequestDTO userRequestDTO);
     AuthResponseDTO login(AuthRequestDTO authRequestDTO);
+    String getUserIdByEmail(String email);
     User updateUserById(String userID, UpdateRequestDTO updateRequestDTO);
     User findUserById(String userID);
     void updatePasswordById(String userID, String password);

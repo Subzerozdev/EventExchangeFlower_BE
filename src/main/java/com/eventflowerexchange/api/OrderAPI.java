@@ -32,8 +32,8 @@ public class OrderAPI {
     ) throws Exception {
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
-        String vnPayURL = orderService2.createUrl(orderRequestDTO, user);
         orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
+        String vnPayURL = orderService.createUrl(order, user);
        // return new ResponseEntity<>(order, HttpStatus.CREATED);
         return ResponseEntity.ok(vnPayURL);
     }

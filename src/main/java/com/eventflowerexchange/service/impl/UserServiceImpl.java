@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public AuthResponseDTO login(AuthRequestDTO authRequestDTO){
+    public AuthResponseDTO login(AuthRequestDTO authRequestDTO) {
         //
         Authentication authentication = authenticate(authRequestDTO.getEmail(), authRequestDTO.getPassword());
         // Generate Jwt Token
@@ -72,6 +72,12 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findUserById(userID);
         user.setPassword(passwordEncoder.encode(password));
         userRepository.save(user);
+    }
+
+    @Override
+    public String getUserIdByEmail(String email) {
+        User user = userRepository.findUserByEmail(email);
+        return user.getId();
     }
 
     @Override
@@ -99,14 +105,14 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(userUpdate);
     }
 
-    private AuthResponseDTO getAuthResponse(String jwtToken, User user){
+    private AuthResponseDTO getAuthResponse(String jwtToken, User user) {
         return AuthResponseDTO.builder()
                 .jwtToken(jwtToken)
                 .user(user)
                 .build();
     }
 
-    private Authentication authenticate(String email, String password){
+    private Authentication authenticate(String email, String password) {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
         if (userDetails == null) {
             throw new BadCredentialsException("Invalid email...");

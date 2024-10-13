@@ -1,5 +1,6 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
 import com.eventflowerexchange.entity.USER_ROLE;
@@ -29,11 +30,11 @@ public class UserAPI {
 
     @PostMapping("/password")
     public ResponseEntity<Object> updateUserPassword(
-            @RequestBody String password,
+            @RequestBody AuthRequestDTO authRequestDTO,
             @RequestHeader("Authorization") String jwt
     ) {
         String userID = jwtService.getUserIdFromJwtToken(jwt);
-        userService.updatePasswordById(userID, password);
+        userService.updatePasswordById(userID, authRequestDTO.getPassword());
         return ResponseEntity.ok("Update password!");
     }
 

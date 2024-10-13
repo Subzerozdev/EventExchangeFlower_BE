@@ -30,4 +30,10 @@ public class AuthAPI {
         AuthResponseDTO response = userService.login(authRequestDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/password")
+    public ResponseEntity<String> password(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        String response = userService.getUserIdByEmail(userRequestDTO.getEmail());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

@@ -75,12 +75,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-
-
-
-
-
-
     // cái này là code demo của VN pay luôn
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmacSha512 = Mac.getInstance("HmacSHA512");
@@ -96,7 +90,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // cái này là code demo của VN Pay
-    public String createUrl(OrderRequestDTO orderRequest, User user) throws  Exception {
+    @Override
+    public String createUrl(Order order, User user) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createDate = LocalDateTime.now();
         String formattedCreateDate = createDate.format(formatter);
@@ -104,12 +99,13 @@ public class OrderServiceImpl implements OrderService {
         // đây mới là những dòng code thực sự của tui nè:
 
         //tạo oder nè.
-        Order order = createOrder(orderRequest, user);
+//        Order order = createOrder(orderRequest, user);
+        // Không cần vì đã tạo order trước đó
+        // Chỉ cần lấy order id đã tạo trước đó
+
         //Chuyển dổi tiền tệ về String cho nó đúng định dạng
         float money = order.getTotalMoney()*100;
         String amount = String.valueOf( (int) money); // đá sân nhà mà ( chuyêển nó về int đi cho nó mất phần t hập phân )
-
-
 
         String tmnCode = "BWGP25D7";
         String secretKey = "N4UOZEEJMHX04953JVHQ3Z0SIU5ESVE0";
