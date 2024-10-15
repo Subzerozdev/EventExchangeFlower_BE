@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -20,18 +19,16 @@ import java.util.Set;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
     @JsonProperty("create_at")
     private LocalDateTime createAt;
 
-     private PaymentEnum payment_Method;
+    private PaymentEnum payment_Method;
 
     @OneToOne
-    @JoinColumn (name = "order_id")
+    @JoinColumn(name = "order_id")
     Order order;
 
     @OneToMany(mappedBy = "payment")
     Set<Transactions> transactions;
-
-
 }

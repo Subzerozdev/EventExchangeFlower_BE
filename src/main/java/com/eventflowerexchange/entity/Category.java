@@ -3,8 +3,6 @@ package com.eventflowerexchange.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Data
 @Builder
@@ -16,8 +14,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 }

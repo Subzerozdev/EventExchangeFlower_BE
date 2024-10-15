@@ -65,7 +65,6 @@ public class PostAPI {
     public ResponseEntity<?> uploadImages(
             @PathVariable("id") Long postId,
             @ModelAttribute("files") List<MultipartFile> files
-
     ) {
         try {
             Post existingPost = postService.getPostById(postId);

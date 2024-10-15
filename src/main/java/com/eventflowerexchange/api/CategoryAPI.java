@@ -18,10 +18,10 @@ import java.util.List;
 public class CategoryAPI {
     private final CategoryService categoryService;
 
-    @PostMapping("api/admin/categories")
     // Nếu tham số truyền vào là 1 object thì sao??? => Data Transfer Object = Request Object
     // BindingResult bindingResult dùng cái này thì bắt validate tại hàm và trả về tên lỗi kèm theo vì dùng  @NotEmpty(message = "Category name can't not be empty") bên DTO
     // Đổi thành dấu chấm  ? vì kiểu trả về là có cả String và List of String nha
+    @PostMapping("api/admin/categories")
     public ResponseEntity<?> createCategory(
             @Valid @RequestBody EventCategoryRequestDTO categoryDTO,
             BindingResult result
@@ -60,5 +60,4 @@ public class CategoryAPI {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok("Delete Category with id =     " + id + " successfully");
     }
-
 }

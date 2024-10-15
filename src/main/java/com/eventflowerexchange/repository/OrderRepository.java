@@ -14,6 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN OrderDetail od ON o.id = od.order.id " +
             "JOIN Post p ON od.post.id = p.id " +
             "WHERE p.user.id = ?1 ")
-    public List<Order> findOrdersBySeller(String sellerID);
+    List<Order> findOrdersBySeller(String sellerID);
 
 }

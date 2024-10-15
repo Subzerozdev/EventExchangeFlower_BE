@@ -12,7 +12,6 @@ import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

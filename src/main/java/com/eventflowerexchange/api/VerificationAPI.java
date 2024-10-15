@@ -7,7 +7,7 @@ import com.eventflowerexchange.repository.OTPEmailRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.EmailService;
 import com.eventflowerexchange.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,53 +15,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-
 @RestController
-@RequestMapping("/vertification")
-public class VertificationAPI {
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private OTPEmailRepository otpEmailRepository;
-    @Autowired
-    private UserRepository userRepository;
+@RequestMapping("/verification")
+@RequiredArgsConstructor
+public class VerificationAPI {
+    private final UserService userService;
+    private final EmailService emailService;
+    private final OTPEmailRepository otpEmailRepository;
+    private final UserRepository userRepository;
 
     @PostMapping("/{id}")
     public ResponseEntity<String> VerifyEmail(@PathVariable String id) {
-
         User user = userService.findUserById(id);
         Long OTP = emailService.generateOTP();
-        MailBody mailBody = MailBody.builder()
-                .to(user.getEmail())
-                .subject("Verify the user's email")
-                .body("E-" + OTP + " là mã xác minh Email của bạn.")
-                .build();
+        MailBody mailBody = emailService.createEmail(user.getEmail(), "Verify the user's email", "Mã xác minh Email của bạn: " + OTP);
         emailService.sendEmail(mailBody);
-        OTPEmail otpEmail = otpEmailRepository.findByUserId(id);
-        if (otpEmail != null) {
-            otpEmail.setOTP(OTP);
-            otpEmail.setExpiryDate(LocalDateTime.now().plusSeconds(90));
-        } else {
-            otpEmail = OTPEmail.builder()
-                    .OTP(OTP)
-                    .expiryDate(LocalDateTime.now().plusSeconds(90))
-                    .user(user)
-                    .build();
-        }
-        otpEmailRepository.save(otpEmail);
-
+        emailService.saveOTP(user, OTP);
         return ResponseEntity.ok("Please check your email!!!");
     }
 
     @PostMapping("/{otp}/{id}")
     public ResponseEntity<String> VerifyOTP(@PathVariable Long otp, @PathVariable String id) {
         User user = userService.findUserById(id);
-        OTPEmail otpEmail = otpEmailRepository.findByOtpAndUser(otp, user).get();
-
-        if (otpEmail.getExpiryDate().isBefore(LocalDateTime.now())) {
+        OTPEmail otpEmail = emailService.findOtpEmail(user, otp);
+        if (emailService.checkOtp(otpEmail)) {
             otpEmailRepository.delete(otpEmail);
             return new ResponseEntity<>("OTP has expired", HttpStatus.EXPECTATION_FAILED);
         }

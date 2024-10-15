@@ -19,10 +19,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private final PostRepository postRepository;
 
     @Override
-    public List<OrderDetail> saveOrderDetails(
-            List<OrderDetailRequestDTO> orderDetails,
-            Order order
-    ) {
+    public void saveOrderDetails(List<OrderDetailRequestDTO> orderDetails, Order order) {
         orderDetails.forEach(orderDetail -> {
             Post post = postRepository.findPostById(orderDetail.getPostID());
             OrderDetail orderDetailSaved = OrderDetail.builder()
@@ -33,7 +30,6 @@ public class OrderDetailServiceImpl implements OrderDetailService {
                     .build();
             orderDetailRepository.save(orderDetailSaved);
         });
-        return List.of();
     }
 
     @Override

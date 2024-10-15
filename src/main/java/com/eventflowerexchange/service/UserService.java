@@ -4,7 +4,6 @@ import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
-import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.User;
 
 public interface UserService {

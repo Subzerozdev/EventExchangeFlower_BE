@@ -21,7 +21,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderAPI {
     private final OrderService orderService;
-    private final OrderServiceImpl orderService2;
     private final JwtService jwtService;
     private final OrderDetailService orderDetailService;
 
@@ -33,8 +32,10 @@ public class OrderAPI {
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
         orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
-        String vnPayURL = orderService.createUrl(order, user);
-       // return new ResponseEntity<>(order, HttpStatus.CREATED);
+        String vnPayURL = null;
+        if (orderRequestDTO.getPaymentMethod().equals("VNPAY")){
+            vnPayURL = orderService.createUrl(order, user);
+        }
         return ResponseEntity.ok(vnPayURL);
     }
 

@@ -22,16 +22,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 350)
+    @Column(nullable = false, length = 350)
     private String name;
 
-    @Column(name = "description")
     private String description;
 
-    @Column(name = "thumbnail", length = 300)
+    @Column(length = 300)
     private String thumbnail;
 
-    @Column(name = "address")
     private String address;
 
     private Long price;
@@ -62,6 +60,6 @@ public class Post {
 
     @JsonProperty("imageUrls")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostImage> imgaes;
+    private List<PostImage> images;
 
 }

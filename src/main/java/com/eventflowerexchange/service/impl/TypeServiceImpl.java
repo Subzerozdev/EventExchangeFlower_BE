@@ -1,9 +1,7 @@
 package com.eventflowerexchange.service.impl;
 
 import com.eventflowerexchange.dto.request.TypeRequestDTO;
-import com.eventflowerexchange.entity.Category;
 import com.eventflowerexchange.entity.Type;
-import com.eventflowerexchange.repository.CategoryRepository;
 import com.eventflowerexchange.repository.TypeRepository;
 import com.eventflowerexchange.service.TypeService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TypeServiceImpl implements TypeService {
     private final TypeRepository typeRepository;
+
     @Override
     public void createType(TypeRequestDTO typeRequestDTO) {
         Type newType = Type.builder()
@@ -26,7 +25,6 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public Type getTypeById(long id) {
         return typeRepository.findById(id).orElseThrow( () -> new RuntimeException("Type is not found"));
-        // đây là biểu thức lambda
     }
 
     @Override
@@ -35,11 +33,10 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
-    public Type updateType(long id, TypeRequestDTO typeRequestDTO) {
+    public void updateType(long id, TypeRequestDTO typeRequestDTO) {
         Type existingType = getTypeById(id);
         existingType.setName(typeRequestDTO.getName());   // category thì chỉ có mỗi trường name mà thôi
         typeRepository.save(existingType);   // update xong  phải save lại nhé
-        return existingType;
     }
 
     @Override

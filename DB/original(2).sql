@@ -122,16 +122,7 @@ create table `typeandpost`
     foreign key (type_id) references `types`(id),
     foreign key (post_id) references `posts`(id)
 );
--- này là Khánh comment thôi chứ không có ý gì đâu.
--- create table `colorandtype`
--- (
--- 	id int auto_increment not null,
---     color_id int not null,
--- 	type_id int not null,
---     primary key (id, color_id, type_id ),
---     foreign key (color_id) references `colors`(id),
---     foreign key (type_id) references `types`(id)
--- );
+
 create table OTPEmail
 (
 id int auto_increment not null primary key,
@@ -175,7 +166,5 @@ CREATE TABLE transactions (
     from_id CHAR(36),
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),
-    FOREIGN KEY (to_id) REFERENCES users(id),
-    
-    
+    FOREIGN KEY (to_id) REFERENCES users(id)
 )

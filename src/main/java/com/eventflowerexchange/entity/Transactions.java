@@ -11,8 +11,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "transactions")
 public class Transactions {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID id;

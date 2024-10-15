@@ -3,7 +3,6 @@ package com.eventflowerexchange.service.impl;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
-import com.eventflowerexchange.service.UserService;
 import com.eventflowerexchange.util.JwtConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -31,14 +30,13 @@ public class JwtServiceImpl implements JwtService {
     public String generateToken(Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         String roles = populateAuthorities(authorities);
-        String jwt = Jwts.builder() //Create instance jwt
+        return Jwts.builder() //Create instance jwt
                 .setIssuedAt(new Date()) // Set start time
                 .setExpiration(new Date(new Date().getTime() + (1000 * 60 * 60 * 24))) // Set end time (one day)
                 .claim("userID", authentication.getName()) // Add new claim "userID" with value username/email
                 .claim("authorities", roles) // Add new claim "authorities" with value role/permission
                 .signWith(secretKey) // Sign key using algorithm HmacSHA384
                 .compact(); // Compact JWT to single String
-        return jwt;
     }
 
     // Convert authorities to String with format "auth1,auth2,auth3"

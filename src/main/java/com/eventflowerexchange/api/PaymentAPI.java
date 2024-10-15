@@ -1,7 +1,8 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.config.BankingConfig;
-import com.eventflowerexchange.dto.request.PaymentRequestDTO;
+import com.eventflowerexchange.dto.response.PaymentResponseDTO;
+import com.eventflowerexchange.entity.Order;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/payment")
 public class PaymentAPI {
+
+
     @GetMapping("/createPayment")
     public ResponseEntity<?> createPayment(
             HttpServletRequest req
@@ -80,10 +83,21 @@ public class PaymentAPI {
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = BankingConfig.vnp_PayUrl + "?" + queryUrl;
 
-        PaymentRequestDTO paymentRequestDTO = new PaymentRequestDTO();
+        PaymentResponseDTO paymentRequestDTO = new PaymentResponseDTO();
         paymentRequestDTO.setStatus("OK");
         paymentRequestDTO.setMessage("Successfully");
         paymentRequestDTO.setURL(paymentUrl);
     return ResponseEntity.status(HttpStatus.OK).body(paymentRequestDTO);
+    }
+
+    @GetMapping("/vnpay/callback")
+    public ResponseEntity<Object> payCallbackHandler(HttpServletRequest request) {
+        String status = request.getParameter("vnp_ResponseCode");
+        if (status.equals("00")) {
+//            Order order = or
+            return new ResponseEntity<>("Order Successfully",HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Order failed",HttpStatus.BAD_REQUEST);
+        }
     }
 }

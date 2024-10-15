@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
                         .build();
                 images.add(postImage);
             }
-            newPost.setImgaes(images);
+            newPost.setImages(images);
         }
         return postRepository.save(newPost);
     }
@@ -186,11 +186,6 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         optionalPost.ifPresent(postRepository::delete);
-    }
-
-    @Override
-    public boolean existsByName(String name) {
-        return postRepository.existsByName(name);
     }
 
     @Override

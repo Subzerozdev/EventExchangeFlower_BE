@@ -7,10 +7,6 @@ import com.eventflowerexchange.entity.OrderDetail;
 import java.util.List;
 
 public interface OrderDetailService {
-    List<OrderDetail> saveOrderDetails(
-            List<OrderDetailRequestDTO> orderDetailRequestDTOs,
-            Order order
-    );
-
+    void saveOrderDetails(List<OrderDetailRequestDTO> orderDetails, Order order);
     List<OrderDetail> getOrderDetailsByOrderId(Long orderId);
 }

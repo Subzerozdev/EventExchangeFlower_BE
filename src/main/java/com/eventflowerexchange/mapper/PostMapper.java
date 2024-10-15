@@ -1,9 +1,7 @@
 package com.eventflowerexchange.mapper;
 
 import com.eventflowerexchange.dto.request.PostRequestDTO;
-import com.eventflowerexchange.dto.request.ShopRequestDTO;
 import com.eventflowerexchange.entity.Post;
-import com.eventflowerexchange.entity.Shop;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 

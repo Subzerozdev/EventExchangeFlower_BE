@@ -4,7 +4,6 @@ import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.mapper.OrderMapper;
-import com.eventflowerexchange.repository.OrderDetailRepository;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
@@ -53,6 +52,11 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Long orderID) {
         Order order = orderRepository.findOrderById(orderID);
         orderRepository.delete(order);
+    }
+
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
     @Override
@@ -110,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
         String tmnCode = "BWGP25D7";
         String secretKey = "N4UOZEEJMHX04953JVHQ3Z0SIU5ESVE0";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "https://blearning.vn/guide/swp/docker-local?orderID=" + order.getId(); // để nó biết coi đơn hàng nào đã thanh toán thành công.
+        String returnUrl = "http://localhost:5173/paymentSuccess?orderID=" + order.getId(); // để nó biết coi đơn hàng nào đã thanh toán thành công.
         String currCode = "VND";
 
         Map<String, String> vnpParams = new TreeMap<>();
