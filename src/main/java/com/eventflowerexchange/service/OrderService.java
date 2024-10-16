@@ -15,4 +15,5 @@ public interface OrderService {
     List<Order> getSellerOrders(String sellerID);
     void updateOrderStatus(Long orderID, String status);
     String createUrl(Order order, User user) throws Exception;
+     void createTransactions (long id );
 }

@@ -33,6 +33,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    float balance =0;
+
     @Email(message = " Invalid Email !!!! ")
     @Column(unique = true)
     private String email;

@@ -3,17 +3,17 @@ package com.eventflowerexchange.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.UUID;
 @Entity
-@Data
 @Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "transactions")
 public class Transactions {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "from_id")
@@ -26,4 +26,8 @@ public class Transactions {
     @ManyToOne
     @JoinColumn(name = "payment_id")
     Payment payment;
+
+    private TransactionsEnum status;
+
+    private String description;
 }

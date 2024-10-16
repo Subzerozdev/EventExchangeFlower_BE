@@ -1,10 +1,12 @@
 package com.eventflowerexchange.service.impl;
 
+import com.eventflowerexchange.api.UserAPI;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
-import com.eventflowerexchange.entity.Order;
-import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
+import com.eventflowerexchange.repository.PaymentRepository;
+import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +20,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +28,9 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailService orderDetailService;
     private final OrderMapper orderMapper;
+    private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
+    private final UserAPI userAPI;
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
@@ -157,6 +160,68 @@ public class OrderServiceImpl implements OrderService {
         urlBuilder.deleteCharAt(urlBuilder.length() - 1); // Remove last '&'
 
         return urlBuilder.toString();
+    }
+    public void createTransactions (long id ) {
+        // tìm cái order:
+        Order order = orderRepository.findOrderById(id);
+        // tạo payment:
+        Payment payment =new Payment();
+        payment.setOrder(order);
+        payment.setCreateAt(LocalDateTime.now());
+        payment.setPayment_Method(PaymentEnum.BANKING);
+
+        Set<Transactions> setTransactions =new HashSet<>();
+
+        //tạo transactions:
+        Transactions transactions01 =new Transactions();
+        // VNPAY TO CUSTOMER
+
+        User user =order.getUser();
+
+        transactions01.setFrom(null);
+        transactions01.setTo(user);
+        transactions01.setPayment(payment);
+        transactions01.setStatus(TransactionsEnum.SUCCESS);
+        transactions01.setDescription("Nạp tiền VNPAY to Customer");
+        setTransactions.add(transactions01);
+
+        Transactions transactions02 =new Transactions();
+        //CUSTOMER TO ADMIN (SSTEM)
+        User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
+        transactions02.setFrom(user);
+        transactions02.setTo(admin);
+        transactions02.setPayment(payment);
+        transactions02.setStatus(TransactionsEnum.SUCCESS);
+        transactions02.setDescription("CUSTOMER TO ADMIN");
+        // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
+        float newBalance =admin.getBalance() + order.getTotalMoney()*0.20f;
+        admin.setBalance(newBalance);
+        setTransactions.add(transactions02);
+
+        Transactions transactions03 =new Transactions();
+        //ADMIN TO SELLER
+        transactions03.setPayment(payment);
+        transactions03.setStatus(TransactionsEnum.SUCCESS);
+        transactions03.setDescription("ADMIN TO OWNER");
+        transactions03.setFrom(admin);
+        User owner =order.getOrderDetails().get(0).getPost().getUser();
+        transactions03.setTo(owner);
+
+        // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
+        float newShopBalance =owner.getBalance() + order.getTotalMoney()*0.8f;
+        owner.setBalance(newShopBalance);
+        setTransactions.add(transactions03);
+
+
+        payment.setTransactions(setTransactions);
+
+
+        userRepository.save(admin);
+        userRepository.save(owner);
+        // không cần lưu lại customer tại có tiền đâu mà lưu hahaha
+
+        paymentRepository.save(payment);
+
     }
 
 }

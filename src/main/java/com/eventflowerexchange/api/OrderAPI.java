@@ -88,4 +88,12 @@ public class OrderAPI {
         orderService.updateOrderStatus(id, status);
         return new ResponseEntity<>("Update Success", HttpStatus.OK);
     }
+
+    @PostMapping("/transactions")
+    public ResponseEntity<Object> createTransaction(
+            @RequestParam String orderID
+    ) throws Exception{
+      orderService.createTransactions(Long.parseLong(orderID));
+        return new ResponseEntity<>(" Success", HttpStatus.OK);
+    }
 }

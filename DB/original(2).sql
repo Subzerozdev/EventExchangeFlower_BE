@@ -13,6 +13,7 @@ insert into `roles`(id,name) value(2,"Customer");
 create table `users`
 (
 	id CHAR(36) NOT NULL PRIMARY KEY,
+     balance float,
     email nvarchar(100) NOT  NULL unique,
     `password` nvarchar(100) NOT  NULL,
     full_name nvarchar(100)  NOT  NULL,
@@ -166,5 +167,7 @@ CREATE TABLE transactions (
     from_id CHAR(36),
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),
-    FOREIGN KEY (to_id) REFERENCES users(id)
+    FOREIGN KEY (to_id) REFERENCES users(id),
+     `status` INT DEFAULT 0,
+      `description` VARCHAR(50)
 )
