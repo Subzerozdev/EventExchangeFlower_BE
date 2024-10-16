@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.toOrder(orderRequestDTO);
         // Set other fields
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("Đang chờ duyệt");
+        order.setStatus("Chưa thanh toán");
         order.setUser(user);
         // Save to DB and return
         return orderRepository.save(order);
@@ -117,7 +117,7 @@ public class OrderServiceImpl implements OrderService {
         String tmnCode = "BWGP25D7";
         String secretKey = "N4UOZEEJMHX04953JVHQ3Z0SIU5ESVE0";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://localhost:5173/paymentSuccess?orderID=" + order.getId(); // để nó biết coi đơn hàng nào đã thanh toán thành công.
+        String returnUrl = "http://localhost:5173/loadingPage?orderID=" + order.getId(); // để nó biết coi đơn hàng nào đã thanh toán thành công.
         String currCode = "VND";
 
         Map<String, String> vnpParams = new TreeMap<>();

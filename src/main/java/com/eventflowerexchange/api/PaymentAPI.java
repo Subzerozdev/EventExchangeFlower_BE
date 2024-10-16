@@ -3,6 +3,11 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.config.BankingConfig;
 import com.eventflowerexchange.dto.response.PaymentResponseDTO;
 import com.eventflowerexchange.entity.Order;
+import com.eventflowerexchange.entity.OrderDetail;
+import com.eventflowerexchange.entity.POST_STATUS;
+import com.eventflowerexchange.entity.Post;
+import com.eventflowerexchange.repository.OrderRepository;
+import com.eventflowerexchange.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +25,14 @@ import java.util.*;
 @RequestMapping("/payment")
 public class PaymentAPI {
 
+
+    private final OrderRepository orderRepository;
+    private final PostRepository postRepository;
+
+    public PaymentAPI(OrderRepository orderRepository, PostRepository postRepository) {
+        this.orderRepository = orderRepository;
+        this.postRepository = postRepository;
+    }
 
     @GetMapping("/createPayment")
     public ResponseEntity<?> createPayment(
@@ -93,8 +106,18 @@ public class PaymentAPI {
     @GetMapping("/vnpay/callback")
     public ResponseEntity<Object> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
+        String orderID = request.getParameter("orderID");
         if (status.equals("00")) {
-//            Order order = or
+        Order order = orderRepository.findOrderById(Long.parseLong(orderID));
+        order.setStatus("Đã thanh toán");
+        orderRepository.save(order);
+        List<OrderDetail>     orderDetails = order.getOrderDetails();
+        for (OrderDetail orderDetail : orderDetails) {
+            Post post = orderDetail.getPost();
+            post.setStatus(POST_STATUS.SOLD_OUT);
+            postRepository.save(post);
+        }
+
             return new ResponseEntity<>("Order Successfully",HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Order failed",HttpStatus.BAD_REQUEST);

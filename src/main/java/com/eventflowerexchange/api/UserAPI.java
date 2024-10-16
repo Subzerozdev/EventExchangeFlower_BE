@@ -28,7 +28,7 @@ public class UserAPI {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping("/password")
+    @PutMapping("/password")
     public ResponseEntity<Object> updateUserPassword(
             @RequestBody AuthRequestDTO authRequestDTO,
             @RequestHeader("Authorization") String jwt
