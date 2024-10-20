@@ -157,7 +157,7 @@ CREATE TABLE social_accounts (
 CREATE TABLE payment(
 id INT PRIMARY KEY AUTO_INCREMENT,
 create_at datetime,
- `payment_Method` INT DEFAULT 0,
+`payment_Method` INT DEFAULT 0,
  order_id INT,
  FOREIGN KEY (order_id) REFERENCES orders(id)
 );
@@ -168,6 +168,8 @@ CREATE TABLE transactions (
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),
     FOREIGN KEY (to_id) REFERENCES users(id),
-     `status` INT DEFAULT 0,
-      `description` VARCHAR(50)
+    payment_id INT,
+    FOREIGN KEY (payment_id) REFERENCES payment(id),
+	`status` INT DEFAULT 0,
+	`description` VARCHAR(50)
 )

@@ -6,6 +6,7 @@ import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PaymentRepository;
+import com.eventflowerexchange.repository.TransactionRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
@@ -31,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
     private final UserAPI userAPI;
+    private final TransactionRepository transactionRepository;
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
@@ -161,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
 
         return urlBuilder.toString();
     }
+
     public void createTransactions (long id ) {
         // tìm cái order:
         Order order = orderRepository.findOrderById(id);
@@ -221,7 +224,9 @@ public class OrderServiceImpl implements OrderService {
         // không cần lưu lại customer tại có tiền đâu mà lưu hahaha
 
         paymentRepository.save(payment);
-
+//        transactionRepository.save(transactions01);
+//        transactionRepository.save(transactions02);
+//        transactionRepository.save(transactions03);
     }
 
 }
