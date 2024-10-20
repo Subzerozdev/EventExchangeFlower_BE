@@ -183,9 +183,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePost(Long id) {
+    public boolean deletePost(Long id, String sellerID) {
+        boolean result = false;
         Optional<Post> optionalPost = postRepository.findById(id);
-        optionalPost.ifPresent(postRepository::delete);
+        if (optionalPost.isPresent()) {
+            Post post = optionalPost.get();
+            if (post.getUser().getId().equals(sellerID)) {
+                post.setStatus(POST_STATUS.DELETED);
+                postRepository.save(post);
+                result = true;
+            }
+        }
+        return result;
     }
 
     @Override
@@ -215,9 +224,9 @@ public class PostServiceImpl implements PostService {
         if (post == null) {
             throw new DataNotFoundException("Cannot find post with id: " + id);
         }
-        if (status){
+        if (status) {
             post.setStatus(POST_STATUS.APPROVE);
-        }else {
+        } else {
             post.setStatus(POST_STATUS.DISAPPROVE);
         }
         postRepository.save(post);

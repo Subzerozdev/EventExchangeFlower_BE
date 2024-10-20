@@ -17,7 +17,7 @@ public interface PostService {
     Page<Post> getAllPosts(Map<String, Object> params);
     List<Post> getSellerPosts(String sellerID);
     Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception;
-    void deletePost(Long id);
+    boolean deletePost(Long id, String sellerID);
     PostImage createPostImage(Long productId, PostImageDTO postImageDTO) throws Exception;
     void updatePostStatus (Long id, Boolean status) throws DataNotFoundException;
 }

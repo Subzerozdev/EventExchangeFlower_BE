@@ -52,7 +52,7 @@ public class PostAPI {
                 return ResponseEntity.badRequest().body(errorMessages);
             }
             String userID = jwtService.getUserIdFromJwtToken(jwt);
-            Post newPost = postService.createPost(postRequestDTO, userID,postRequestDTO.getTypeId());
+            Post newPost = postService.createPost(postRequestDTO, userID, postRequestDTO.getTypeId());
             return ResponseEntity.ok(newPost);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -111,7 +111,7 @@ public class PostAPI {
         }
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         // Thêm UUID vào trước tên file để đảm bảo tên file là duy nhất
-       // String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
+        // String uniqueFilename = UUID.randomUUID().toString() + "_" + filename;
         // Đường dẫn đến thư mục mà bạn muốn lưu file
         java.nio.file.Path uploadDir = Paths.get("uploads");
         // Kiểm tra và tạo thư mục nếu nó không tồn tại
@@ -129,7 +129,7 @@ public class PostAPI {
     private boolean isImageFile(MultipartFile file) {
         String contentType = file.getContentType();
         return contentType != null;
-                //&& contentType.startsWith("image/");
+        //&& contentType.startsWith("image/");
     }
 
 //    @GetMapping("")
@@ -174,9 +174,17 @@ public class PostAPI {
     }
 
     @DeleteMapping("/api/seller/posts/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable long id) {
-        postService.deletePost(id);
-        return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
+    public ResponseEntity<String> deletePost(
+            @RequestHeader("Authorization") String jwt,
+            @PathVariable Long id
+    ) {
+        String sellerID = jwtService.getUserIdFromJwtToken(jwt);
+        boolean result = postService.deletePost(id, sellerID);
+        if (result){
+            return ResponseEntity.ok(String.format("Product with id = %d deleted successfully", id));
+        } else {
+            return ResponseEntity.badRequest().body(String.format("Product with id = %d failed to delete", id));
+        }
     }
 
     @PutMapping("/api/seller/posts/{id}")
@@ -186,7 +194,7 @@ public class PostAPI {
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
         String userID = jwtService.getUserIdFromJwtToken(jwt);
-        Post post = postService.updatePost(id, postRequestDTO, userID,postRequestDTO.getTypeId());
+        Post post = postService.updatePost(id, postRequestDTO, userID, postRequestDTO.getTypeId());
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
