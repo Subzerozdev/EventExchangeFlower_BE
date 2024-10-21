@@ -32,10 +32,9 @@ public class Order {
     private String fullName;
     private String address;
     private String note;
-    private String paymentMethod;
     private Long totalMoney;
     private LocalDateTime orderDate;
-    private String status;
+    private ORDER_STATUS status;
 
     @JsonIgnore
     @ManyToOne

@@ -1,6 +1,5 @@
 package com.eventflowerexchange.service.impl;
 
-import com.eventflowerexchange.api.UserAPI;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.OrderMapper;
@@ -8,7 +7,6 @@ import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PaymentRepository;
 import com.eventflowerexchange.repository.TransactionRepository;
 import com.eventflowerexchange.repository.UserRepository;
-import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,11 +25,9 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final OrderDetailService orderDetailService;
     private final OrderMapper orderMapper;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
-    private final UserAPI userAPI;
     private final TransactionRepository transactionRepository;
 
     @Override
@@ -40,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.toOrder(orderRequestDTO);
         // Set other fields
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("Chưa thanh toán");
+        order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
         order.setUser(user);
         // Save to DB and return
         return orderRepository.save(order);
@@ -75,13 +71,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(Long orderID, String status) {
+    public void updateOrderStatus(Long orderID, Boolean status) {
         Order order = orderRepository.findOrderById(orderID);
-        if (status.equals("0")) {
-            order.setStatus("Không được duyệt");
-        } else if (status.equals("1")) {
-            order.setStatus("Đã duyệt");
+        if (status){
+            order.setStatus(ORDER_STATUS.COMPLETED);
+        } else {
+            order.setStatus(ORDER_STATUS.CANCELLED);
         }
+        orderRepository.save(order);
     }
 
     // cái này là code demo của VN pay luôn
@@ -104,13 +101,6 @@ public class OrderServiceImpl implements OrderService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createDate = LocalDateTime.now();
         String formattedCreateDate = createDate.format(formatter);
-
-        // đây mới là những dòng code thực sự của tui nè:
-
-        //tạo oder nè.
-//        Order order = createOrder(orderRequest, user);
-        // Không cần vì đã tạo order trước đó
-        // Chỉ cần lấy order id đã tạo trước đó
 
         //Chuyển dổi tiền tệ về String cho nó đúng định dạng
         float money = order.getTotalMoney()*100;

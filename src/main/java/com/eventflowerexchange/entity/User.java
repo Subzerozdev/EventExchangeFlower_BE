@@ -63,12 +63,6 @@ public class User {
     @Column(name = "role_id")
     private USER_ROLE role;
 
-    @Column(name = "date_of_birth")
-    private Date dob;
-
-    @Column(name = "facebook_account_id")
-    private int facebookAccountId;
-
     @Column(name = "google_account_id")
     private int googleAccountId;
 

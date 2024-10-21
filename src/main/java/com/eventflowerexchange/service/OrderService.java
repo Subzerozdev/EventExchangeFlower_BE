@@ -13,7 +13,7 @@ public interface OrderService {
     List<Order> getAllOrders();
     List<Order> getCustomerOrders(String userID);
     List<Order> getSellerOrders(String sellerID);
-    void updateOrderStatus(Long orderID, String status);
+    void updateOrderStatus(Long orderID, Boolean status);
     String createUrl(Order order, User user) throws Exception;
      void createTransactions (long id );
 }

@@ -7,9 +7,7 @@ import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
-import com.eventflowerexchange.service.impl.OrderServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -81,9 +79,9 @@ public class OrderAPI {
     }
 
     @PutMapping("/seller/orders/{id}/{status}")
-    public ResponseEntity<Object> updateOrder(
+    public ResponseEntity<Object> updateOrderStatus(
             @PathVariable("id") Long id,
-            @PathVariable("status") String status
+            @PathVariable("status") Boolean status
     ) {
         orderService.updateOrderStatus(id, status);
         return new ResponseEntity<>("Update Success", HttpStatus.OK);
@@ -92,7 +90,7 @@ public class OrderAPI {
     @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction(
             @RequestParam String orderID
-    ) throws Exception {
+    ){
         orderService.createTransactions(Long.parseLong(orderID));
         return new ResponseEntity<>(" Success", HttpStatus.OK);
     }

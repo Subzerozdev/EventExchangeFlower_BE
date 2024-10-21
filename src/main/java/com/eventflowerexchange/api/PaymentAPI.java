@@ -2,10 +2,7 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.config.BankingConfig;
 import com.eventflowerexchange.dto.response.PaymentResponseDTO;
-import com.eventflowerexchange.entity.Order;
-import com.eventflowerexchange.entity.OrderDetail;
-import com.eventflowerexchange.entity.POST_STATUS;
-import com.eventflowerexchange.entity.Post;
+import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +36,7 @@ public class PaymentAPI {
             HttpServletRequest req
     ) throws UnsupportedEncodingException {
         String orderType = "other";
-        long amount = Integer.parseInt(req.getParameter("amount"))*100;
+        long amount = Integer.parseInt(req.getParameter("amount")) * 100;
         String bankCode = req.getParameter("bankCode");
         String vnp_TxnRef = BankingConfig.getRandomNumber(8);
         String vnp_IpAddr = BankingConfig.getIpAddress(req);
@@ -100,7 +97,7 @@ public class PaymentAPI {
         paymentRequestDTO.setStatus("OK");
         paymentRequestDTO.setMessage("Successfully");
         paymentRequestDTO.setURL(paymentUrl);
-    return ResponseEntity.status(HttpStatus.OK).body(paymentRequestDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(paymentRequestDTO);
     }
 
     @GetMapping("/vnpay/callback")
@@ -108,19 +105,19 @@ public class PaymentAPI {
         String status = request.getParameter("vnp_ResponseCode");
         String orderID = request.getParameter("orderID");
         if (status.equals("00")) {
-        Order order = orderRepository.findOrderById(Long.parseLong(orderID));
-        order.setStatus("Đã thanh toán");
-        orderRepository.save(order);
-        List<OrderDetail>     orderDetails = order.getOrderDetails();
-        for (OrderDetail orderDetail : orderDetails) {
-            Post post = orderDetail.getPost();
-            post.setStatus(POST_STATUS.SOLD_OUT);
-            postRepository.save(post);
-        }
+            Order order = orderRepository.findOrderById(Long.parseLong(orderID));
+            order.setStatus(ORDER_STATUS.AWAITING_PICKUP);
+            orderRepository.save(order);
+            List<OrderDetail> orderDetails = order.getOrderDetails();
+            for (OrderDetail orderDetail : orderDetails) {
+                Post post = orderDetail.getPost();
+                post.setStatus(POST_STATUS.SOLD_OUT);
+                postRepository.save(post);
+            }
 
-            return new ResponseEntity<>("Order Successfully",HttpStatus.OK);
+            return new ResponseEntity<>("Order Successfully", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Order failed",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Order failed", HttpStatus.BAD_REQUEST);
         }
     }
 }

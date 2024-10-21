@@ -8,6 +8,7 @@ import com.eventflowerexchange.exception.InvalidParamException;
 import com.eventflowerexchange.mapper.PostMapper;
 import com.eventflowerexchange.repository.*;
 import com.eventflowerexchange.service.PostService;
+import com.eventflowerexchange.util.FieldValidation;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -111,6 +112,11 @@ public class PostServiceImpl implements PostService {
     ) {
         Specification<Post> specification = ((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+            if (!params.get("searchValue").toString().isEmpty()) {
+                Predicate predicate1 = criteriaBuilder.like(root.get("name"), "%" + params.get("searchValue").toString() + "%");
+                Predicate predicate2 = criteriaBuilder.like(root.get("description"), "%" + params.get("searchValue").toString() + "%");
+                predicates.add(criteriaBuilder.or(predicate1, predicate2));
+            }
             if (!params.get("categoryID").toString().isEmpty()) {
                 Join<Post, Category> postCategoryJoin = root.join("category");
                 predicates.add(criteriaBuilder.equal(postCategoryJoin.get("id"), params.get("categoryID")));
@@ -219,11 +225,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePostStatus(Long id, Boolean status) throws DataNotFoundException {
+    public void updatePostStatus(Long id, Boolean status) {
+        // Get Post
         Post post = postRepository.findPostById(id);
-        if (post == null) {
-            throw new DataNotFoundException("Cannot find post with id: " + id);
-        }
+        // Check If Post is Existed
+        FieldValidation.checkObjectExist(post, "Post");
+        // Change status
         if (status) {
             post.setStatus(POST_STATUS.APPROVE);
         } else {

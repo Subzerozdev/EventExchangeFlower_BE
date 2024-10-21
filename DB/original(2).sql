@@ -13,7 +13,7 @@ insert into `roles`(id,name) value(2,"Customer");
 create table `users`
 (
 	id CHAR(36) NOT NULL PRIMARY KEY,
-     balance float,
+	balance float,
     email nvarchar(100) NOT  NULL unique,
     `password` nvarchar(100) NOT  NULL,
     full_name nvarchar(100)  NOT  NULL,
@@ -23,8 +23,6 @@ create table `users`
     updated_at DATETIME   default current_timestamp,
     is_active bit default 0,
     role_id INT default 3,
-    date_of_birth DATE,
-    facebook_account_id INT DEFAULT 0,  
     google_account_id INT DEFAULT 0,
      FOREIGN KEY (role_id) REFERENCES `roles`(id)
 );
@@ -97,9 +95,7 @@ create table `orders`
 	total_money FLOAT CHECK (total_money >=0),
     `status` VARCHAR(50) ,
 	user_id CHAR(36),
-     payment_method NVARCHAR(100),
    FOREIGN KEY (user_id) REFERENCES `users`(id)
-   
 );
 
 create table `order_details`
@@ -157,7 +153,7 @@ CREATE TABLE social_accounts (
 CREATE TABLE payment(
 id INT PRIMARY KEY AUTO_INCREMENT,
 create_at datetime,
-`payment_Method` INT DEFAULT 0,
+`payment_method` INT DEFAULT 0,
  order_id INT,
  FOREIGN KEY (order_id) REFERENCES orders(id)
 );
