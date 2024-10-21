@@ -82,9 +82,11 @@ public class User {
 //    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private RefreshToken refreshToken;
 
+    @JsonIgnore
     @OneToMany (mappedBy = "from")
     Set<Transactions> transactionsFrom;
 
+    @JsonIgnore
     @OneToMany (mappedBy = "to")
     Set<Transactions> transactionsTo;
 }
