@@ -163,7 +163,7 @@ create_at datetime,
 );
 
 CREATE TABLE transactions (
-	id CHAR(36) NOT NULL PRIMARY KEY ,
+	id int AUTO_INCREMENT PRIMARY KEY ,
     from_id CHAR(36),
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),

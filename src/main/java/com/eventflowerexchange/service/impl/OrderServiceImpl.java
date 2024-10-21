@@ -224,9 +224,9 @@ public class OrderServiceImpl implements OrderService {
         // không cần lưu lại customer tại có tiền đâu mà lưu hahaha
 
         paymentRepository.save(payment);
-//        transactionRepository.save(transactions01);
-//        transactionRepository.save(transactions02);
-//        transactionRepository.save(transactions03);
+        transactionRepository.save(transactions01);
+        transactionRepository.save(transactions02);
+       transactionRepository.save(transactions03);
     }
 
 }
