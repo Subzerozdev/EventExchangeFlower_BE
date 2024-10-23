@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,8 +15,8 @@ import lombok.NoArgsConstructor;
 public class Shop {
     @JsonIgnore
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID )
+    private String id;
 
     private String shopName;
     private String description;
@@ -25,4 +27,7 @@ public class Shop {
     @JsonIgnore
     @OneToOne
     private User user;
+    // 1 shop có thể có nhiều feedbacks
+    @OneToMany(mappedBy = "shop")
+    Set<Feedback> shop_feedbacks;
 }
