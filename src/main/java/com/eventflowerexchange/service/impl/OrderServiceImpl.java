@@ -4,10 +4,8 @@ import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
-import com.eventflowerexchange.repository.PaymentRepository;
-import com.eventflowerexchange.repository.TransactionRepository;
-import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.OrderService;
+import com.eventflowerexchange.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +24,7 @@ import java.util.*;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final UserRepository userRepository;
-    private final PaymentRepository paymentRepository;
-    private final TransactionRepository transactionRepository;
+    private final PaymentService paymentService;
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
@@ -38,8 +34,12 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
         order.setUser(user);
-        // Save to DB and return
-        return orderRepository.save(order);
+        orderRepository.save(order);
+        // Create and save payment
+        Payment payment = paymentService.createPayment(order, orderRequestDTO.getPaymentMethod());
+        // Set to order and return
+        order.setPayment(payment);
+        return order;
     }
 
     @Override
@@ -53,6 +53,11 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Long orderID) {
         Order order = orderRepository.findOrderById(orderID);
         orderRepository.delete(order);
+    }
+
+    @Override
+    public Order getOrderById(Long orderID) {
+        return orderRepository.findOrderById(orderID);
     }
 
     @Override
@@ -81,7 +86,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
-    // cái này là code demo của VN pay luôn
     private String generateHMAC(String secretKey, String signData) throws NoSuchAlgorithmException, InvalidKeyException {
         Mac hmacSha512 = Mac.getInstance("HmacSHA512");
         SecretKeySpec keySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
@@ -103,13 +107,18 @@ public class OrderServiceImpl implements OrderService {
         String formattedCreateDate = createDate.format(formatter);
 
         //Chuyển dổi tiền tệ về String cho nó đúng định dạng
-        float money = order.getTotalMoney()*100;
-        String amount = String.valueOf( (int) money); // đá sân nhà mà ( chuyêển nó về int đi cho nó mất phần t hập phân )
+        float money;
+        if (order.getPayment().getPaymentMethod().equals(PaymentEnum.VNPAY)){
+            money = order.getTotalMoney()*100;
+        } else {
+            money = order.getTotalMoney()*30;
+        }
+        String amount = String.valueOf( (int) money);
 
         String tmnCode = "BWGP25D7";
         String secretKey = "N4UOZEEJMHX04953JVHQ3Z0SIU5ESVE0";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://localhost:5173/loadingPage?orderID=" + order.getId(); // để nó biết coi đơn hàng nào đã thanh toán thành công.
+        String returnUrl = "http://localhost:5173/loadingPage?orderID=" + order.getId();
         String currCode = "VND";
 
         Map<String, String> vnpParams = new TreeMap<>();
@@ -152,71 +161,6 @@ public class OrderServiceImpl implements OrderService {
         urlBuilder.deleteCharAt(urlBuilder.length() - 1); // Remove last '&'
 
         return urlBuilder.toString();
-    }
-
-    public void createTransactions (long id ) {
-        // tìm cái order:
-        Order order = orderRepository.findOrderById(id);
-        // tạo payment:
-        Payment payment =new Payment();
-        payment.setOrder(order);
-        payment.setCreateAt(LocalDateTime.now());
-        payment.setPayment_Method(PaymentEnum.BANKING);
-
-        Set<Transactions> setTransactions =new HashSet<>();
-
-        //tạo transactions:
-        Transactions transactions01 =new Transactions();
-        // VNPAY TO CUSTOMER
-
-        User user =order.getUser();
-
-        transactions01.setFrom(null);
-        transactions01.setTo(user);
-        transactions01.setPayment(payment);
-        transactions01.setStatus(TransactionsEnum.SUCCESS);
-        transactions01.setDescription("Nạp tiền VNPAY to Customer");
-        setTransactions.add(transactions01);
-
-        Transactions transactions02 =new Transactions();
-        //CUSTOMER TO ADMIN (SSTEM)
-        User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
-        transactions02.setFrom(user);
-        transactions02.setTo(admin);
-        transactions02.setPayment(payment);
-        transactions02.setStatus(TransactionsEnum.SUCCESS);
-        transactions02.setDescription("CUSTOMER TO ADMIN");
-        // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
-        float newBalance =admin.getBalance() + order.getTotalMoney()*0.20f;
-        admin.setBalance(newBalance);
-        setTransactions.add(transactions02);
-
-        Transactions transactions03 =new Transactions();
-        //ADMIN TO SELLER
-        transactions03.setPayment(payment);
-        transactions03.setStatus(TransactionsEnum.SUCCESS);
-        transactions03.setDescription("ADMIN TO OWNER");
-        transactions03.setFrom(admin);
-        User owner =order.getOrderDetails().get(0).getPost().getUser();
-        transactions03.setTo(owner);
-
-        // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
-        float newShopBalance =owner.getBalance() + order.getTotalMoney()*0.8f;
-        owner.setBalance(newShopBalance);
-        setTransactions.add(transactions03);
-
-
-        payment.setTransactions(setTransactions);
-
-
-        userRepository.save(admin);
-        userRepository.save(owner);
-        // không cần lưu lại customer tại có tiền đâu mà lưu hahaha
-
-        paymentRepository.save(payment);
-        transactionRepository.save(transactions01);
-        transactionRepository.save(transactions02);
-       transactionRepository.save(transactions03);
     }
 
 }

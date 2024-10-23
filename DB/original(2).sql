@@ -23,7 +23,6 @@ create table `users`
     updated_at DATETIME   default current_timestamp,
     is_active bit default 0,
     role_id INT default 3,
-    google_account_id INT DEFAULT 0,
      FOREIGN KEY (role_id) REFERENCES `roles`(id)
 );
 
@@ -129,33 +128,23 @@ user_id CHAR(36) ,
 foreign key (user_id) references `users`(id)
 );
 
-CREATE TABLE tokens (
-    id int PRIMARY KEY AUTO_INCREMENT,
-    token varchar(255) UNIQUE NOT NULL,
-    token_type varchar(50) NOT NULL,
-    expiration_date DATETIME,
-    revoked tinyint(1) NOT NULL,
-    expired tinyint(1) NOT NULL,
-    user_id CHAR(36), 
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-
-CREATE TABLE social_accounts (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    provider VARCHAR(20) NOT NULL COMMENT 'Tên nhà social network',
-    provider_id VARCHAR(50) NOT NULL,
-    email VARCHAR(150) NOT NULL COMMENT 'Email tài khoản',
-    name VARCHAR(100) NOT NULL COMMENT 'Tên người dùng',
-    user_id CHAR(36),   -- 1 người sẽ có nhiều tài khoản google và facebook
-     FOREIGN KEY (user_id) REFERENCES users(id)
-);
+-- CREATE TABLE tokens (
+--     id int PRIMARY KEY AUTO_INCREMENT,
+--     token varchar(255) UNIQUE NOT NULL,
+--     token_type varchar(50) NOT NULL,
+--     expiration_date DATETIME,
+--     revoked tinyint(1) NOT NULL,
+--     expired tinyint(1) NOT NULL,
+--     user_id CHAR(36), 
+--     FOREIGN KEY (user_id) REFERENCES users(id)
+-- );
 
 CREATE TABLE payment(
-id INT PRIMARY KEY AUTO_INCREMENT,
-create_at datetime,
-`payment_method` INT DEFAULT 0,
- order_id INT,
- FOREIGN KEY (order_id) REFERENCES orders(id)
+	id INT PRIMARY KEY AUTO_INCREMENT,
+	create_at datetime,
+	`payment_method` INT DEFAULT 0,
+	order_id INT,
+	FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 
 CREATE TABLE transactions (

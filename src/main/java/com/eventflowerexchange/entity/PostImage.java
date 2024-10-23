@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "post_images")
 public class PostImage {
-    public static final int MAXIMUM_IMAGES_PER_PRODUCT = 5;
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

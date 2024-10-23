@@ -9,7 +9,6 @@
 //import org.springframework.stereotype.Service;
 //
 //import java.time.LocalDateTime;
-//import java.util.Date;
 //import java.util.UUID;
 //
 //@Service
@@ -29,11 +28,12 @@
 //            refreshToken = RefreshToken.builder()
 //                    .refreshToken(UUID.randomUUID().toString())
 //                    .expirationTime(LocalDateTime.now().plusSeconds(60 * 60 * 24 * 2))
+//                    .isRevoked(false)
 //                    .user(user)
 //                    .build();
 //            refreshTokenRepository.save(refreshToken);
 //        }
-//        return null;
+//        return refreshToken;
 //    }
 //
 //    @Override

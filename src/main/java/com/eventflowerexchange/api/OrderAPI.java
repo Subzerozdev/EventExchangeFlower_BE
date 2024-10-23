@@ -7,6 +7,7 @@ import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
+import com.eventflowerexchange.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class OrderAPI {
     private final OrderService orderService;
     private final JwtService jwtService;
     private final OrderDetailService orderDetailService;
+    private final TransactionService transactionService;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -30,10 +32,7 @@ public class OrderAPI {
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
         orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
-        String vnPayURL = null;
-        if (orderRequestDTO.getPaymentMethod().equals("VNPAY")) {
-            vnPayURL = orderService.createUrl(order, user);
-        }
+        String vnPayURL = orderService.createUrl(order, user);;
         return ResponseEntity.ok(vnPayURL);
     }
 
@@ -89,9 +88,10 @@ public class OrderAPI {
 
     @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction(
-            @RequestParam String orderID
+            @RequestParam Long orderID
     ){
-        orderService.createTransactions(Long.parseLong(orderID));
+        Order order = orderService.getOrderById(orderID);
+        transactionService.createTransactions(order);
         return new ResponseEntity<>(" Success", HttpStatus.OK);
     }
 }

@@ -1,10 +1,8 @@
 package com.eventflowerexchange.service.impl;
 
-import com.eventflowerexchange.dto.request.PostImageDTO;
 import com.eventflowerexchange.dto.request.PostRequestDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.exception.DataNotFoundException;
-import com.eventflowerexchange.exception.InvalidParamException;
 import com.eventflowerexchange.mapper.PostMapper;
 import com.eventflowerexchange.repository.*;
 import com.eventflowerexchange.service.PostService;
@@ -20,7 +18,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-    private final PostImageRepository postImageRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final TypeRepository typeRepository;
@@ -134,27 +131,6 @@ public class PostServiceImpl implements PostService {
             }
         }
         return result;
-    }
-
-    @Override
-    public PostImage createPostImage(Long postId, PostImageDTO postImageDTO) throws Exception {
-        Post existingPost = postRepository
-                .findById(postId)
-                .orElseThrow(() ->
-                        new DataNotFoundException(
-                                "Cannot find product with id: " + postImageDTO.getPostId()));
-        PostImage newPostImage = PostImage.builder()
-                .post(existingPost)
-                .imageUrl(postImageDTO.getImageUrl())
-                .build();
-        //Ko cho insert quá 5 ảnh cho 1 sản phẩm
-
-        int size = postImageRepository.findByPostId(postId).size();
-        if (size >= PostImage.MAXIMUM_IMAGES_PER_PRODUCT) {
-            throw new InvalidParamException("Number of images must be <=" +
-                    " " + PostImage.MAXIMUM_IMAGES_PER_PRODUCT);
-        }
-        return postImageRepository.save(newPostImage);
     }
 
     @Override

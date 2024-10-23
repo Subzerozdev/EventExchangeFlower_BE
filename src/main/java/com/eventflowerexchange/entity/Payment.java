@@ -1,5 +1,6 @@
 package com.eventflowerexchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,13 +18,15 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "payment")
 public class Payment {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
+
     @JsonProperty("create_at")
     private LocalDateTime createAt;
 
-    private PaymentEnum payment_Method;
+    private PaymentEnum paymentMethod;
 
     @OneToOne
     @JoinColumn(name = "order_id")
