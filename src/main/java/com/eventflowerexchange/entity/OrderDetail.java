@@ -25,7 +25,6 @@ public class OrderDetail {
     @ManyToOne
     private Order order;
 
-    @JsonIgnore
     @ManyToOne
     private Post post;
 }

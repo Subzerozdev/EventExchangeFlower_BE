@@ -2,13 +2,13 @@ package com.eventflowerexchange.config;
 
 import com.eventflowerexchange.util.JwtConstant;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,7 +27,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         // Get Jwt Token from Request Header
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-        // Check if Jwt is existed
+        // Check if Jwt is existed and is validated
         if (jwt != null) {
             // Get payload
             jwt = jwt.substring(7);
@@ -47,8 +47,12 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            } catch (BadCredentialsException exception) {
-                throw new BadCredentialsException("Invalid Token ..."   );
+            } catch (ExpiredJwtException exception) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
+                return;
+            } catch (Exception e) {
+                System.out.println(" Some other exception in JWT parsing ");
+                return;
             }
         }
         filterChain.doFilter(request, response);

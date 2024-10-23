@@ -19,6 +19,7 @@ import java.util.List;
 public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final ShopRepository shopRepository;
+
     @Override
     public Feedback createNewFeedback(FeedbackRequestDTO feedbackRequestDTO, User user) {
         Shop shop = shopRepository.findById(feedbackRequestDTO.getShopID()).orElseThrow(
@@ -29,7 +30,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setRating(feedbackRequestDTO.getRating());
         feedback.setCustomer(user);
         feedback.setShop(shop);
-        return   feedbackRepository.save(feedback); // lưu xuống DB
+        return feedbackRepository.save(feedback); // lưu xuống DB
     }
 
     @Override

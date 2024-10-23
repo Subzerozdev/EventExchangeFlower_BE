@@ -51,17 +51,20 @@ public class JwtServiceImpl implements JwtService {
         return String.join(",", authoritySet);
     }
 
-    @Override
-    public String getUserIdFromJwtToken(String jwtToken) {
+    private Claims extractClaims(String jwtToken) {
         // Get payload (data) from Jwt Token
         jwtToken = jwtToken.substring(7);
         // Parse and validate Jwt Token
-        Claims claims = Jwts.parserBuilder() // Create instance
+        return Jwts.parserBuilder() // Create instance
                 .setSigningKey(secretKey) // Set key used to sign the JWT for verifying token
                 .build() // Build based on the configuration settings
                 .parseClaimsJws(jwtToken) // Return Jws<Claims> if successful verifying JWT Token
                 .getBody(); // Extracts the Claims Obj from Jws<Claims>
-        return String.valueOf(claims.get("userID"));
+    }
+
+    @Override
+    public String getUserIdFromJwtToken(String jwtToken) {
+        return String.valueOf(extractClaims(jwtToken).get("userID"));
     }
 
     @Override

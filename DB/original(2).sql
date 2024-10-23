@@ -174,10 +174,8 @@ CREATE TABLE feedback (
 	id int AUTO_INCREMENT PRIMARY KEY ,
     content nvarchar(200),
     rating int not null,
-     customer_id CHAR(36),
+	customer_id CHAR(36),
     FOREIGN KEY (customer_id) REFERENCES users(id),    
 	shop_id CHAR(36),
     FOREIGN KEY (shop_id) REFERENCES shop(id)
-    
-    
 )

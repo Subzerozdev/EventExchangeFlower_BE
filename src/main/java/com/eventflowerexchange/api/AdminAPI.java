@@ -1,8 +1,10 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.entity.Order;
+import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.PostService;
+import com.eventflowerexchange.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.util.List;
 public class AdminAPI {
     private final PostService postService;
     private final OrderService orderService;
+    private final JwtService jwtService;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(

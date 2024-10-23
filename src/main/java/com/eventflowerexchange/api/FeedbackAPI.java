@@ -18,21 +18,22 @@ import java.util.List;
 public class FeedbackAPI {
     private final JwtService jwtService;
     private final FeedbackService feedbackService;
+
     @PostMapping()
-    public ResponseEntity createFeedback(
+    public ResponseEntity<Object> createFeedback(
             @RequestHeader("Authorization") String jwt,
             @RequestBody FeedbackRequestDTO feedbackRequestDTO
     ) {
-        User user =jwtService.getUserFromJwtToken(jwt);
+        User user = jwtService.getUserFromJwtToken(jwt);
         Feedback feedback = feedbackService.createNewFeedback(feedbackRequestDTO, user);
         return ResponseEntity.ok(feedback);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity getAllFeedback(
+    public ResponseEntity<Object> getAllFeedback(
             @PathVariable("id") String id
-    )
-    {
-        List<FeedbackResponse> feedback =feedbackService.getFeedback(id);
+    ) {
+        List<FeedbackResponse> feedback = feedbackService.getFeedback(id);
         return ResponseEntity.ok(feedback);
     }
 }

@@ -2,32 +2,26 @@ package com.eventflowerexchange.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name ="feedback")
 public class Feedback {
-
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
-    private  int rating;
 
-    // 1 account sẽ có nhiều feedback.
-    @ManyToOne
+    private String content;
+    private int rating;
+
     @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "customer_id")
     User customer;
-
-    // 1 account có thể feedback cho nhiều shop
 
     @ManyToOne
     @JsonIgnore
