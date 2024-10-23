@@ -7,6 +7,7 @@ import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.repository.FeedbackRepository;
 import com.eventflowerexchange.repository.ShopRepository;
+import com.eventflowerexchange.service.FeedbackService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FeedbackServiceImpl {
+public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final ShopRepository shopRepository;
     @Override
