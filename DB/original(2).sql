@@ -29,7 +29,7 @@ create table `users`
 
 create table `shop`
 (
-	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	id char(36) PRIMARY KEY,
     `description` text,
     qr_code varchar(255),
     shop_address varchar(255),
@@ -168,4 +168,16 @@ CREATE TABLE transactions (
     FOREIGN KEY (payment_id) REFERENCES payment(id),
 	`status` INT DEFAULT 0,
 	`description` VARCHAR(50)
+);
+
+CREATE TABLE feedback (
+	id int AUTO_INCREMENT PRIMARY KEY ,
+    content nvarchar(200),
+    rating int not null,
+     customer_id CHAR(36),
+    FOREIGN KEY (customer_id) REFERENCES users(id),    
+	shop_id CHAR(36),
+    FOREIGN KEY (shop_id) REFERENCES shop(id)
+    
+    
 )
