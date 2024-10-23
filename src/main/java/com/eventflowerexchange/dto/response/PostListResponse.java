@@ -11,5 +11,4 @@ import java.util.List;
 @Builder
 public class PostListResponse {
     private List<Post> posts;
-    private int totalPages;
 }

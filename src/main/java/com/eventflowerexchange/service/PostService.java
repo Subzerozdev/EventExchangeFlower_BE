@@ -14,7 +14,7 @@ public interface PostService {
     Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception;
     Post getPostById(Long id) throws Exception;
 //    Page<PostResponse> getAllPosts(PageRequest pageRequest);
-    Page<Post> getAllPosts(Map<String, Object> params);
+    List<Post> getAllPosts();
     List<Post> getSellerPosts(String sellerID);
     Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception;
     boolean deletePost(Long id, String sellerID);

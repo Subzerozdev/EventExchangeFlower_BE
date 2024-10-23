@@ -32,7 +32,7 @@ public class JwtServiceImpl implements JwtService {
         String roles = populateAuthorities(authorities);
         return Jwts.builder() //Create instance jwt
                 .setIssuedAt(new Date()) // Set start time
-                .setExpiration(new Date(new Date().getTime() + (1000 * 60 * 60 * 24))) // Set end time (one day)
+                .setExpiration(new Date(new Date().getTime() + (1000 * 10))) // Set end time (one day)
                 .claim("userID", authentication.getName()) // Add new claim "userID" with value username/email
                 .claim("authorities", roles) // Add new claim "authorities" with value role/permission
                 .signWith(secretKey) // Sign key using algorithm HmacSHA384

@@ -9,16 +9,11 @@ import com.eventflowerexchange.mapper.PostMapper;
 import com.eventflowerexchange.repository.*;
 import com.eventflowerexchange.service.PostService;
 import com.eventflowerexchange.util.FieldValidation;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -78,75 +73,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getPostById(Long postId) throws Exception {
-//        return postRepository.findById(postId).
-//                orElseThrow(() -> new DataNotFoundException(
-//                        "Cannot find product with id =" + postId));
+    public Post getPostById(Long postId) {
         return postRepository.findPostById(postId);
     }
 
-//    @Override
-//    public Page<PostResponse> getAllPosts(PageRequest pageRequest) {
-//        // Lấy danh sách sản phẩm theo trang(page) và giới hạn(limit)
-//        return postRepository.findAll(pageRequest).map(post -> {
-//            PostResponse postResponse = PostResponse.builder()
-//                    .name(post.getName())
-//                    .price(post.getPrice())
-//                    .thumbnail(post.getThumbnail())
-//                    .description(post.getDescription())
-//                    .address(post.getAddress())
-//                    .startDate(post.getStartDate())
-//                    .endDate(post.getEndDate())
-//                    .categoryId(post.getCategory().getId())
-//                    .build();
-//            return postResponse;
-//        });
-//    }
-
     @Override
-    public Page<Post> getAllPosts(
-            Map<String, Object> params
-//            String eventCategory, String flowerType,
-//            Long minPrice, Long maxPrice,
-//            String sort, Integer pageNumber
-    ) {
-        Specification<Post> specification = ((root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            if (!params.get("searchValue").toString().isEmpty()) {
-                Predicate predicate1 = criteriaBuilder.like(root.get("name"), "%" + params.get("searchValue").toString() + "%");
-                Predicate predicate2 = criteriaBuilder.like(root.get("description"), "%" + params.get("searchValue").toString() + "%");
-                predicates.add(criteriaBuilder.or(predicate1, predicate2));
-            }
-            if (!params.get("categoryID").toString().isEmpty()) {
-                Join<Post, Category> postCategoryJoin = root.join("category");
-                predicates.add(criteriaBuilder.equal(postCategoryJoin.get("id"), params.get("categoryID")));
-            }
-//            if (flowerType != null) {
-//                Join<Post,Category> postCategoryJoin = root.join("category");
-//                predicates.add(criteriaBuilder.equal(postCategoryJoin.get("categoryID"), eventCategory));
-//            }
-            if (params.get("minPrice") != null) {
-                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), Long.valueOf(params.get("minPrice").toString())));
-            }
-            if (params.get("maxPrice") != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), Long.valueOf(params.get("maxPrice").toString())));
-            }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-        });
-        Pageable pageable;
-        String sort = params.get("sort").toString();
-        int pageNumber = params.get("pageNumber").toString().isEmpty() ? 0 :
-                Integer.parseInt(params.get("pageNumber").toString());
-        if (sort != null && !sort.isEmpty()) {
-            pageable = switch (sort) {
-                case "price_low" -> PageRequest.of(pageNumber, 10, Sort.by("price").descending());
-                case "price_high" -> PageRequest.of(pageNumber, 10, Sort.by("price").ascending());
-                default -> PageRequest.of(pageNumber, 10, Sort.unsorted());
-            };
-        } else {
-            pageable = PageRequest.of(pageNumber, 10, Sort.unsorted());
-        }
-        return postRepository.findAll(specification, pageable);
+    public List<Post> getAllPosts() {
+        return postRepository.findAll();
     }
 
     @Override

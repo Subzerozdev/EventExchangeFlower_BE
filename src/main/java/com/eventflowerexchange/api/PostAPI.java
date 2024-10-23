@@ -67,20 +67,14 @@ public class PostAPI {
 //    }
 
     @GetMapping("/posts")
-    public ResponseEntity<Object> getPosts(
-            @RequestParam Map<String, Object> params
-    ) {
-        Page<Post> postsPage = postService.getAllPosts(params);
-        int totalPages = postsPage.getTotalPages();
-        List<Post> posts = postsPage.getContent();
+    public ResponseEntity<Object> getPosts() {
+        List<Post> posts = postService.getAllPosts();
         PostListResponse postListResponse = PostListResponse.builder()
                 .posts(posts)
-                .totalPages(totalPages)
                 .build();
         return new ResponseEntity<>(postListResponse, HttpStatus.OK);
     }
 
-    //http://localhost:8088/api/v1/products/6
     @GetMapping("/posts/{id}")
     public ResponseEntity<Object> getPostById(@PathVariable Long id) throws Exception {
         Post post = postService.getPostById(id);

@@ -27,6 +27,9 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class AppConfig {
     private final UserRepository userRepository;
+    public static final String[] WHITELIST = {
+            "/auth/**", "/verification/**", "/categories", "/posts", "/types"
+    };
 
     @Bean // Mark this method of Bean to be managed in Spring IoC Container and be hold all by App Context
         /* SecurityFilterChain (request will be here first):
