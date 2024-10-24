@@ -68,8 +68,7 @@ public class AppConfig {
             public CorsConfiguration getCorsConfiguration(HttpServletRequest arg0) {
                 CorsConfiguration cfg = new CorsConfiguration();
                 cfg.setAllowedOrigins(Arrays.asList(
-                        "https://swp-391-14qu-osi30s-projects.vercel.app",
-                        "https://swp-391-14qu.vercel.app",
+                        "https://flowershop-ten.vercel.app",
                         "http://localhost:5173"));
                 cfg.setAllowedMethods(Collections.singletonList("*"));
                 cfg.setAllowCredentials(true);
