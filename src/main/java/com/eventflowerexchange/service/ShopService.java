@@ -5,7 +5,8 @@ import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.User;
 
 public interface ShopService {
-    Shop createShop(User user, ShopRequestDTO shopRequestDTO);
-    Shop updateShop(User user, ShopRequestDTO shopRequestDTO);
-    Shop getShop(User user);
+    Shop createSellerShop(User user, ShopRequestDTO shopRequestDTO);
+    Shop updateSellerShop(User user, ShopRequestDTO shopRequestDTO);
+    Shop getSellerShop(User user);
+    String getShopIdByOrderId(Long orderId);
 }

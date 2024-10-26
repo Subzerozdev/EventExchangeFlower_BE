@@ -23,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category getCategoryById(long id) {
+    public Category getCategoryById(Integer id) {
         return categoryRepository.findById(id).orElseThrow( () -> new RuntimeException("Category not found"));
         // đây là biểu thức lambda
     }
@@ -34,14 +34,14 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateCategory(long id, EventCategoryRequestDTO categoryDTO) {
+    public void updateCategory(Integer id, EventCategoryRequestDTO categoryDTO) {
         Category existingCategory = getCategoryById(id);
         existingCategory.setName(categoryDTO.getName());   // category thì chỉ có mỗi trường name mà thôi
         categoryRepository.save(existingCategory);   // update xong phải save lại nhé
     }
 
     @Override
-    public void deleteCategory(long id) {
+    public void deleteCategory(Integer id) {
         // xóa xong
         categoryRepository.deleteById(id);
     }

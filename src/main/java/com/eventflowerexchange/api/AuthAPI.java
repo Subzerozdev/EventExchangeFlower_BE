@@ -1,7 +1,6 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
-import com.eventflowerexchange.dto.request.RefreshRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
 import com.eventflowerexchange.service.UserService;

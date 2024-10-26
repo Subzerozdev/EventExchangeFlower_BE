@@ -8,6 +8,7 @@ import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.TransactionService;
+import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,7 @@ public class OrderAPI {
             @RequestParam Long orderID
     ){
         Order order = orderService.getOrderById(orderID);
+        FieldValidation.checkObjectExist(order, "Order");
         transactionService.createTransactions(order);
         return new ResponseEntity<>(" Success", HttpStatus.OK);
     }

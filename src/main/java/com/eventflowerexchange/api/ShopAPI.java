@@ -6,6 +6,7 @@ import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.ShopService;
 import com.eventflowerexchange.service.UserService;
+import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,30 +20,42 @@ public class ShopAPI {
     private final UserService userService;
 
     @PostMapping("/shop")
-    public ResponseEntity<Object> createShop(
+    public ResponseEntity<Object> createSellerShop(
             @RequestBody ShopRequestDTO shopRequestDTO,
             @RequestHeader("Authorization") String jwt
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
         userService.updateRole(user);
-        Shop shop = shopService.createShop(user, shopRequestDTO);
+        Shop shop = shopService.createSellerShop(user, shopRequestDTO);
         return ResponseEntity.ok(shop);
     }
 
-    @GetMapping("/seller/shop")
-    public ResponseEntity<Object> getShopById(@RequestHeader("Authorization") String jwt) {
-        User user = jwtService.getUserFromJwtToken(jwt);
-        Shop shop = shopService.getShop(user);
+    @GetMapping("/shop/{id}")
+    public ResponseEntity<Object> getShopBySellerId(
+            @PathVariable String id
+    ) {
+        User user = userService.findUserById(id);
+        FieldValidation.checkObjectExist(user, "User");
+        Shop shop = shopService.getSellerShop(user);
         return ResponseEntity.ok(shop);
     }
 
     @PutMapping("/seller/shop")
-    public ResponseEntity<Object> updateShop(
+    public ResponseEntity<Object> updateSellerShop(
             @RequestBody ShopRequestDTO shopRequestDTO,
             @RequestHeader("Authorization") String jwt
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
-        Shop shop = shopService.updateShop(user, shopRequestDTO);
+        Shop shop = shopService.updateSellerShop(user, shopRequestDTO);
         return ResponseEntity.ok(shop);
     }
+
+    @GetMapping("/order/shop/{id}")
+    public ResponseEntity<Object> getSellerShopByOrderId(
+            @PathVariable Long id
+    ) {
+        String shopId = shopService.getShopIdByOrderId(id);
+        return ResponseEntity.ok(shopId);
+    }
+
 }

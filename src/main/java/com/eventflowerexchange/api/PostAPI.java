@@ -7,7 +7,6 @@ import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,26 +44,6 @@ public class PostAPI {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-//    @GetMapping("")
-//    public ResponseEntity<PostListResponse> getPosts(
-//            @RequestParam("page") int page,
-//            @RequestParam("limit") int limit
-//    ) {
-//        // Tạo Pageable từ thông tin trang và giới hạn
-//        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("startDate").descending());
-//
-//        Page<PostResponse> productPage = postService.getAllPosts(pageRequest);
-//
-//        // lấy tổng số trang
-//        int totalPages = productPage.getTotalPages();
-//
-//        List<PostResponse> posts = productPage.getContent();
-//        return ResponseEntity.ok(PostListResponse.builder()
-//                .posts(posts)
-//                .totalPages(totalPages)
-//                .build());
-//    }
 
     @GetMapping("/posts")
     public ResponseEntity<Object> getPosts() {
@@ -106,13 +85,21 @@ public class PostAPI {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    // Get All Posts of Seller
+    // Display all posts of seller
     @GetMapping("/api/seller/posts")
     public ResponseEntity<Object> getSellerPosts(
             @RequestHeader("Authorization") String jwt
     ) {
         String sellerID = jwtService.getUserIdFromJwtToken(jwt);
         List<Post> posts = postService.getSellerPosts(sellerID);
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    @GetMapping("/api/posts/{id}")
+    public ResponseEntity<Object> getPostBySellerId(
+            @PathVariable String id
+    ){
+        List<Post> posts = postService.getSellerPosts(id);
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 }

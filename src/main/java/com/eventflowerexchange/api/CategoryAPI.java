@@ -48,7 +48,7 @@ public class CategoryAPI {
 
     @PutMapping("api/admin/categories/{id}")
     public ResponseEntity<String> updateCategory(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @Valid @RequestBody EventCategoryRequestDTO categoryDTO
     ) {
         categoryService.updateCategory(id, categoryDTO);// truyền vào id vào 1 cái category mới
@@ -56,8 +56,8 @@ public class CategoryAPI {
     }
 
     @DeleteMapping("api/admin/categories/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Integer id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok("Delete Category with id =     " + id + " successfully");
+        return ResponseEntity.ok("Delete Category with id = " + id + " successfully");
     }
 }

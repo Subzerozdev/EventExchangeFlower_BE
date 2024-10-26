@@ -29,21 +29,13 @@ public class PostServiceImpl implements PostService {
         Post newPost = postMapper.toPost(postRequestDTO);
         newPost.setStatus(POST_STATUS.PENDING);
         // Get Category by ID
-        if (postRequestDTO.getCategoryId() != null) {
-            Category existingCategory = categoryRepository
-                    .findById(postRequestDTO.getCategoryId())
-                    .orElseThrow(() ->
-                            new DataNotFoundException(
-                                    "Cannot find category with id: " + postRequestDTO.getCategoryId()));
-            newPost.setCategory(existingCategory);
-        }
+        Category category = categoryRepository.findCategoryById(postRequestDTO.getCategoryId());
+        FieldValidation.checkObjectExist(category, "Category");
+        newPost.setCategory(category);
         // Get User by Id
-        User existingUser = userRepository
-                .findById(userID)
-                .orElseThrow(() ->
-                        new DataNotFoundException(
-                                "Cannot find user with id: " + userID));
-        newPost.setUser(existingUser);
+        User user = userRepository.findUserById(userID);
+        FieldValidation.checkObjectExist(user, "User");
+        newPost.setUser(user);
         // Get Type by Id
         if (typeID != null) {
             List<Type> existingType = typeRepository.findByIdIn(typeID);
@@ -52,8 +44,6 @@ public class PostServiceImpl implements PostService {
             }
             newPost.setTypes(existingType);
         }
-
-
         // Save image to DB
         List<PostImage> images = new ArrayList<>();
         if (postRequestDTO.getImageUrls() != null && !postRequestDTO.getImageUrls().isEmpty()) {

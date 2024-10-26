@@ -3,5 +3,6 @@ package com.eventflowerexchange.repository;
 import com.eventflowerexchange.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Integer> {
+    Category findCategoryById(Integer id);
 }

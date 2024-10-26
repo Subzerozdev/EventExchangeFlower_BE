@@ -6,6 +6,7 @@ import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PostRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,16 +21,10 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/payment")
+@RequiredArgsConstructor
 public class PaymentAPI {
-
-
     private final OrderRepository orderRepository;
     private final PostRepository postRepository;
-
-    public PaymentAPI(OrderRepository orderRepository, PostRepository postRepository) {
-        this.orderRepository = orderRepository;
-        this.postRepository = postRepository;
-    }
 
     @GetMapping("/createPayment")
     public ResponseEntity<?> createPayment(
@@ -114,7 +109,6 @@ public class PaymentAPI {
                 post.setStatus(POST_STATUS.SOLD_OUT);
                 postRepository.save(post);
             }
-
             return new ResponseEntity<>("Order Successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Order failed", HttpStatus.BAD_REQUEST);

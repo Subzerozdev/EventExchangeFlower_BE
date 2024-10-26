@@ -6,6 +6,7 @@ import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.PaymentService;
+import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order updateOrder(Long orderID, OrderRequestDTO orderRequestDTO) {
         Order order = orderRepository.findOrderById(orderID);
+        FieldValidation.checkObjectExist(order, "Order");
         orderMapper.updateOrder(order, orderRequestDTO);
         return orderRepository.save(order);
     }
@@ -52,6 +54,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void cancelOrder(Long orderID) {
         Order order = orderRepository.findOrderById(orderID);
+        FieldValidation.checkObjectExist(order, "Order");
         orderRepository.delete(order);
     }
 

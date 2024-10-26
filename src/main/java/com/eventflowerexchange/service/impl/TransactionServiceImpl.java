@@ -1,7 +1,6 @@
 package com.eventflowerexchange.service.impl;
 
 import com.eventflowerexchange.entity.*;
-import com.eventflowerexchange.repository.PaymentRepository;
 import com.eventflowerexchange.repository.TransactionRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.PaymentService;
@@ -9,16 +8,12 @@ import com.eventflowerexchange.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final PaymentService paymentService;
     private final UserRepository userRepository;
-    private final PaymentRepository paymentRepository;
 
     @Override
     public void createTransactions(Order order) {

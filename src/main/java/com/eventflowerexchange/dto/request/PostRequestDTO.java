@@ -5,7 +5,6 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,7 +31,7 @@ public class PostRequestDTO {
     @Max(value = 100000000, message = "Price must be less than or equal to 100,000,000")
     private Long price;
     @JsonProperty("category_id")
-    private Long categoryId;
+    private Integer categoryId;
     @JsonProperty("type_id")
     private List<Long> typeId;
 
