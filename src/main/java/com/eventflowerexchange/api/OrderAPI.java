@@ -33,7 +33,7 @@ public class OrderAPI {
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
         orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
-        String vnPayURL = orderService.createUrl(order, user);;
+        String vnPayURL = orderService.createUrl(order, user);
         return ResponseEntity.ok(vnPayURL);
     }
 

@@ -2,6 +2,7 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.ShopRequestDTO;
 import com.eventflowerexchange.entity.Shop;
+import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.ShopService;
@@ -25,9 +26,12 @@ public class ShopAPI {
             @RequestHeader("Authorization") String jwt
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
-        userService.updateRole(user);
-        Shop shop = shopService.createSellerShop(user, shopRequestDTO);
-        return ResponseEntity.ok(shop);
+        if (user.getRole().equals(USER_ROLE.ROLE_CUSTOMER)) {
+            userService.updateRole(user);
+            Shop shop = shopService.createSellerShop(user, shopRequestDTO);
+            return ResponseEntity.ok(shop);
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/shop/{id}")
