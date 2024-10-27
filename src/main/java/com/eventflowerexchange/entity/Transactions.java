@@ -1,7 +1,10 @@
 package com.eventflowerexchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -29,4 +32,12 @@ public class Transactions {
     private TransactionsEnum status;
 
     private String description;
+
+    private float amount;
+
+    @JsonProperty("create_at")
+    private LocalDateTime createAt;
+
+
+
 }

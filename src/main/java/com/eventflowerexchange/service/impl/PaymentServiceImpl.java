@@ -21,6 +21,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .order(order)
                 .paymentMethod(paymentEnum)
                 .createAt(LocalDateTime.now())
+                .total(order.getTotalMoney())
                 .build();
         return paymentRepository.save(payment);
     }

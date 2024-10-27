@@ -28,6 +28,7 @@ public class Payment {
 
     private PaymentEnum paymentMethod;
 
+    float total;
     @OneToOne
     @JoinColumn(name = "order_id")
     Order order;

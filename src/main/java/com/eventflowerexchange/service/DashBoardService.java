@@ -6,10 +6,5 @@ import java.util.Objects;
 public interface DashBoardService {
 
     Map<String, Object> getDashBoard();
-    // đếm số sản phẩm trong hệ thống
-
-    // số lượng customer
-
-
-    // Số lượng owner
+    Map <String,Object> getMonthlyRevenue(String shopId);
 }
