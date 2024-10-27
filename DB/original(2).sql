@@ -40,7 +40,7 @@ create table `shop`
 
 create table `eventcategories`
 (
-	id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	id INT AUTO_INCREMENT PRIMARY KEY,
     name nvarchar(100)
 );
 
@@ -49,12 +49,6 @@ create table `types`
 	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
     name NVARCHAR(100)
 );
--- comment cho nó đẹp thôi, với chắc được nhiều code hơn, nên làm thế.
--- create table `colors`
--- (
--- 	id int AUTO_INCREMENT NOT  NULL PRIMARY KEY,
---     name NVARCHAR(100)
--- );
 
 create table `posts`
 (
@@ -143,12 +137,15 @@ CREATE TABLE payment(
 	id INT PRIMARY KEY AUTO_INCREMENT,
 	create_at datetime,
 	`payment_method` INT DEFAULT 0,
+    total FLOAT CHECK (total >=0),
 	order_id INT,
 	FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 
 CREATE TABLE transactions (
 	id int AUTO_INCREMENT PRIMARY KEY ,
+    create_at datetime,
+    amount FLOAT CHECK (amount >=0),
     from_id CHAR(36),
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),

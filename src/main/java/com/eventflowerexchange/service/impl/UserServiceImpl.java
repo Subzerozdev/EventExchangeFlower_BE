@@ -11,6 +11,7 @@ import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
+import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +95,19 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtService.generateToken(authentication);
         // Setup and return Auth Response
         return getAuthResponse(jwt, null);
+    }
+
+    @Override
+    public void deleteUserById(String userID) {
+        User user = userRepository.findUserById(userID);
+        FieldValidation.checkObjectExist(user, "user");
+        user.setActive(false);
+        userRepository.save(user);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return userRepository.findAll();
     }
 
 

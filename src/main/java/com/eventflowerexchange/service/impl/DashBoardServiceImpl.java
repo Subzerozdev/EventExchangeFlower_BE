@@ -1,13 +1,14 @@
 package com.eventflowerexchange.service.impl;
 
+import com.eventflowerexchange.entity.TransactionsEnum;
 import com.eventflowerexchange.entity.USER_ROLE;
-import com.eventflowerexchange.repository.CategoryRepository;
 import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.repository.TransactionRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.DashBoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.*;
 
@@ -17,6 +18,7 @@ public class DashBoardServiceImpl implements DashBoardService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+
     @Override
     public Map<String, Object> getDashBoard() {
         Map<String, Object>  status = new HashMap<>();
@@ -26,17 +28,17 @@ public class DashBoardServiceImpl implements DashBoardService {
 
         // số lượng customer
         long totalUsers = userRepository.countByRole(USER_ROLE.ROLE_CUSTOMER);
-        status.put("totalUsers", totalUsers);
+        status.put("totalCustomers", totalUsers);
         // số lượng owner
         long totalOwners = userRepository.countByRole(USER_ROLE.ROLE_SELLER);
-
+        status.put("totalSeller", totalOwners);
         return status;
     }
 
     public Map <String,Object> getMonthlyRevenue(String shopId) {
         Map<String,Object> revenueDate = new HashMap<>();
 
-        List<Object[]> monthlyRevenue = transactionRepository.calculateMonthlyRevenue(shopId);
+        List<Object[]> monthlyRevenue = transactionRepository.calculateMonthlyRevenue(TransactionsEnum.SUCCESS, shopId);
         List<Map<String,Object>> monthlyRevenueList = new ArrayList<>();
 
         for (Object[] result : monthlyRevenue) {
@@ -48,7 +50,5 @@ public class DashBoardServiceImpl implements DashBoardService {
         }
         revenueDate.put("monthlyRevenue", monthlyRevenueList);
         return revenueDate;
-
-
     }
 }

@@ -8,6 +8,8 @@ import com.eventflowerexchange.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
@@ -32,7 +34,7 @@ public class TransactionServiceImpl implements TransactionService {
         admin.setBalance(newBalance);
         // Transaction 03: ADMIN TO SELLER
         User owner = order.getOrderDetails().get(0).getPost().getUser();
-        Transactions transactions03 = createTransaction(owner, admin, payment, TransactionsEnum.SUCCESS, "ADMIN TO OWNER");
+        Transactions transactions03 = createTransaction(admin, owner, payment, TransactionsEnum.SUCCESS, "ADMIN TO OWNER");
         // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
         float newShopBalance = owner.getBalance() + order.getTotalMoney() * 0.8f;
         transactions03.setAmount(newShopBalance);
@@ -53,6 +55,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .to(userTo)
                 .payment(payment)
                 .status(transactionsEnum)
+                .createAt(LocalDateTime.now())
                 .description(description)
                 .build();
     }
