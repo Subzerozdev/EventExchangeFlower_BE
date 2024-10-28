@@ -55,11 +55,11 @@ public class OrderAPI {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @DeleteMapping("/orders/{id}")
+    @PutMapping("/orders/{id}")
     public ResponseEntity<Object> deleteOrder(
             @PathVariable("id") Long id
     ) {
-        orderService.cancelOrder(id);
+        orderService.updateOrderStatus(id, false);
         return new ResponseEntity<>("Delete Success", HttpStatus.OK);
     }
 

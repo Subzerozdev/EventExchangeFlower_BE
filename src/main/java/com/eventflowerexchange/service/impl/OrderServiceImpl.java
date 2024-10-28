@@ -52,13 +52,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cancelOrder(Long orderID) {
-        Order order = orderRepository.findOrderById(orderID);
-        FieldValidation.checkObjectExist(order, "Order");
-        orderRepository.delete(order);
-    }
-
-    @Override
     public Order getOrderById(Long orderID) {
         return orderRepository.findOrderById(orderID);
     }
@@ -81,10 +74,21 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void updateOrderStatus(Long orderID, Boolean status) {
         Order order = orderRepository.findOrderById(orderID);
-        if (status){
+        FieldValidation.checkObjectExist(order, "Order");
+        if (status && order.getStatus().equals(ORDER_STATUS.AWAITING_PICKUP)) {
             order.setStatus(ORDER_STATUS.COMPLETED);
-        } else {
+        } else if (!status && !order.getStatus().equals(ORDER_STATUS.COMPLETED)) {
             order.setStatus(ORDER_STATUS.CANCELLED);
+            List<OrderDetail> orderDetails = order.getOrderDetails();
+            // Set post to be displayed if not out of date
+            for (OrderDetail orderDetail : orderDetails) {
+                Post post = orderDetail.getPost();
+                if(!post.getStartDate().isBefore(LocalDateTime.now())){
+                    post.setStatus(POST_STATUS.APPROVE);
+                } else {
+                    post.setStatus(POST_STATUS.DELETED);
+                }
+            }
         }
         orderRepository.save(order);
     }

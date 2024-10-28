@@ -5,6 +5,7 @@ import com.eventflowerexchange.dto.response.PostListResponse;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
+import com.eventflowerexchange.util.FieldValidation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,7 @@ public class PostAPI {
     @GetMapping("/posts/{id}")
     public ResponseEntity<Object> getPostById(@PathVariable Long id) throws Exception {
         Post post = postService.getPostById(id);
+        FieldValidation.checkObjectExist(post, "Post");
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 

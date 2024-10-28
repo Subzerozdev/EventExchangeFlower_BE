@@ -32,30 +32,17 @@ public class PostServiceImpl implements PostService {
         Category category = categoryRepository.findCategoryById(postRequestDTO.getCategoryId());
         FieldValidation.checkObjectExist(category, "Category");
         newPost.setCategory(category);
-        // Get User by Id
+        // Get User by ID
         User user = userRepository.findUserById(userID);
         FieldValidation.checkObjectExist(user, "User");
         newPost.setUser(user);
-        // Get Type by Id
-        if (typeID != null) {
-            List<Type> existingType = typeRepository.findByIdIn(typeID);
-            if (existingType.isEmpty()) {
-                throw new DataNotFoundException("Cannot find types with ids: " + typeID);
-            }
-            newPost.setTypes(existingType);
-        }
-        // Save image to DB
-        List<PostImage> images = new ArrayList<>();
-        if (postRequestDTO.getImageUrls() != null && !postRequestDTO.getImageUrls().isEmpty()) {
-            for (String imageUrl : postRequestDTO.getImageUrls()) {
-                PostImage postImage = PostImage.builder()
-                        .imageUrl(imageUrl)
-                        .post(newPost)
-                        .build();
-                images.add(postImage);
-            }
-            newPost.setImages(images);
-        }
+        // Get Type by ID
+        List<Type> types = validateType(typeID);
+        newPost.setTypes(types);
+        // Get images
+        List<PostImage> images = validateImages(newPost, postRequestDTO.getImageUrls());
+        newPost.setImages(images);
+        // Save to DB
         return postRepository.save(newPost);
     }
 
@@ -76,36 +63,26 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
+        // Get Post
         Post existingPost = getPostById(id);
-        if (existingPost != null) {
-            if (postRequestDTO.getCategoryId() != null) {
-                Category existingCategory = categoryRepository
-                        .findById(postRequestDTO.getCategoryId())
-                        .orElseThrow(() ->
-                                new DataNotFoundException(
-                                        "Cannot find category with id: " + postRequestDTO.getCategoryId()));
-                existingPost.setCategory(existingCategory);
-            }
-
-            User existingUser = userRepository
-                    .findById(userID)
-                    .orElseThrow(() ->
-                            new DataNotFoundException(
-                                    "Cannot find user with id: " + userID));
-
-            // Get Type by Id
-            if (typeID != null) {
-                List<Type> existingType = typeRepository.findByIdIn(typeID);
-                if (existingType.isEmpty()) {
-                    throw new DataNotFoundException("Cannot find types with ids: " + typeID);
-                }
-                existingPost.setTypes(existingType);
-            }
-            // Update Post
+        // Validation
+        FieldValidation.checkObjectExist(existingPost, "Post");
+        if (existingPost.getUser().getId().equals(userID)) {
+            // Update using mapper
             postMapper.updatePost(existingPost, postRequestDTO);
-            return postRepository.save(existingPost);
+            existingPost.setStatus(POST_STATUS.PENDING);
+            // Get Category by ID
+            Category category = categoryRepository.findCategoryById(postRequestDTO.getCategoryId());
+            FieldValidation.checkObjectExist(category, "Category");
+            existingPost.setCategory(category);
+            // Get Type by ID
+            existingPost.setTypes(validateType(typeID));
+            // Get images
+            existingPost.getImages().clear();
+            existingPost.getImages().addAll(validateImages(existingPost, postRequestDTO.getImageUrls()));
         }
-        return null;
+        // Update Post to DB
+        return postRepository.save(existingPost);
     }
 
     @Override
@@ -130,11 +107,36 @@ public class PostServiceImpl implements PostService {
         // Check If Post is Existed
         FieldValidation.checkObjectExist(post, "Post");
         // Change status
-        if (status) {
+        if (status && post.getStatus().equals(POST_STATUS.PENDING)) {
             post.setStatus(POST_STATUS.APPROVE);
         } else {
             post.setStatus(POST_STATUS.DISAPPROVE);
         }
         postRepository.save(post);
+    }
+
+    private List<Type> validateType(List<Long> typeID) throws DataNotFoundException {
+        List<Type> existingType = null;
+        if (typeID != null) {
+            existingType = typeRepository.findByIdIn(typeID);
+            if (existingType.isEmpty()) {
+                throw new DataNotFoundException("Cannot find types with ids: " + typeID);
+            }
+        }
+        return existingType;
+    }
+
+    private List<PostImage> validateImages(Post post, List<String> imageUrls){
+        List<PostImage> images = new ArrayList<>();
+        if (imageUrls != null && !imageUrls.isEmpty()) {
+            for (String imageUrl : imageUrls) {
+                PostImage postImage = PostImage.builder()
+                        .imageUrl(imageUrl)
+                        .post(post)
+                        .build();
+                images.add(postImage);
+            }
+        }
+        return images;
     }
 }
