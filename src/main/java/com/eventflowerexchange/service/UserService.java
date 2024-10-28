@@ -1,5 +1,7 @@
 package com.eventflowerexchange.service;
 
+import com.eventflowerexchange.dto.OrderInformation;
+import com.eventflowerexchange.dto.PostInformation;
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
@@ -19,4 +21,6 @@ public interface UserService {
     AuthResponseDTO updateSellerToken(User user);
     void deleteUserById(String userID);
     List<User> getUsers();
+    PostInformation calculatePost(String userID);
+    OrderInformation calculateOrder(String userID);
 }

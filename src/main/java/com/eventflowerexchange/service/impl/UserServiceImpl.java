@@ -1,15 +1,18 @@
 package com.eventflowerexchange.service.impl;
 
+import com.eventflowerexchange.dto.OrderInformation;
+import com.eventflowerexchange.dto.PostInformation;
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
-import com.eventflowerexchange.entity.USER_ROLE;
-import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.exception.DuplicateEntity;
 import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
+import com.eventflowerexchange.service.OrderService;
+import com.eventflowerexchange.service.PostService;
 import com.eventflowerexchange.service.UserService;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,8 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
+    private final PostService postService;
+    private final OrderService orderService;
 
     @Override
     public String register(UserRequestDTO userRequestDTO) {
@@ -108,6 +113,40 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public PostInformation calculatePost(String userID) {
+        List<Post> posts = postService.getSellerPosts(userID);
+        int totalPost = 0;
+        int totalPostSuccess = 0;
+        for (Post post : posts) {
+            if (post.getStatus().equals(POST_STATUS.SOLD_OUT)){
+                totalPostSuccess++;
+            }
+            totalPost++;
+        }
+        return PostInformation.builder()
+                .postSold(totalPostSuccess)
+                .postTotal(totalPost)
+                .build();
+    }
+
+    @Override
+    public OrderInformation calculateOrder(String userID) {
+        List<Order> orders = orderService.getCustomerOrders(userID);
+        int totalOrder = 0;
+        int totalOrderSuccess = 0;
+        for (Order order : orders) {
+            if (order.getStatus().equals(ORDER_STATUS.COMPLETED)){
+                totalOrderSuccess++;
+            }
+            totalOrder++;
+        }
+        return OrderInformation.builder()
+                .orderSuccess(totalOrderSuccess)
+                .orderTotal(totalOrder)
+                .build();
     }
 
 

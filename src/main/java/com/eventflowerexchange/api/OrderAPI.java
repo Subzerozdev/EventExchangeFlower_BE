@@ -37,15 +37,6 @@ public class OrderAPI {
         return ResponseEntity.ok(vnPayURL);
     }
 
-    @PostMapping("/orders/{id}")
-    public ResponseEntity<Object> updateOrder(
-            @RequestBody OrderRequestDTO orderRequestDTO,
-            @PathVariable("id") Long id
-    ) {
-        Order order = orderService.updateOrder(id, orderRequestDTO);
-        return new ResponseEntity<>(order, HttpStatus.OK);
-    }
-
     @GetMapping("/orders")
     public ResponseEntity<Object> getUserOrders(
             @RequestHeader("Authorization") String jwt

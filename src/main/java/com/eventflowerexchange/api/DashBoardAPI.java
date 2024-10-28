@@ -1,6 +1,9 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.request.UserRequestDTO;
+import com.eventflowerexchange.dto.response.UserResponseDTO;
 import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.service.DashBoardService;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.UserService;
@@ -8,10 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -20,6 +20,7 @@ public class DashBoardAPI {
     private final DashBoardService dashBoardService;
     private final UserService userService;
     private final JwtService jwtService;
+    private final UserMapper userMapper;
 
     @GetMapping("/admin/status")
     public ResponseEntity<Object> getStatus() {
@@ -36,7 +37,14 @@ public class DashBoardAPI {
     @GetMapping("/admin/user")
     public ResponseEntity<Object> getUser() {
         List<User> users = userService.getUsers();
-        return ResponseEntity.ok(users);
+        List<UserResponseDTO> usersResponse = new ArrayList<>();
+        users.forEach(user -> {
+            UserResponseDTO userResponseDTO = userMapper.toUserResponseDTO(user);
+            userResponseDTO.setPostInformation(userService.calculatePost(user.getId()));
+            userResponseDTO.setOrderInformation(userService.calculateOrder(user.getId()));
+            usersResponse.add(userResponseDTO);
+        });
+        return ResponseEntity.ok(usersResponse);
     }
 
     @GetMapping("/status")

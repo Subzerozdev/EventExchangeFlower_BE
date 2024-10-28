@@ -30,7 +30,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    float balance =0;
+    private float balance =0;
 
     @Email(message = " Invalid Email !!!! ")
     @Column(unique = true)
@@ -59,9 +59,6 @@ public class User {
 
     @Column(name = "role_id")
     private USER_ROLE role;
-
-    @Column(name = "google_account_id")
-    private int googleAccountId;
 
     @JsonIgnore
     @OneToOne(mappedBy = "user")

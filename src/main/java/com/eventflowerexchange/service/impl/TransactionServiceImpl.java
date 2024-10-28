@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,23 +30,21 @@ public class TransactionServiceImpl implements TransactionService {
         User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
         Transactions transactions02 = createTransaction(user, admin, payment, TransactionsEnum.SUCCESS, "CUSTOMER TO ADMIN");
         // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
-        float newBalance = admin.getBalance() + order.getTotalMoney() * 0.20f;
+        float newBalance = admin.getBalance() + order.getTotalMoney() * 0.15f;
         transactions02.setAmount(newBalance);   // code mới thêm
         admin.setBalance(newBalance);
-        // Transaction 03: ADMIN TO SELLER
-        User owner = order.getOrderDetails().get(0).getPost().getUser();
-        Transactions transactions03 = createTransaction(admin, owner, payment, TransactionsEnum.SUCCESS, "ADMIN TO OWNER");
-        // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
-        float newShopBalance = owner.getBalance() + order.getTotalMoney() * 0.8f;
-        transactions03.setAmount(newShopBalance);
-        owner.setBalance(newShopBalance);
-        // Save balance to seller and admin
         userRepository.save(admin);
-        userRepository.save(owner);
-        // Save transactions
-        transactionRepository.save(transactions01);
-        transactionRepository.save(transactions02);
-        transactionRepository.save(transactions03);
+        // Transaction 03: ADMIN TO SELLER
+        order.getOrderDetails().forEach(orderDetail -> {
+            User owner = orderDetail.getPost().getUser();
+            Transactions transactions03 = createTransaction(admin, owner, payment, TransactionsEnum.SUCCESS, "ADMIN TO OWNER OF POST: "+orderDetail.getPost().getName());
+            // cái khúc này admin ăn tiền nè, nên sẽ có thêm field float thêm user và sau 1 đơn hàng sẽ cộng 20 phần trăm cho admin
+            float newShopBalance = owner.getBalance() + orderDetail.getPost().getPrice() * 0.85f;
+            transactions03.setAmount(newShopBalance);
+            owner.setBalance(newShopBalance);
+            transactionRepository.save(transactions03);
+            userRepository.save(owner);
+        });
     }
 
     private Transactions createTransaction(User userFrom, User userTo

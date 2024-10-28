@@ -44,14 +44,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order updateOrder(Long orderID, OrderRequestDTO orderRequestDTO) {
-        Order order = orderRepository.findOrderById(orderID);
-        FieldValidation.checkObjectExist(order, "Order");
-        orderMapper.updateOrder(order, orderRequestDTO);
-        return orderRepository.save(order);
-    }
-
-    @Override
     public Order getOrderById(Long orderID) {
         return orderRepository.findOrderById(orderID);
     }
@@ -114,12 +106,8 @@ public class OrderServiceImpl implements OrderService {
         String formattedCreateDate = createDate.format(formatter);
 
         //Chuyển dổi tiền tệ về String cho nó đúng định dạng
-        float money;
-        if (order.getPayment().getPaymentMethod().equals(PaymentEnum.VNPAY)){
-            money = order.getTotalMoney()*100;
-        } else {
-            money = order.getTotalMoney()*30;
-        }
+        float money = order.getTotalMoney()*100;
+
         String amount = String.valueOf( (int) money);
 
         String tmnCode = "BWGP25D7";
