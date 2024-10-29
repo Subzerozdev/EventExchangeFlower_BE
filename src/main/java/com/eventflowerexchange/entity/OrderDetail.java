@@ -18,7 +18,6 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int numberOfProducts;
     private Long totalMoney;
 
     @JsonIgnore

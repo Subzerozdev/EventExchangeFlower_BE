@@ -30,9 +30,7 @@ create table `shop`
 (
 	id char(36) PRIMARY KEY,
     `description` text,
-    qr_code varchar(255),
     shop_address varchar(255),
-    shop_image varchar(255),
     shop_name varchar(150),
     user_id CHAR(36) NOT NULL,
     FOREIGN KEY  (user_id) REFERENCES `users`(id)
@@ -94,7 +92,6 @@ create table `orders`
 create table `order_details`
 (
 	id INT  auto_increment not null,
-    number_of_products INT CHECK(number_of_products >0),
     total_money float check (total_money >=0),
     order_id INT NOT NULL,
     post_id INT NOT NULL,

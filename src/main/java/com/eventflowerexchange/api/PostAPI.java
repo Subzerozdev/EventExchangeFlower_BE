@@ -2,7 +2,9 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.PostRequestDTO;
 import com.eventflowerexchange.dto.response.PostListResponse;
+import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
+import com.eventflowerexchange.mapper.PostMapper;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
 import com.eventflowerexchange.util.FieldValidation;
@@ -22,6 +24,7 @@ import java.util.*;
 public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
+    private final PostMapper postMapper;
 
     @PostMapping("/api/seller/posts")
     public ResponseEntity<?> createPost(
@@ -59,7 +62,9 @@ public class PostAPI {
     public ResponseEntity<Object> getPostById(@PathVariable Long id) throws Exception {
         Post post = postService.getPostById(id);
         FieldValidation.checkObjectExist(post, "Post");
-        return new ResponseEntity<>(post, HttpStatus.OK);
+        PostResponse postResponse = postMapper.toPostResponse(post);
+        postResponse.setUserId(post.getUser().getId());
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/api/seller/posts/{id}")

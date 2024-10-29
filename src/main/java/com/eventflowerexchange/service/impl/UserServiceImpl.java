@@ -106,7 +106,9 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(String userID) {
         User user = userRepository.findUserById(userID);
         FieldValidation.checkObjectExist(user, "user");
-        user.setActive(false);
+        if (!user.getRole().equals(USER_ROLE.ROLE_ADMIN)){
+            user.setActive(false);
+        }
         userRepository.save(user);
     }
 

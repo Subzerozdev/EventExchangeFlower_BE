@@ -10,5 +10,4 @@ public class FeedbackResponse {
     String content;
     int rating;
     String email;
-
 }

@@ -1,6 +1,7 @@
 package com.eventflowerexchange.mapper;
 
 import com.eventflowerexchange.dto.request.PostRequestDTO;
+import com.eventflowerexchange.dto.response.PostResponse;
 import com.eventflowerexchange.entity.Post;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -9,4 +10,5 @@ import org.mapstruct.MappingTarget;
 public interface PostMapper {
     Post toPost(PostRequestDTO postRequestDTO);
     void updatePost(@MappingTarget Post post, PostRequestDTO postRequestDTO);
+    PostResponse toPostResponse(Post post);
 }

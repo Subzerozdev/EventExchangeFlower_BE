@@ -23,8 +23,7 @@ public class OrderDetailServiceImpl implements OrderDetailService {
         orderDetails.forEach(orderDetail -> {
             Post post = postRepository.findPostById(orderDetail.getPostID());
             OrderDetail orderDetailSaved = OrderDetail.builder()
-                    .numberOfProducts(orderDetail.getNumberOfProducts())
-                    .totalMoney(post.getPrice()*orderDetail.getNumberOfProducts())
+                    .totalMoney(post.getPrice())
                     .post(post)
                     .order(order)
                     .build();

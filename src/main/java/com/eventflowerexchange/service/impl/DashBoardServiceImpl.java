@@ -25,7 +25,6 @@ public class DashBoardServiceImpl implements DashBoardService {
         // đếm số lượng sản phẩm trong hệ thống
         long totalPosts = postRepository.count();
         status.put("totalPosts", totalPosts);
-
         // số lượng customer
         long totalUsers = userRepository.countByRole(USER_ROLE.ROLE_CUSTOMER);
         status.put("totalCustomers", totalUsers);
