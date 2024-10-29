@@ -44,4 +44,10 @@ public class ShopServiceImpl implements ShopService {
         Post post = orderDetail.getPost();
         return shopRepository.findShopByUser(post.getUser()).getId();
     }
+
+    @Override
+    public Shop getShopById(String shopId) {
+        return shopRepository.findShopById(shopId);
+    }
+
 }

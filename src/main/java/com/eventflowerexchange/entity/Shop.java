@@ -25,7 +25,8 @@ public class Shop {
     @JsonIgnore
     @OneToOne
     private User user;
-    // 1 shop có thể có nhiều feedbacks
+
+    @JsonIgnore
     @OneToMany(mappedBy = "shop")
     Set<Feedback> shop_feedbacks;
 }

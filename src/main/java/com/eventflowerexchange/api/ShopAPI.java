@@ -34,12 +34,11 @@ public class ShopAPI {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/shop/{id}")
+    @GetMapping("/seller/shop")
     public ResponseEntity<Object> getShopBySellerId(
-            @PathVariable String id
+            @RequestHeader("Authorization") String jwt
     ) {
-        User user = userService.findUserById(id);
-        FieldValidation.checkObjectExist(user, "User");
+        User user = jwtService.getUserFromJwtToken(jwt);
         Shop shop = shopService.getSellerShop(user);
         return ResponseEntity.ok(shop);
     }
@@ -54,12 +53,20 @@ public class ShopAPI {
         return ResponseEntity.ok(shop);
     }
 
-    @GetMapping("/order/shop/{id}")
-    public ResponseEntity<Object> getSellerShopByOrderId(
-            @PathVariable Long id
-    ) {
-        String shopId = shopService.getShopIdByOrderId(id);
-        return ResponseEntity.ok(shopId);
-    }
+//    @GetMapping("/order/shop/{id}")
+//    public ResponseEntity<Object> getSellerShopByOrderId(
+//            @PathVariable Long id
+//    ) {
+//        String shopId = shopService.getShopIdByOrderId(id);
+//        return ResponseEntity.ok(shopId);
+//    }
 
+//    @GetMapping("/shop/posts/{id}")
+//    public ResponseEntity<Object> getShopPosts(
+//            @PathVariable String id
+//    ) {
+//        Shop shop = shopService.getShopById(id);
+//        List<Post> posts = postService.getSellerPosts(shop.getUser().getId());
+//        return new ResponseEntity<>(posts, HttpStatus.OK);
+//    }
 }

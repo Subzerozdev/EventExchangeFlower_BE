@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,6 +36,17 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public List<FeedbackResponse> getFeedback(String shopId) {
-        return feedbackRepository.findFeedbackByShopId(shopId);
+        List<Feedback> feedbacks = feedbackRepository.findFeedbacksByShopId(shopId);
+        List<FeedbackResponse> feedbackResponses = new ArrayList<>();
+        feedbacks.forEach(feedback -> {
+            FeedbackResponse feedbackResponse = FeedbackResponse.builder()
+                    .id(feedback.getId())
+                    .content(feedback.getContent())
+                    .rating(feedback.getRating())
+                    .email(feedback.getCustomer().getEmail())
+                    .build();
+            feedbackResponses.add(feedbackResponse);
+        });
+        return feedbackResponses;
     }
 }
