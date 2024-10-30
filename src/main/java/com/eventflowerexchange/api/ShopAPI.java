@@ -54,13 +54,13 @@ public class ShopAPI {
 
     // User can view shop of seller by order id
     // FE not implement (because of time)
-//    @GetMapping("/order/shop/{id}")
-//    public ResponseEntity<Object> getSellerShopByOrderId(
-//            @PathVariable Long id
-//    ) {
-//        String shopId = shopService.getShopIdByOrderId(id);
-//        return ResponseEntity.ok(shopId);
-//    }
+    @GetMapping("/order/shop/{id}")
+    public ResponseEntity<Object> getSellerShopByOrderId(
+            @PathVariable Long id
+    ) {
+        String shopId = shopService.getShopIdByOrderId(id);
+        return ResponseEntity.ok(shopId);
+    }
 
     // User can view shop of seller by seller id (fe get from post)
     // FE not implement (because of time)

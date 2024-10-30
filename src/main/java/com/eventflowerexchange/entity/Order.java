@@ -46,5 +46,8 @@ public class Order {
 
     @JsonIgnore
     @OneToOne(mappedBy = "order")
-    Payment payment;
+    private Payment payment;
+
+    @JsonIgnore
+    private int feeId;
 }

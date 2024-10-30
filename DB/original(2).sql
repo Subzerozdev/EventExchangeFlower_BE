@@ -10,6 +10,13 @@ insert into `roles`(id,name) value(0,"Admin");
 insert into `roles`(id,name) value(1,"Seller");
 insert into `roles`(id,name) value(2,"Customer");
 
+CREATE TABLE fee (
+	id int AUTO_INCREMENT PRIMARY KEY ,
+    `type` nvarchar(50),
+    amount float default 0.0
+);
+insert into `fee`(id,`type`,amount) value(1,"Flatform Fee",0.0);
+
 create table `users`
 (
 	id CHAR(36) NOT NULL PRIMARY KEY,
@@ -85,6 +92,8 @@ create table `orders`
     order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 	total_money FLOAT CHECK (total_money >=0),
     `status` VARCHAR(50) ,
+	fee_id int,
+   FOREIGN KEY (fee_id) REFERENCES `fee`(id),
 	user_id CHAR(36),
    FOREIGN KEY (user_id) REFERENCES `users`(id)
 );
@@ -161,4 +170,5 @@ CREATE TABLE feedback (
     FOREIGN KEY (customer_id) REFERENCES users(id),    
 	shop_id CHAR(36),
     FOREIGN KEY (shop_id) REFERENCES shop(id)
-)
+);
+

@@ -33,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.toOrder(orderRequestDTO);
         // Set other fields
         order.setOrderDate(LocalDateTime.now());
+        order.setFeeId(1);
         order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
         order.setUser(user);
         orderRepository.save(order);
