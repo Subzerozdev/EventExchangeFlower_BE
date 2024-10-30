@@ -78,9 +78,9 @@ public class User {
 
     @JsonIgnore
     @OneToMany (mappedBy = "from")
-    Set<Transactions> transactionsFrom;
+    private Set<Transactions> transactionsFrom;
 
     @JsonIgnore
     @OneToMany (mappedBy = "to")
-    Set<Transactions> transactionsTo;
+    private Set<Transactions> transactionsTo;
 }

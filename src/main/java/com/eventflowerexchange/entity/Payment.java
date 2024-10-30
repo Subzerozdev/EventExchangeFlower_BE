@@ -21,18 +21,18 @@ public class Payment {
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @JsonProperty("create_at")
     private LocalDateTime createAt;
 
     private PaymentEnum paymentMethod;
 
-    float total;
+    private float total;
     @OneToOne
     @JoinColumn(name = "order_id")
-    Order order;
+    private Order order;
 
     @OneToMany(mappedBy = "payment")
-    Set<Transactions> transactions;
+    private Set<Transactions> transactions;
 }

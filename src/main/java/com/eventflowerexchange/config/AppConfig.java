@@ -112,7 +112,7 @@ public class AppConfig {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void scheduleTaskWithCronExpression() {
-        List<Post> posts = postRepository.findPostsByStartDateIsBefore(LocalDateTime.now().plusDays(1));
+        List<Post> posts = postRepository.findPostsByStartDateIsBeforeAndStatusEquals(LocalDateTime.now().plusDays(1), POST_STATUS.APPROVE);
         posts.forEach(post -> {
             post.setStatus(POST_STATUS.DELETED);
             postRepository.save(post);

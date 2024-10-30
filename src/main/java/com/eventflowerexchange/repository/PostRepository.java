@@ -1,5 +1,6 @@
 package com.eventflowerexchange.repository;
 
+import com.eventflowerexchange.entity.POST_STATUS;
 import com.eventflowerexchange.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.*;
@@ -13,5 +14,5 @@ public interface PostRepository extends JpaRepository<Post, Long>,
     Post findPostById(Long id);
     List<Post> findPostsByUserId(String sellerID);
     Page<Post> findAll(Pageable pageable);
-    List<Post> findPostsByStartDateIsBefore(LocalDateTime expiredDate);
+    List<Post> findPostsByStartDateIsBeforeAndStatusEquals(LocalDateTime expiredDate, POST_STATUS status);
 }

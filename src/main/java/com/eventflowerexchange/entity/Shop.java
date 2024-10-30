@@ -28,5 +28,5 @@ public class Shop {
 
     @JsonIgnore
     @OneToMany(mappedBy = "shop")
-    Set<Feedback> shop_feedbacks;
+    private Set<Feedback> shop_feedbacks;
 }

@@ -21,11 +21,11 @@ public class Feedback {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    User customer;
+    private User customer;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "shop_id")
-    Shop shop;
+    private Shop shop;
 
 }

@@ -15,19 +15,19 @@ import java.time.LocalDateTime;
 public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "from_id")
-    User from;
+    private User from;
 
     @ManyToOne
     @JoinColumn(name = "to_id")
-    User to;
+    private User to;
 
     @ManyToOne
     @JoinColumn(name = "payment_id")
-    Payment payment;
+    private Payment payment;
 
     private TransactionsEnum status;
 

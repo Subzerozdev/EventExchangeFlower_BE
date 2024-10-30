@@ -2,7 +2,7 @@ create database eventflowerexchange;
 use eventflowerexchange;
 create table `roles`
 (
-	id INT NOT NULL PRIMARY KEY,
+	id TINYINT NOT NULL PRIMARY KEY,
     name NVARCHAR(50) NOT  NULL
 );
 
@@ -29,7 +29,7 @@ create table `users`
 	created_at DATETIME  default current_timestamp,
     updated_at DATETIME   default current_timestamp,
     is_active bit default 0,
-    role_id INT default 3,
+    role_id TINYINT default 3,
      FOREIGN KEY (role_id) REFERENCES `roles`(id)
 );
 
@@ -74,7 +74,7 @@ create table `posts`
 
 CREATE TABLE post_images (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    post_id INT, -- CHỈ RA BỨC ẢNH NÀY SẼ THUỘC SẢN PHẨM NÀO
+    post_id BIGINT, -- CHỈ RA BỨC ẢNH NÀY SẼ THUỘC SẢN PHẨM NÀO
      CONSTRAINT fk_post_images_post_id
      FOREIGN KEY (post_id) REFERENCES  posts(id) ON DELETE CASCADE, -- posts xóa thì image sẽ bị xóa theo
      image_url VARCHAR(300)
@@ -102,8 +102,8 @@ create table `order_details`
 (
 	id BIGINT auto_increment not null,
     total_money float check (total_money >=0),
-    order_id INT NOT NULL,
-    post_id INT NOT NULL,
+    order_id BIGINT NOT NULL,
+    post_id BIGINT NOT NULL,
     primary key (id, order_id, post_id),
     foreign key (order_id) references `orders`(id),
     foreign key (post_id) references `posts`(id)
@@ -112,8 +112,8 @@ create table `order_details`
 create table `typeandpost`
 (
 	id BIGint auto_increment not null,
-    type_id INT NOT NULL,
-    post_id INT NOT NULL,
+    type_id BIGINT NOT NULL,
+    post_id BIGINT NOT NULL,
     primary key (id, type_id, post_id),
     foreign key (type_id) references `types`(id),
     foreign key (post_id) references `posts`(id)
@@ -144,7 +144,7 @@ CREATE TABLE payment(
 	create_at datetime,
 	`payment_method` INT DEFAULT 0,
     total FLOAT CHECK (total >=0),
-	order_id INT,
+	order_id BIGINT,
 	FOREIGN KEY (order_id) REFERENCES orders(id)
 );
 
@@ -156,7 +156,7 @@ CREATE TABLE transactions (
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),
     FOREIGN KEY (to_id) REFERENCES users(id),
-    payment_id INT,
+    payment_id BIGINT,
     FOREIGN KEY (payment_id) REFERENCES payment(id),
 	`status` INT DEFAULT 0,
 	`description` VARCHAR(50)
