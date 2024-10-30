@@ -114,7 +114,7 @@ public class OrderServiceImpl implements OrderService {
         String tmnCode = "BWGP25D7";
         String secretKey = "N4UOZEEJMHX04953JVHQ3Z0SIU5ESVE0";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://localhost:5173/loadingPage?orderID=" + order.getId();
+        String returnUrl = "https://flowershop-ten.vercel.app/loadingPage?orderID=" + order.getId();
         String currCode = "VND";
 
         Map<String, String> vnpParams = new TreeMap<>();
