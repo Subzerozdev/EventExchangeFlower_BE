@@ -51,13 +51,13 @@ create table `eventcategories`
 
 create table `types`
 (
-	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+	id BIGINT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
     name NVARCHAR(100)
 );
 
 create table `posts`
 (
-	id INT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
+	id BIGINT AUTO_INCREMENT NOT  NULL PRIMARY KEY,
 	name VARCHAR(350) COMMENT 'Tên sản phẩm',
     `description` LONGTEXT ,
     thumbnail VARCHAR(300) ,
@@ -73,7 +73,7 @@ create table `posts`
 );
 
 CREATE TABLE post_images (
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
     post_id INT, -- CHỈ RA BỨC ẢNH NÀY SẼ THUỘC SẢN PHẨM NÀO
      CONSTRAINT fk_post_images_post_id
      FOREIGN KEY (post_id) REFERENCES  posts(id) ON DELETE CASCADE, -- posts xóa thì image sẽ bị xóa theo
@@ -83,7 +83,7 @@ CREATE TABLE post_images (
 
 create table `orders`
 (
-	id INT NOT NULL auto_increment PRIMARY KEY,
+	id BIGINT NOT NULL auto_increment PRIMARY KEY,
 	full_name VARCHAR(100) NOT NULL DEFAULT '',
 	phone_number VARCHAR(20) NOT NULL,
 	email VARCHAR(100) NOT NULL DEFAULT '',
@@ -100,7 +100,7 @@ create table `orders`
 
 create table `order_details`
 (
-	id INT  auto_increment not null,
+	id BIGINT auto_increment not null,
     total_money float check (total_money >=0),
     order_id INT NOT NULL,
     post_id INT NOT NULL,
@@ -111,7 +111,7 @@ create table `order_details`
 
 create table `typeandpost`
 (
-	id int auto_increment not null,
+	id BIGint auto_increment not null,
     type_id INT NOT NULL,
     post_id INT NOT NULL,
     primary key (id, type_id, post_id),
@@ -121,7 +121,7 @@ create table `typeandpost`
 
 create table OTPEmail
 (
-id int auto_increment not null primary key,
+id bigint auto_increment not null primary key,
 OTP int not null,
 expiry_date datetime,
 user_id CHAR(36) ,
@@ -140,7 +140,7 @@ foreign key (user_id) references `users`(id)
 -- );
 
 CREATE TABLE payment(
-	id INT PRIMARY KEY AUTO_INCREMENT,
+	id BIGINT PRIMARY KEY AUTO_INCREMENT,
 	create_at datetime,
 	`payment_method` INT DEFAULT 0,
     total FLOAT CHECK (total >=0),
@@ -149,7 +149,7 @@ CREATE TABLE payment(
 );
 
 CREATE TABLE transactions (
-	id int AUTO_INCREMENT PRIMARY KEY ,
+	id bigint AUTO_INCREMENT PRIMARY KEY ,
     create_at datetime,
     amount FLOAT CHECK (amount >=0),
     from_id CHAR(36),
@@ -163,7 +163,7 @@ CREATE TABLE transactions (
 );
 
 CREATE TABLE feedback (
-	id int AUTO_INCREMENT PRIMARY KEY ,
+	id bigint AUTO_INCREMENT PRIMARY KEY ,
     content nvarchar(200),
     rating int not null,
 	customer_id CHAR(36),
