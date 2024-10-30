@@ -32,9 +32,9 @@ public class AuthAPI {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<String> password(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        String response = userService.getUserIdByEmail(userRequestDTO.getEmail());
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<String> getUserIdByEmail(@Valid @RequestBody UserRequestDTO userRequestDTO) {
+        String userID = userService.getUserIdByEmail(userRequestDTO.getEmail());
+        return new ResponseEntity<>(userID, HttpStatus.OK);
     }
 
 }

@@ -1,7 +1,5 @@
 package com.eventflowerexchange.api;
 
-import com.eventflowerexchange.config.BankingConfig;
-import com.eventflowerexchange.dto.response.PaymentResponseDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PostRepository;
@@ -13,10 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController

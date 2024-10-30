@@ -31,7 +31,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedback.setRating(feedbackRequestDTO.getRating());
         feedback.setCustomer(user);
         feedback.setShop(shop);
-        return feedbackRepository.save(feedback); // lưu xuống DB
+        return feedbackRepository.save(feedback);
     }
 
     @Override

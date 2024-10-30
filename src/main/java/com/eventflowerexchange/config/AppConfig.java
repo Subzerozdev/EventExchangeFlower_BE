@@ -1,13 +1,18 @@
 package com.eventflowerexchange.config;
 
+import com.eventflowerexchange.entity.POST_STATUS;
+import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -21,12 +26,15 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableScheduling
 public class AppConfig {
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
     public static final String[] WHITELIST = {
             "/auth/**", "/verification/**", "/categories", "/posts", "/types"
     };
@@ -100,5 +108,14 @@ public class AppConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void scheduleTaskWithCronExpression() {
+        List<Post> posts = postRepository.findPostsByStartDateIsBefore(LocalDateTime.now().plusDays(1));
+        posts.forEach(post -> {
+            post.setStatus(POST_STATUS.DELETED);
+            postRepository.save(post);
+        });
     }
 }

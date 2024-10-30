@@ -8,6 +8,6 @@ public interface ShopService {
     Shop createSellerShop(User user, ShopRequestDTO shopRequestDTO);
     Shop updateSellerShop(User user, ShopRequestDTO shopRequestDTO);
     Shop getSellerShop(User user);
-    String getShopIdByOrderId(Long orderId);
-    Shop getShopById(String shopId);
+//    String getShopIdByOrderId(Long orderId);
+//    Shop getShopById(String shopId);
 }

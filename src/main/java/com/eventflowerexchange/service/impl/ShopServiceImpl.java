@@ -37,17 +37,17 @@ public class ShopServiceImpl implements ShopService {
         return shopRepository.findShopByUser(user);
     }
 
-    @Override
-    public String getShopIdByOrderId(Long orderId) {
-        Order order = orderService.getOrderById(orderId);
-        OrderDetail orderDetail = order.getOrderDetails().get(0);
-        Post post = orderDetail.getPost();
-        return shopRepository.findShopByUser(post.getUser()).getId();
-    }
-
-    @Override
-    public Shop getShopById(String shopId) {
-        return shopRepository.findShopById(shopId);
-    }
+//    @Override
+//    public String getShopIdByOrderId(Long orderId) {
+//        Order order = orderService.getOrderById(orderId);
+//        OrderDetail orderDetail = order.getOrderDetails().get(0);
+//        Post post = orderDetail.getPost();
+//        return shopRepository.findShopByUser(post.getUser()).getId();
+//    }
+//
+//    @Override
+//    public Shop getShopById(String shopId) {
+//        return shopRepository.findShopById(shopId);
+//    }
 
 }

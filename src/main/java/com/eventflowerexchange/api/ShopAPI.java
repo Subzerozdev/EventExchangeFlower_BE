@@ -7,7 +7,6 @@ import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.ShopService;
 import com.eventflowerexchange.service.UserService;
-import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +52,8 @@ public class ShopAPI {
         return ResponseEntity.ok(shop);
     }
 
+    // User can view shop of seller by order id
+    // FE not implement (because of time)
 //    @GetMapping("/order/shop/{id}")
 //    public ResponseEntity<Object> getSellerShopByOrderId(
 //            @PathVariable Long id
@@ -61,6 +62,8 @@ public class ShopAPI {
 //        return ResponseEntity.ok(shopId);
 //    }
 
+    // User can view shop of seller by seller id (fe get from post)
+    // FE not implement (because of time)
 //    @GetMapping("/shop/posts/{id}")
 //    public ResponseEntity<Object> getShopPosts(
 //            @PathVariable String id

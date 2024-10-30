@@ -10,6 +10,7 @@ import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,6 +28,8 @@ public class PostServiceImpl implements PostService {
     public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
         // Create Post
         Post newPost = postMapper.toPost(postRequestDTO);
+        newPost.setStartDate(postRequestDTO.getStartDate().plusDays(1));
+        newPost.setEndDate(postRequestDTO.getEndDate().plusDays(1));
         newPost.setStatus(POST_STATUS.PENDING);
         // Get Category by ID
         Category category = categoryRepository.findCategoryById(postRequestDTO.getCategoryId());

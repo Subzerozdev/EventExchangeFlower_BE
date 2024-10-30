@@ -102,6 +102,8 @@ public class PostAPI {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
+    // User can view all post that is selling by seller
+    // FE not implement (because of time)
     @GetMapping("/api/posts/{id}")
     public ResponseEntity<Object> getPostBySellerId(
             @PathVariable String id

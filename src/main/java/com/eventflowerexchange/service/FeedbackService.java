@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface FeedbackService {
     Feedback createNewFeedback(FeedbackRequestDTO feedbackRequestDTO, User user);
-    List<FeedbackResponse> getFeedback(String shopId );
+    List<FeedbackResponse> getFeedback(String shopId);
 }

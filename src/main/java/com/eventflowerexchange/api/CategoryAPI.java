@@ -39,7 +39,6 @@ public class CategoryAPI {
         return ResponseEntity.ok("Insert category successfully");
     }
 
-    // Hiển thị tất cả các categories.
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
