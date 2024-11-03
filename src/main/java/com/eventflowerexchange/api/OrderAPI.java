@@ -105,8 +105,10 @@ public class OrderAPI {
     ){
         Order order = orderService.getOrderById(orderId);
         FieldValidation.checkObjectExist(order, "Order");
-        order.setStatus(ORDER_STATUS.PICKED_UP);
-        orderRepository.save(order);
+        if (order.getStatus().equals(ORDER_STATUS.AWAITING_PICKUP)) {
+            order.setStatus(ORDER_STATUS.PICKED_UP);
+            orderRepository.save(order);
+        }
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 }
