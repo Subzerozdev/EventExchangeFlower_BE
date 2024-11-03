@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
     public void updateOrderStatus(Long orderID, Boolean status) {
         Order order = orderRepository.findOrderById(orderID);
         FieldValidation.checkObjectExist(order, "Order");
-        if (status && order.getStatus().equals(ORDER_STATUS.AWAITING_PICKUP)) {
+        if (status && order.getStatus().equals(ORDER_STATUS.PICKED_UP)) {
             order.setStatus(ORDER_STATUS.COMPLETED);
         }
         orderRepository.save(order);

@@ -3,9 +3,11 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.dto.SellerInformation;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.dto.response.OrderDetailResponseDTO;
+import com.eventflowerexchange.entity.ORDER_STATUS;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.OrderDetail;
 import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.service.*;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class OrderAPI {
     private final OrderDetailService orderDetailService;
     private final TransactionService transactionService;
     private final FeeService feeService;
+    private final OrderRepository orderRepository;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -45,14 +48,6 @@ public class OrderAPI {
         List<Order> orders = orderService.getCustomerOrders(user.getId());
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
-
-//    @PutMapping("/orders/{id}")
-//    public ResponseEntity<Object> deleteOrder(
-//            @PathVariable("id") Long id
-//    ) {
-//        orderService.updateOrderStatus(id, false);
-//        return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-//    }
 
     @GetMapping("/orders/{id}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable("id") Long id) {
@@ -101,7 +96,17 @@ public class OrderAPI {
         Order order = orderService.getOrderById(orderID);
         FieldValidation.checkObjectExist(order, "Order");
         transactionService.createTransactions(order);
-        return new ResponseEntity<>(" Success", HttpStatus.OK);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
+    @PutMapping("/receive/{orderId}")
+    public ResponseEntity<Object> receiveOrder(
+            @PathVariable Long orderId
+    ){
+        Order order = orderService.getOrderById(orderId);
+        FieldValidation.checkObjectExist(order, "Order");
+        order.setStatus(ORDER_STATUS.PICKED_UP);
+        orderRepository.save(order);
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
 }
