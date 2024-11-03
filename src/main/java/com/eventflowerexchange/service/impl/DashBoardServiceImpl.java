@@ -34,20 +34,23 @@ public class DashBoardServiceImpl implements DashBoardService {
         return status;
     }
 
-    public Map <String,Object> getMonthlyRevenue(String shopId) {
+    public Map <String,Object> getMonthlyRevenue(String userID) {
         Map<String,Object> revenueDate = new HashMap<>();
 
-        List<Object[]> monthlyRevenue = transactionRepository.calculateMonthlyRevenue(TransactionsEnum.SUCCESS, shopId);
+        List<Object[]> monthlyRevenue = transactionRepository.calculateMonthlyRevenue(TransactionsEnum.SUCCESS, userID);
         List<Map<String,Object>> monthlyRevenueList = new ArrayList<>();
 
+        float totalBalance = 0.0f;
         for (Object[] result : monthlyRevenue) {
             Map<String,Object> monthData = new HashMap<>();
             monthData.put("year", result[0]);
             monthData.put("month", result[1]);
             monthData.put("revenue", result[2]);
+            totalBalance += Float.parseFloat(result[2].toString());
             monthlyRevenueList.add(monthData);
         }
         revenueDate.put("monthlyRevenue", monthlyRevenueList);
+        revenueDate.put("totalBalance", totalBalance);
         return revenueDate;
     }
 }

@@ -24,8 +24,8 @@ public class PaymentAPI {
     public ResponseEntity<Object> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
         String orderID = request.getParameter("orderID");
+        Order order = orderRepository.findOrderById(Long.parseLong(orderID));
         if (status.equals("00")) {
-            Order order = orderRepository.findOrderById(Long.parseLong(orderID));
             order.setStatus(ORDER_STATUS.AWAITING_PICKUP);
             orderRepository.save(order);
             List<OrderDetail> orderDetails = order.getOrderDetails();
@@ -36,6 +36,8 @@ public class PaymentAPI {
             }
             return new ResponseEntity<>("Order Successfully", HttpStatus.OK);
         } else {
+            order.setStatus(ORDER_STATUS.CANCELLED);
+            orderRepository.save(order);
             return new ResponseEntity<>("Order failed", HttpStatus.BAD_REQUEST);
         }
     }

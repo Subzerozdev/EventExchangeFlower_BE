@@ -1,6 +1,5 @@
 package com.eventflowerexchange.api;
 
-import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.dto.response.UserResponseDTO;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.mapper.UserMapper;
@@ -40,8 +39,6 @@ public class DashBoardAPI {
         List<UserResponseDTO> usersResponse = new ArrayList<>();
         users.forEach(user -> {
             UserResponseDTO userResponseDTO = userMapper.toUserResponseDTO(user);
-            userResponseDTO.setPostInformation(userService.calculatePost(user.getId()));
-            userResponseDTO.setOrderInformation(userService.calculateOrder(user.getId()));
             usersResponse.add(userResponseDTO);
         });
         return ResponseEntity.ok(usersResponse);

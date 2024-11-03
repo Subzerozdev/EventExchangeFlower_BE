@@ -1,13 +1,12 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.SellerInformation;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
+import com.eventflowerexchange.dto.response.OrderDetailResponseDTO;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.OrderDetail;
 import com.eventflowerexchange.entity.User;
-import com.eventflowerexchange.service.JwtService;
-import com.eventflowerexchange.service.OrderDetailService;
-import com.eventflowerexchange.service.OrderService;
-import com.eventflowerexchange.service.TransactionService;
+import com.eventflowerexchange.service.*;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +23,7 @@ public class OrderAPI {
     private final JwtService jwtService;
     private final OrderDetailService orderDetailService;
     private final TransactionService transactionService;
+    private final FeeService feeService;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -46,18 +46,34 @@ public class OrderAPI {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @PutMapping("/orders/{id}")
-    public ResponseEntity<Object> deleteOrder(
-            @PathVariable("id") Long id
-    ) {
-        orderService.updateOrderStatus(id, false);
-        return new ResponseEntity<>("Delete Success", HttpStatus.OK);
-    }
+//    @PutMapping("/orders/{id}")
+//    public ResponseEntity<Object> deleteOrder(
+//            @PathVariable("id") Long id
+//    ) {
+//        orderService.updateOrderStatus(id, false);
+//        return new ResponseEntity<>("Delete Success", HttpStatus.OK);
+//    }
 
     @GetMapping("/orders/{id}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable("id") Long id) {
+        // Get order
+        Order order = orderService.getOrderById(id);
+        // Get order details of order
         List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderId(id);
-        return new ResponseEntity<>(orderDetails, HttpStatus.OK);
+        // Get seller info
+        User seller = orderDetails.get(0).getPost().getUser();
+        SellerInformation sellerInformation = SellerInformation.builder()
+                .email(seller.getEmail())
+                .phone(seller.getPhone())
+                .build();
+        // Build response
+        OrderDetailResponseDTO orderDetailResponseDTO = OrderDetailResponseDTO.builder()
+                .order(order)
+                .orderDetail(orderDetails)
+                .sellerInformation(sellerInformation)
+                .totalFee(feeService.getFeeAmountById(order.getFeeId())*order.getTotalMoney())
+                .build();
+        return new ResponseEntity<>(orderDetailResponseDTO, HttpStatus.OK);
     }
 
     @GetMapping("/seller/orders")
@@ -87,4 +103,5 @@ public class OrderAPI {
         transactionService.createTransactions(order);
         return new ResponseEntity<>(" Success", HttpStatus.OK);
     }
+
 }

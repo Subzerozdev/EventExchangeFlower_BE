@@ -17,4 +17,5 @@ public interface TransactionRepository extends JpaRepository<Transactions, Long>
     List<Object[]> calculateMonthlyRevenue(
             @Param("status") TransactionsEnum status,
             @Param("shop_id") String shop_id);
+
 }

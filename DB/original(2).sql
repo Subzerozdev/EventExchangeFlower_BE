@@ -6,20 +6,15 @@ create table `roles`
     name NVARCHAR(50) NOT  NULL
 );
 
-insert into `roles`(id,name) value(0,"Admin");
-insert into `roles`(id,name) value(1,"Seller");
-insert into `roles`(id,name) value(2,"Customer");
-
 CREATE TABLE fee (
 	id int AUTO_INCREMENT PRIMARY KEY ,
     `type` nvarchar(50),
     amount float default 0.0
 );
-insert into `fee`(id,`type`,amount) value(1,"Flatform Fee",0.0);
 
 create table `users`
 (
-	id CHAR(36) NOT NULL PRIMARY KEY,
+	id CHAR(36) DEFAULT(UUID()) PRIMARY KEY,
 	balance float,
     email nvarchar(100) NOT  NULL unique,
     `password` nvarchar(100) NOT  NULL,
@@ -35,7 +30,7 @@ create table `users`
 
 create table `shop`
 (
-	id char(36) PRIMARY KEY,
+	id char(36) DEFAULT(UUID()) PRIMARY KEY,
     `description` text,
     shop_address varchar(255),
     shop_name varchar(150),

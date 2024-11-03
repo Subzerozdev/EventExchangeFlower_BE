@@ -1,7 +1,5 @@
 package com.eventflowerexchange.service.impl;
 
-import com.eventflowerexchange.dto.OrderInformation;
-import com.eventflowerexchange.dto.PostInformation;
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
@@ -116,41 +114,6 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
-
-    @Override
-    public PostInformation calculatePost(String userID) {
-        List<Post> posts = postService.getSellerPosts(userID);
-        int totalPost = 0;
-        int totalPostSuccess = 0;
-        for (Post post : posts) {
-            if (post.getStatus().equals(POST_STATUS.SOLD_OUT)){
-                totalPostSuccess++;
-            }
-            totalPost++;
-        }
-        return PostInformation.builder()
-                .postSold(totalPostSuccess)
-                .postTotal(totalPost)
-                .build();
-    }
-
-    @Override
-    public OrderInformation calculateOrder(String userID) {
-        List<Order> orders = orderService.getCustomerOrders(userID);
-        int totalOrder = 0;
-        int totalOrderSuccess = 0;
-        for (Order order : orders) {
-            if (order.getStatus().equals(ORDER_STATUS.COMPLETED)){
-                totalOrderSuccess++;
-            }
-            totalOrder++;
-        }
-        return OrderInformation.builder()
-                .orderSuccess(totalOrderSuccess)
-                .orderTotal(totalOrder)
-                .build();
-    }
-
 
     @Override
     public User updateUserById(String userID, UpdateRequestDTO updateRequestDTO) {

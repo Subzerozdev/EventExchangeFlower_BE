@@ -1,5 +1,6 @@
 package com.eventflowerexchange.repository;
 
+import com.eventflowerexchange.entity.ORDER_STATUS;
 import com.eventflowerexchange.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +16,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "JOIN Post p ON od.post.id = p.id " +
             "WHERE p.user.id = ?1 ")
     List<Order> findOrdersBySeller(String sellerID);
-
+    List<Order> findOrdersByStatusIsNot(ORDER_STATUS status);
 }

@@ -51,7 +51,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+        return orderRepository.findOrdersByStatusIsNot(ORDER_STATUS.CANCELLED);
     }
 
     @Override
@@ -70,18 +70,6 @@ public class OrderServiceImpl implements OrderService {
         FieldValidation.checkObjectExist(order, "Order");
         if (status && order.getStatus().equals(ORDER_STATUS.AWAITING_PICKUP)) {
             order.setStatus(ORDER_STATUS.COMPLETED);
-        } else if (!status && !order.getStatus().equals(ORDER_STATUS.COMPLETED)) {
-            order.setStatus(ORDER_STATUS.CANCELLED);
-            List<OrderDetail> orderDetails = order.getOrderDetails();
-            // Set post to be displayed if not out of date
-            for (OrderDetail orderDetail : orderDetails) {
-                Post post = orderDetail.getPost();
-                if(!post.getStartDate().isBefore(LocalDateTime.now())){
-                    post.setStatus(POST_STATUS.APPROVE);
-                } else {
-                    post.setStatus(POST_STATUS.DELETED);
-                }
-            }
         }
         orderRepository.save(order);
     }

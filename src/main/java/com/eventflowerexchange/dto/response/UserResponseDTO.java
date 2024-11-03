@@ -1,7 +1,5 @@
 package com.eventflowerexchange.dto.response;
 
-import com.eventflowerexchange.dto.OrderInformation;
-import com.eventflowerexchange.dto.PostInformation;
 import com.eventflowerexchange.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +21,4 @@ public class UserResponseDTO {
     private LocalDateTime updatedAt;
     private boolean isActive;
     private USER_ROLE role;
-    private PostInformation postInformation;
-    private OrderInformation orderInformation;
 }

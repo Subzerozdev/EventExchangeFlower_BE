@@ -1,6 +1,7 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
+import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.entity.Fee;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.service.FeeService;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,7 +35,15 @@ public class AdminAPI {
     @GetMapping("/orders")
     public ResponseEntity<Object> getAllOrders() {
         List<Order> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        List<OrderResponseDTO> ordersResponse = new ArrayList<>();
+        for (Order order : orders) {
+            OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
+                    .order(order)
+                    .totalFee(feeService.getFeeAmountById(order.getFeeId())* order.getTotalMoney())
+                    .build();
+            ordersResponse.add(orderResponseDTO);
+        }
+        return new ResponseEntity<>(ordersResponse, HttpStatus.OK);
     }
 
     @GetMapping("/fee")
