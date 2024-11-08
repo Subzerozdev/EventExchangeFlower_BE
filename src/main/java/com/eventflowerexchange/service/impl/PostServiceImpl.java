@@ -109,10 +109,12 @@ public class PostServiceImpl implements PostService {
         // Check If Post is Existed
         FieldValidation.checkObjectExist(post, "Post");
         // Change status
-        if (status && post.getStatus().equals(POST_STATUS.PENDING)) {
-            post.setStatus(POST_STATUS.APPROVE);
-        } else {
-            post.setStatus(POST_STATUS.DISAPPROVE);
+        if (post.getStatus().equals(POST_STATUS.PENDING) || post.getStatus().equals(POST_STATUS.APPROVE)){
+            if (status) {
+                post.setStatus(POST_STATUS.APPROVE);
+            } else {
+                post.setStatus(POST_STATUS.DISAPPROVE);
+            }
         }
         postRepository.save(post);
     }
