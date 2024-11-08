@@ -114,7 +114,7 @@ create table `typeandpost`
     foreign key (post_id) references `posts`(id)
 );
 
-create table OTPEmail
+create table otp_email
 (
 id bigint auto_increment not null primary key,
 OTP int not null,
@@ -122,17 +122,6 @@ expiry_date datetime,
 user_id CHAR(36) ,
 foreign key (user_id) references `users`(id)
 );
-
--- CREATE TABLE tokens (
---     id int PRIMARY KEY AUTO_INCREMENT,
---     token varchar(255) UNIQUE NOT NULL,
---     token_type varchar(50) NOT NULL,
---     expiration_date DATETIME,
---     revoked tinyint(1) NOT NULL,
---     expired tinyint(1) NOT NULL,
---     user_id CHAR(36), 
---     FOREIGN KEY (user_id) REFERENCES users(id)
--- );
 
 CREATE TABLE payment(
 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
