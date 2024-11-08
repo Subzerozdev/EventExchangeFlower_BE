@@ -6,6 +6,7 @@ import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.PaymentService;
+import com.eventflowerexchange.service.TransactionService;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final PaymentService paymentService;
+    private final TransactionService transactionService;
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
@@ -70,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
         FieldValidation.checkObjectExist(order, "Order");
         if (status && order.getStatus().equals(ORDER_STATUS.PICKED_UP)) {
             order.setStatus(ORDER_STATUS.COMPLETED);
+            transactionService.setTransaction03(order);
         }
         orderRepository.save(order);
     }

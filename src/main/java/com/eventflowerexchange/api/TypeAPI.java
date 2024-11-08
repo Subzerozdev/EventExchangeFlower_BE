@@ -1,11 +1,7 @@
 package com.eventflowerexchange.api;
 
-import com.eventflowerexchange.dto.request.EventCategoryRequestDTO;
 import com.eventflowerexchange.dto.request.TypeRequestDTO;
-import com.eventflowerexchange.entity.Category;
 import com.eventflowerexchange.entity.Type;
-import com.eventflowerexchange.service.CategoryService;
-import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.TypeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TypeAPI {
     private final TypeService typeService;
-    private final JwtService jwtService;
 
     @PostMapping("/api/admin/types")
     // Nếu tham số truyền vào là 1 object thì sao??? => Data Transfer Object = Request Object

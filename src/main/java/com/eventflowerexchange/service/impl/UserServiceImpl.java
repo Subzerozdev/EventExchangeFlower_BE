@@ -9,8 +9,6 @@ import com.eventflowerexchange.exception.DuplicateEntity;
 import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.JwtService;
-import com.eventflowerexchange.service.OrderService;
-import com.eventflowerexchange.service.PostService;
 import com.eventflowerexchange.service.UserService;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +30,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final CustomUserDetailsService customUserDetailsService;
-    private final PostService postService;
-    private final OrderService orderService;
 
     @Override
     public String register(UserRequestDTO userRequestDTO) {

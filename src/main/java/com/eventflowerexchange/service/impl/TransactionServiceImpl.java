@@ -39,7 +39,17 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepository.save(transactions02);
         admin.setBalance(newBalance);
         userRepository.save(admin);
-        // Transaction 03: ADMIN TO SELLER
+    }
+
+    // Transaction 03: ADMIN TO SELLER
+    @Override
+    public void setTransaction03(Order order) {
+        // Create Payment
+        Payment payment = paymentService.getPaymentByOrderId(order.getId());
+        // Get Platform fee
+        float feeAmount = feeService.getFeeAmountById(order.getFeeId());
+        // Create transaction03
+        User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
         User owner = order.getOrderDetails().get(0).getPost().getUser();
         Transactions transaction03 = createTransaction(admin, owner, payment, TransactionsEnum.SUCCESS, "ADMIN TO OWNER");
         float newShopBalance = owner.getBalance() + order.getTotalMoney() * (1.0f-feeAmount);
@@ -48,6 +58,7 @@ public class TransactionServiceImpl implements TransactionService {
         owner.setBalance(newShopBalance);
         userRepository.save(owner);
     }
+
 
     private Transactions createTransaction(User userFrom, User userTo
             , Payment payment, TransactionsEnum transactionsEnum, String description) {

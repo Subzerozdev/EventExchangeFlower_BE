@@ -61,15 +61,4 @@ public class ShopAPI {
         String shopId = shopService.getShopIdByOrderId(id);
         return ResponseEntity.ok(shopId);
     }
-
-    // User can view shop of seller by seller id (fe get from post)
-    // FE not implement (because of time)
-//    @GetMapping("/shop/posts/{id}")
-//    public ResponseEntity<Object> getShopPosts(
-//            @PathVariable String id
-//    ) {
-//        Shop shop = shopService.getShopById(id);
-//        List<Post> posts = postService.getSellerPosts(shop.getUser().getId());
-//        return new ResponseEntity<>(posts, HttpStatus.OK);
-//    }
 }

@@ -9,5 +9,4 @@ public interface ShopService {
     Shop updateSellerShop(User user, ShopRequestDTO shopRequestDTO);
     Shop getSellerShop(User user);
     String getShopIdByOrderId(Long orderId);
-//    Shop getShopById(String shopId);
 }

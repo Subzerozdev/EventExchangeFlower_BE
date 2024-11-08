@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ShopRepository extends JpaRepository<Shop, String> {
     Shop findShopByUser(User user);
-    Shop findShopById(String id);
 }

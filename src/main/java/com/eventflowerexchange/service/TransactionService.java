@@ -4,4 +4,5 @@ import com.eventflowerexchange.entity.Order;
 
 public interface TransactionService {
     void createTransactions(Order order);
+    void setTransaction03(Order order);
 }
