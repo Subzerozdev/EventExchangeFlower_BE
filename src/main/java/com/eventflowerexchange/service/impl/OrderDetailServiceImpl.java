@@ -44,7 +44,11 @@ public class OrderDetailServiceImpl implements OrderDetailService {
             Post post = postRepository.findPostById(orderDetail.getPostID());
             if(sellerId==null){
                 sellerId = post.getUser().getId();
-            } else if (!post.getUser().getId().equals(sellerId) || post.getUser().getId().equals(userID)) {
+            } else if (!post.getUser().getId().equals(sellerId)) {
+                result = false;
+                break;
+            }
+            if (post.getUser().getId().equals(userID)){
                 result = false;
                 break;
             }
