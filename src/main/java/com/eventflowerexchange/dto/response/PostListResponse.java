@@ -10,5 +10,5 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class PostListResponse {
-    private List<Post> posts;
+    private List<PostResponse> posts;
 }

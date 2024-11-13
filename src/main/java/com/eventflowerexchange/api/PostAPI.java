@@ -7,6 +7,7 @@ import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.mapper.PostMapper;
 import com.eventflowerexchange.service.JwtService;
 import com.eventflowerexchange.service.PostService;
+import com.eventflowerexchange.service.ShopService;
 import com.eventflowerexchange.util.FieldValidation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class PostAPI {
     private final PostService postService;
     private final JwtService jwtService;
     private final PostMapper postMapper;
+    private final ShopService shopService;
 
     @PostMapping("/api/seller/posts")
     public ResponseEntity<?> createPost(
@@ -52,18 +54,25 @@ public class PostAPI {
     @GetMapping("/posts")
     public ResponseEntity<Object> getPosts() {
         List<Post> posts = postService.getAllPosts();
+        List<PostResponse> postResponses = new ArrayList<>();
+        posts.forEach(post -> {
+            PostResponse postResponse = postMapper.toPostResponse(post);
+            postResponse.setShopName(shopService.getSellerShop(post.getUser()).getShopName());
+            postResponses.add(postResponse);
+        });
         PostListResponse postListResponse = PostListResponse.builder()
-                .posts(posts)
+                .posts(postResponses)
                 .build();
         return new ResponseEntity<>(postListResponse, HttpStatus.OK);
     }
 
     @GetMapping("/posts/{id}")
-    public ResponseEntity<Object> getPostById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<Object> getPostByPostId(@PathVariable Long id) throws Exception {
         Post post = postService.getPostById(id);
         FieldValidation.checkObjectExist(post, "Post");
         PostResponse postResponse = postMapper.toPostResponse(post);
-        postResponse.setUserId(post.getUser().getId());
+        postResponse.setShopName(shopService.getSellerShop(post.getUser()).getShopName());
+//        postResponse.setUserId(post.getUser().getId());
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
@@ -102,8 +111,6 @@ public class PostAPI {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    // User can view all post that is selling by seller
-    // FE not implement (because of time)
     @GetMapping("/api/posts/{id}")
     public ResponseEntity<Object> getPostBySellerId(
             @PathVariable String id

@@ -35,4 +35,20 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     public List<OrderDetail> getOrderDetailsByOrderId(Long orderId) {
         return orderDetailRepository.findByOrderId(orderId);
     }
+
+    @Override
+    public boolean isSameShop(List<OrderDetailRequestDTO> orderDetails){
+        boolean result = true;
+        String sellerId = null;
+        for (OrderDetailRequestDTO orderDetail : orderDetails) {
+            Post post = postRepository.findPostById(orderDetail.getPostID());
+            if(sellerId==null){
+                sellerId = post.getUser().getId();
+            } else if (!post.getUser().getId().equals(sellerId)) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
 }

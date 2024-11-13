@@ -26,8 +26,8 @@ public class Transactions {
     private User to;
 
     @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private TransactionsEnum status;
 

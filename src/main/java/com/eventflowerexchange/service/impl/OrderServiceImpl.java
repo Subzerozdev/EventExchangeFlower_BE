@@ -4,8 +4,8 @@ import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
+import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
-import com.eventflowerexchange.service.PaymentService;
 import com.eventflowerexchange.service.TransactionService;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -26,23 +26,23 @@ import java.util.*;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final PaymentService paymentService;
     private final TransactionService transactionService;
+    private final OrderDetailService orderDetailService;
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
-        // Map request to order entity
-        Order order = orderMapper.toOrder(orderRequestDTO);
-        // Set other fields
-        order.setOrderDate(LocalDateTime.now());
-        order.setFeeId(1);
-        order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
-        order.setUser(user);
-        orderRepository.save(order);
-        // Create and save payment
-        Payment payment = paymentService.createPayment(order, orderRequestDTO.getPaymentMethod());
-        // Set to order and return
-        order.setPayment(payment);
+        Order order = null;
+        // Validate same shop
+        if (orderDetailService.isSameShop(orderRequestDTO.getOrderDetails())){
+            // Map request to order entity
+            order = orderMapper.toOrder(orderRequestDTO);
+            // Set other fields
+            order.setOrderDate(LocalDateTime.now());
+            order.setFeeId(1);
+            order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
+            order.setUser(user);
+            orderRepository.save(order);
+        }
         return order;
     }
 

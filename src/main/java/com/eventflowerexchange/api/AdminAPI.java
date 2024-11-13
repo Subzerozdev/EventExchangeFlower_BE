@@ -56,6 +56,9 @@ public class AdminAPI {
     public ResponseEntity<String> updateFee(
             @RequestBody FeeRequestDTO feeRequestDTO
     ) {
+        if(feeRequestDTO.getAmount()<0f || feeRequestDTO.getAmount()>0.25f) {
+            return new ResponseEntity<>("Invalid Amount", HttpStatus.BAD_REQUEST);
+        }
         feeService.updateFeeAmount(1, feeRequestDTO.getAmount());
         return new ResponseEntity<>("Successfully Update Fee", HttpStatus.OK);
     }

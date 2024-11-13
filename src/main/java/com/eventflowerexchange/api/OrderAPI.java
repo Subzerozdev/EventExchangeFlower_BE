@@ -35,6 +35,9 @@ public class OrderAPI {
     ) throws Exception {
         User user = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.createOrder(orderRequestDTO, user);
+        if (order == null) {
+            return new ResponseEntity<>("Cannot place order with different shop", HttpStatus.BAD_REQUEST);
+        }
         orderDetailService.saveOrderDetails(orderRequestDTO.getOrderDetails(), order);
         String vnPayURL = orderService.createUrl(order, user);
         return ResponseEntity.ok(vnPayURL);

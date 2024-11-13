@@ -45,8 +45,8 @@ public class Order {
     private List<OrderDetail> orderDetails;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "order")
-    private Payment payment;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transactions> transactions;
 
     @JsonIgnore
     private int feeId;

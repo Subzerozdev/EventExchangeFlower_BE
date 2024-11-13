@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetailRequestDTO {
-    private int numberOfProducts;
     private Long postID;
 }

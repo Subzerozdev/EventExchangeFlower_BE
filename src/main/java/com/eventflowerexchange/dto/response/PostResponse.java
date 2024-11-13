@@ -24,10 +24,11 @@ public class PostResponse  {
     private LocalDateTime endDate;
     private POST_STATUS status;
     private Category category;
-    @JsonProperty("user_id")
-    private String userId;
+//    @JsonProperty("user_id")
+//    private String userId;
     private List<Type> types;
     @JsonProperty("imageUrls")
     private List<PostImage> images;
-
+    @JsonProperty("shop_name")
+    private String shopName;
 }

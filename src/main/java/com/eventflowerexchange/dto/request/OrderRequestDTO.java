@@ -1,6 +1,5 @@
 package com.eventflowerexchange.dto.request;
 
-import com.eventflowerexchange.entity.PaymentEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ public class OrderRequestDTO {
     private String email;
     private String address;
     private String note;
-    private PaymentEnum paymentMethod;
+    private String paymentMethod;
     private Long totalMoney;
     private List<OrderDetailRequestDTO> orderDetails;
 }

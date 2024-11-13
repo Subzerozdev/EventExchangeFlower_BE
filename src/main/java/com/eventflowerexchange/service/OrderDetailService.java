@@ -9,4 +9,5 @@ import java.util.List;
 public interface OrderDetailService {
     void saveOrderDetails(List<OrderDetailRequestDTO> orderDetails, Order order);
     List<OrderDetail> getOrderDetailsByOrderId(Long orderId);
+    boolean isSameShop(List<OrderDetailRequestDTO> orderDetailRequestDTO);
 }
