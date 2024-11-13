@@ -32,11 +32,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
         Order order = null;
-        // Validate same shop
-        if (orderDetailService.isSameShop(orderRequestDTO.getOrderDetails())){
-            // Map request to order entity
+        if (orderDetailService.isSameShopOrSameSeller(orderRequestDTO.getOrderDetails(), user.getId())){
             order = orderMapper.toOrder(orderRequestDTO);
-            // Set other fields
             order.setOrderDate(LocalDateTime.now());
             order.setFeeId(1);
             order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
@@ -72,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
         FieldValidation.checkObjectExist(order, "Order");
         if (status && order.getStatus().equals(ORDER_STATUS.PICKED_UP)) {
             order.setStatus(ORDER_STATUS.COMPLETED);
-            transactionService.setTransaction03(order);
+            transactionService.createTransaction02(order);
         }
         orderRepository.save(order);
     }
@@ -90,14 +87,12 @@ public class OrderServiceImpl implements OrderService {
         return result.toString();
     }
 
-    // cái này là code demo của VN Pay
     @Override
     public String createUrl(Order order, User user) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createDate = LocalDateTime.now();
         String formattedCreateDate = createDate.format(formatter);
 
-        //Chuyển dổi tiền tệ về String cho nó đúng định dạng
         float money = order.getTotalMoney()*100;
 
         String amount = String.valueOf( (int) money);

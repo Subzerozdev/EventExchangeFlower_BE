@@ -27,9 +27,6 @@ public class VerificationAPI {
     @PostMapping("/{id}")
     public ResponseEntity<String> VerifyEmail(@PathVariable String id) {
         User user = userService.findUserById(id);
-        if (user==null){
-            user = userService.findUserById(userService.getUserIdByEmail(id));
-        }
         Long OTP = emailService.generateOTP();
         MailBody mailBody = emailService.createEmail(user.getEmail(), "Verify the user's email", "Mã xác minh Email của bạn: " + OTP);
         emailService.sendEmail(mailBody);
@@ -40,9 +37,6 @@ public class VerificationAPI {
     @PostMapping("/{otp}/{id}")
     public ResponseEntity<String> VerifyOTP(@PathVariable Long otp, @PathVariable String id) {
         User user = userService.findUserById(id);
-        if (user==null){
-            user = userService.findUserById(userService.getUserIdByEmail(id));
-        }
         OTPEmail otpEmail = emailService.findOtpEmail(user, otp);
         if (emailService.checkOtp(otpEmail)) {
             otpEmailRepository.delete(otpEmail);

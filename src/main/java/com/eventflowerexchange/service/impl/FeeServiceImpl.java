@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class FeeServiceImpl implements FeeService {
     private final FeeRepository feeRepository;
-
+ 
     @Override
     public float getFeeAmountById(int id) {
         Fee fee = feeRepository.getFeeById(id);

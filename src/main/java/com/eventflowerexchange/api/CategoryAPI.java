@@ -18,15 +18,11 @@ import java.util.List;
 public class CategoryAPI {
     private final CategoryService categoryService;
 
-    // Nếu tham số truyền vào là 1 object thì sao??? => Data Transfer Object = Request Object
-    // BindingResult bindingResult dùng cái này thì bắt validate tại hàm và trả về tên lỗi kèm theo vì dùng  @NotEmpty(message = "Category name can't not be empty") bên DTO
-    // Đổi thành dấu chấm  ? vì kiểu trả về là có cả String và List of String nha
     @PostMapping("api/admin/categories")
     public ResponseEntity<?> createCategory(
             @Valid @RequestBody EventCategoryRequestDTO categoryDTO,
             BindingResult result
     ) {
-        // Kiểm tra lỗi
         if (result.hasErrors()) {
             List<String> errorMessages = result.getFieldErrors()
                     .stream()
@@ -34,7 +30,6 @@ public class CategoryAPI {
                     .toList();
             return ResponseEntity.badRequest().body(errorMessages);
         }
-        // Tạo Category
         categoryService.createCategory(categoryDTO);
         return ResponseEntity.ok("Insert category successfully");
     }
@@ -50,7 +45,7 @@ public class CategoryAPI {
             @PathVariable Integer id,
             @Valid @RequestBody EventCategoryRequestDTO categoryDTO
     ) {
-        categoryService.updateCategory(id, categoryDTO);// truyền vào id vào 1 cái category mới
+        categoryService.updateCategory(id, categoryDTO);
         return ResponseEntity.ok("Update category successfully");
     }
 

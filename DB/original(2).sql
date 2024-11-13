@@ -123,14 +123,14 @@ user_id CHAR(36) ,
 foreign key (user_id) references `users`(id)
 );
 
-CREATE TABLE payment(
-	id BIGINT PRIMARY KEY AUTO_INCREMENT,
-	create_at datetime,
-	`payment_method` INT DEFAULT 0,
-    total FLOAT CHECK (total >=0),
-	order_id BIGINT,
-	FOREIGN KEY (order_id) REFERENCES orders(id)
-);
+-- CREATE TABLE payment(
+-- 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
+-- 	create_at datetime,
+-- 	`payment_method` INT DEFAULT 0,
+--     total FLOAT CHECK (total >=0),
+-- 	order_id BIGINT,
+-- 	FOREIGN KEY (order_id) REFERENCES orders(id)
+-- );
 
 CREATE TABLE transactions (
 	id bigint AUTO_INCREMENT PRIMARY KEY ,
@@ -140,8 +140,8 @@ CREATE TABLE transactions (
     FOREIGN KEY (from_id) REFERENCES users(id),
     to_id CHAR(36),
     FOREIGN KEY (to_id) REFERENCES users(id),
-    payment_id BIGINT,
-    FOREIGN KEY (payment_id) REFERENCES payment(id),
+    order_id BIGINT,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
 	`status` INT DEFAULT 0,
 	`description` VARCHAR(50)
 );

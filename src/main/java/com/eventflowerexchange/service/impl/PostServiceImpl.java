@@ -25,26 +25,25 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
-        // Create Post
         Post newPost = postMapper.toPost(postRequestDTO);
         newPost.setStartDate(postRequestDTO.getStartDate().plusDays(1));
         newPost.setEndDate(postRequestDTO.getEndDate().plusDays(1));
         newPost.setStatus(POST_STATUS.PENDING);
-        // Get Category by ID
+
         Category category = categoryRepository.findCategoryById(postRequestDTO.getCategoryId());
         FieldValidation.checkObjectExist(category, "Category");
         newPost.setCategory(category);
-        // Get User by ID
+
         User user = userRepository.findUserById(userID);
         FieldValidation.checkObjectExist(user, "User");
         newPost.setUser(user);
-        // Get Type by ID
+
         List<Type> types = validateType(typeID);
         newPost.setTypes(types);
-        // Get images
+
         List<PostImage> images = validateImages(newPost, postRequestDTO.getImageUrls());
         newPost.setImages(images);
-        // Save to DB
+
         return postRepository.save(newPost);
     }
 
@@ -65,25 +64,22 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception {
-        // Get Post
         Post existingPost = getPostById(id);
-        // Validation
+
         FieldValidation.checkObjectExist(existingPost, "Post");
         if (existingPost.getUser().getId().equals(userID)) {
-            // Update using mapper
             postMapper.updatePost(existingPost, postRequestDTO);
             existingPost.setStatus(POST_STATUS.PENDING);
-            // Get Category by ID
+
             Category category = categoryRepository.findCategoryById(postRequestDTO.getCategoryId());
             FieldValidation.checkObjectExist(category, "Category");
             existingPost.setCategory(category);
-            // Get Type by ID
+
             existingPost.setTypes(validateType(typeID));
-            // Get images
+
             existingPost.getImages().clear();
             existingPost.getImages().addAll(validateImages(existingPost, postRequestDTO.getImageUrls()));
         }
-        // Update Post to DB
         return postRepository.save(existingPost);
     }
 

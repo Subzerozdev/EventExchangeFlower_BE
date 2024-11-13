@@ -17,4 +17,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "WHERE p.user.id = ?1 ")
     List<Order> findOrdersBySeller(String sellerID);
     List<Order> findOrdersByStatusIsNot(ORDER_STATUS status);
+    List<Order> findOrdersByStatus(ORDER_STATUS status);
 }

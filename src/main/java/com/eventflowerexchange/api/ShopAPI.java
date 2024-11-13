@@ -52,8 +52,6 @@ public class ShopAPI {
         return ResponseEntity.ok(shop);
     }
 
-    // User can view shop of seller by order id
-    // FE not implement (because of time)
     @GetMapping("/order/shop/{id}")
     public ResponseEntity<Object> getSellerShopByOrderId(
             @PathVariable Long id

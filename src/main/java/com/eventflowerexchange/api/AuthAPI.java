@@ -1,6 +1,7 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
+import com.eventflowerexchange.dto.request.ResetPasswordRequestDTO;
 import com.eventflowerexchange.dto.request.UserRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
 import com.eventflowerexchange.service.UserService;
@@ -8,10 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -37,4 +35,11 @@ public class AuthAPI {
         return new ResponseEntity<>(userID, HttpStatus.OK);
     }
 
+    @PutMapping("/password")
+    public ResponseEntity<Object> updateUserPassword(
+            @RequestBody ResetPasswordRequestDTO resetPasswordRequestDTO
+            ) {
+        userService.updatePasswordById(resetPasswordRequestDTO.getUserID(), resetPasswordRequestDTO.getPassword());
+        return ResponseEntity.ok("Update password!");
+    }
 }

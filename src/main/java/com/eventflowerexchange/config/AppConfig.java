@@ -1,9 +1,7 @@
 package com.eventflowerexchange.config;
 
-import com.eventflowerexchange.entity.POST_STATUS;
-import com.eventflowerexchange.entity.Post;
-import com.eventflowerexchange.entity.USER_ROLE;
-import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.entity.*;
+import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,37 +33,22 @@ import java.util.List;
 public class AppConfig {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final OrderRepository orderRepository;
     public static final String[] WHITELIST = {
             "/auth/**", "/verification/**", "/categories", "/posts", "/types"
     };
 
-    @Bean // Mark this method of Bean to be managed in Spring IoC Container and be hold all by App Context
-        /* SecurityFilterChain (request will be here first):
-         * Request Filtering
-         * Authentication (By Token)
-         * Authorization (By Role)
-         * Custom Security and Modify Filter
-         */
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Config http requests
         http.sessionManagement(management ->
-                        // Strict option: App or Spring Security won’t create and use any session at all.
-                        // -> Not use cookies and server-side storage
                         management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // Define rules for endpoints
                 .authorizeHttpRequests(Authorize -> Authorize
-                        // Only user with below roles can access the path
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/seller/**").hasRole("SELLER")
-                        // Only user have logged in can access the path
                         .requestMatchers("/api/**").authenticated()
-                        // Allow any request to another path
                         .anyRequest().permitAll())
-                // Add custom Filter before BasicAuthenticationFilter
                 .addFilterBefore(new JwtTokenValidator(), BasicAuthenticationFilter.class)
-                // Disabling CSRF Protection
                 .csrf(csrf -> csrf.disable())
-                // Enabling CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         return http.build();
     }
@@ -112,10 +95,23 @@ public class AppConfig {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void scheduleTaskWithCronExpression() {
+        deletePost();
+        completeOrder();
+    }
+
+    private void deletePost(){
         List<Post> posts = postRepository.findPostsByStartDateIsBeforeAndStatusEquals(LocalDateTime.now().plusDays(1), POST_STATUS.APPROVE);
         posts.forEach(post -> {
             post.setStatus(POST_STATUS.DELETED);
             postRepository.save(post);
+        });
+    }
+
+    private void completeOrder(){
+        List<Order> orders = orderRepository.findOrdersByStatus(ORDER_STATUS.PICKED_UP);
+        orders.forEach(order -> {
+            order.setStatus(ORDER_STATUS.COMPLETED);
+            orderRepository.save(order);
         });
     }
 }

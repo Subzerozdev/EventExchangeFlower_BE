@@ -72,7 +72,6 @@ public class PostAPI {
         FieldValidation.checkObjectExist(post, "Post");
         PostResponse postResponse = postMapper.toPostResponse(post);
         postResponse.setShopName(shopService.getSellerShop(post.getUser()).getShopName());
-//        postResponse.setUserId(post.getUser().getId());
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
@@ -101,7 +100,6 @@ public class PostAPI {
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    // Display all posts of seller
     @GetMapping("/api/seller/posts")
     public ResponseEntity<Object> getSellerPosts(
             @RequestHeader("Authorization") String jwt

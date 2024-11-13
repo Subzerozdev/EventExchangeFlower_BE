@@ -18,7 +18,7 @@ public class TypeServiceImpl implements TypeService {
     public void createType(TypeRequestDTO typeRequestDTO) {
         Type newType = Type.builder()
                 .name(typeRequestDTO.getName())
-                .build(); // map đói tượng DTO thành type   ( nhớ là phải có @Builder )
+                .build();
         typeRepository.save(newType);
     }
 
@@ -35,13 +35,12 @@ public class TypeServiceImpl implements TypeService {
     @Override
     public void updateType(long id, TypeRequestDTO typeRequestDTO) {
         Type existingType = getTypeById(id);
-        existingType.setName(typeRequestDTO.getName());   // category thì chỉ có mỗi trường name mà thôi
-        typeRepository.save(existingType);   // update xong  phải save lại nhé
+        existingType.setName(typeRequestDTO.getName());
+        typeRepository.save(existingType);
     }
 
     @Override
     public void deleteType(long id) {
-        // xóa xong
         typeRepository.deleteById(id);
     }
 }

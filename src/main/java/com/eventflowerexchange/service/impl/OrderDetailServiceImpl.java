@@ -37,14 +37,14 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     }
 
     @Override
-    public boolean isSameShop(List<OrderDetailRequestDTO> orderDetails){
+    public boolean isSameShopOrSameSeller(List<OrderDetailRequestDTO> orderDetails, String userID){
         boolean result = true;
         String sellerId = null;
         for (OrderDetailRequestDTO orderDetail : orderDetails) {
             Post post = postRepository.findPostById(orderDetail.getPostID());
             if(sellerId==null){
                 sellerId = post.getUser().getId();
-            } else if (!post.getUser().getId().equals(sellerId)) {
+            } else if (!post.getUser().getId().equals(sellerId) || post.getUser().getId().equals(userID)) {
                 result = false;
                 break;
             }

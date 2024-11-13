@@ -21,13 +21,10 @@ public class DashBoardServiceImpl implements DashBoardService {
     @Override
     public Map<String, Object> getDashBoard() {
         Map<String, Object>  status = new HashMap<>();
-        // đếm số lượng sản phẩm trong hệ thống
         long totalPosts = postRepository.count();
         status.put("totalPosts", totalPosts);
-        // số lượng customer
         long totalUsers = userRepository.countByRole(USER_ROLE.ROLE_CUSTOMER);
         status.put("totalCustomers", totalUsers);
-        // số lượng owner
         long totalOwners = userRepository.countByRole(USER_ROLE.ROLE_SELLER);
         status.put("totalSeller", totalOwners);
         return status;

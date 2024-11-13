@@ -1,6 +1,5 @@
 package com.eventflowerexchange.dto.response;
 
-import com.eventflowerexchange.entity.Post;
 import lombok.*;
 
 import java.util.List;

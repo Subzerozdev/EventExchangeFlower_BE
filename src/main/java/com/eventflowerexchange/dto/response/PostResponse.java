@@ -18,17 +18,19 @@ public class PostResponse  {
     private String thumbnail;
     private String address;
     private Float price;
-    @JsonProperty("start_date")
-    private LocalDateTime startDate;
-    @JsonProperty("end_date")
-    private LocalDateTime endDate;
     private POST_STATUS status;
     private Category category;
-//    @JsonProperty("user_id")
-//    private String userId;
     private List<Type> types;
+
+    @JsonProperty("start_date")
+    private LocalDateTime startDate;
+
+    @JsonProperty("end_date")
+    private LocalDateTime endDate;
+
     @JsonProperty("imageUrls")
     private List<PostImage> images;
+
     @JsonProperty("shop_name")
     private String shopName;
 }

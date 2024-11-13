@@ -33,32 +33,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String register(UserRequestDTO userRequestDTO) {
-        // Check if phone or email is existed
         if (userRepository.existsByPhone(userRequestDTO.getPhone())
                 || userRepository.existsByEmail(userRequestDTO.getEmail())) {
             throw new DuplicateEntity("Duplicate phone or email!");
         }
         User user = userMapper.toUser(userRequestDTO);
-        // Encode password
         user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
-        // Set other fields
         user.setCreatedAt(LocalDateTime.now());
         user.setRole(USER_ROLE.ROLE_CUSTOMER);
-        // Save account to DB
         userRepository.save(user);
-        // Return userID
         return user.getId();
     }
 
     @Override
     public AuthResponseDTO login(AuthRequestDTO authRequestDTO) {
-        //
         Authentication authentication = authenticate(authRequestDTO.getEmail(), authRequestDTO.getPassword());
-        // Generate Jwt Token
         String jwt = jwtService.generateToken(authentication);
-        // Get user by Email
         User user = userRepository.findUserByEmail(authRequestDTO.getEmail());
-        // Setup and return Auth Response
         return getAuthResponse(jwt, user);
     }
 
@@ -90,9 +81,7 @@ public class UserServiceImpl implements UserService {
     public AuthResponseDTO updateSellerToken(User user) {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(user.getEmail());
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        // Generate Jwt Token
         String jwt = jwtService.generateToken(authentication);
-        // Setup and return Auth Response
         return getAuthResponse(jwt, null);
     }
 

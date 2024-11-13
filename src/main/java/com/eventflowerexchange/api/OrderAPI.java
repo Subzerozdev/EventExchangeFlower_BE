@@ -54,17 +54,13 @@ public class OrderAPI {
 
     @GetMapping("/orders/{id}")
     public ResponseEntity<Object> getOrderDetails(@PathVariable("id") Long id) {
-        // Get order
         Order order = orderService.getOrderById(id);
-        // Get order details of order
         List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderId(id);
-        // Get seller info
         User seller = orderDetails.get(0).getPost().getUser();
         SellerInformation sellerInformation = SellerInformation.builder()
                 .email(seller.getEmail())
                 .phone(seller.getPhone())
                 .build();
-        // Build response
         OrderDetailResponseDTO orderDetailResponseDTO = OrderDetailResponseDTO.builder()
                 .order(order)
                 .orderDetail(orderDetails)
@@ -98,7 +94,7 @@ public class OrderAPI {
     ){
         Order order = orderService.getOrderById(orderID);
         FieldValidation.checkObjectExist(order, "Order");
-        transactionService.createTransactions(order);
+        transactionService.createTransaction01(order);
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 

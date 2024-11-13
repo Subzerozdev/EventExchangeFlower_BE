@@ -3,6 +3,6 @@ package com.eventflowerexchange.service;
 import com.eventflowerexchange.entity.Order;
 
 public interface TransactionService {
-    void createTransactions(Order order);
-    void setTransaction03(Order order);
+    void createTransaction01(Order order);
+    void createTransaction02(Order order);
 }
