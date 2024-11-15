@@ -10,16 +10,16 @@ insert into `fee`(id,`type`,amount) value(1,"Flatform Fee",0.0);
 
 -- User
 insert into `users`(id, balance,email,`password`,full_name,phone,address,created_at,updated_at,is_active,role_id) 
-value("3b86edc5-98b5-11ef-8472-2c6dc10e488b",0,"user01@gmail.com","$2a$12$EQg.ZMSgAEBMiLHhVh.53e8D4/.Tay.HSyC0SPccFmO5tiu/SFrOi","User 01","0909987675","789 Phan Đăng Lưu, Phú Nhuận, TP.HCM", "2024-11-02 07:43:19", null,true,2);
+value("3b86edc5-98b5-11ef-8472-2c6dc10e488b",0,"user01@gmail.com","$2a$12$EQg.ZMSgAEBMiLHhVh.53e8D4/.Tay.HSyC0SPccFmO5tiu/SFrOi","Người dùng 01","0909987675","789 Phan Đăng Lưu, Phú Nhuận, TP.HCM", "2024-11-02 07:43:19", null,true,2);
 
 insert into `users`(id,balance,email,`password`,full_name,phone,address,created_at,updated_at,is_active,role_id) 
-value("5ab23788-98b5-11ef-8472-2c6dc10e488b",0,"user02@gmail.com","$2a$12$sDz2DImPhdruzlwLAPahE.rOa7B9DIt4SZ8ltA47uANhpB6Yo6fWO","User 02","0909987671","890 Điện Biên Phủ, Bình Thạnh, TP.HCM", "2024-11-02 07:43:19", null,true,2);
+value("5ab23788-98b5-11ef-8472-2c6dc10e488b",0,"user02@gmail.com","$2a$12$sDz2DImPhdruzlwLAPahE.rOa7B9DIt4SZ8ltA47uANhpB6Yo6fWO","Người dùng 02","0909987671","890 Điện Biên Phủ, Bình Thạnh, TP.HCM", "2024-11-02 07:43:19", null,true,2);
 
 insert into `users`(id,balance,email,`password`,full_name,phone,address,created_at,updated_at,is_active,role_id) 
-value("5ab4992a-98b5-11ef-8472-2c6dc10e488b",0,"seller01@gmail.com","$2a$12$Su72PtpQFrOKEcFqq1.5VeK5CwejEpRNHrmHL64j8r3MbFqUSEsxm","Seller 01","0909987672","789 Phan Đăng Lưu, Phú Nhuận, TP.HCM", "2024-11-02 07:43:19", null,true,1);
+value("5ab4992a-98b5-11ef-8472-2c6dc10e488b",0,"seller01@gmail.com","$2a$12$Su72PtpQFrOKEcFqq1.5VeK5CwejEpRNHrmHL64j8r3MbFqUSEsxm","Người bán hàng 01","0909987672","789 Phan Đăng Lưu, Phú Nhuận, TP.HCM", "2024-11-02 07:43:19", null,true,1);
 
 insert into `users`(id,balance,email,`password`,full_name,phone,address,created_at,updated_at,is_active,role_id) 
-value("5ab548eb-98b5-11ef-8472-2c6dc10e488b",0,"seller02@gmail.com","$2a$12$POP2vZ4faMkKMrkFHeUij.yhY4Z0aePuAUbrKNg69FcUR3xCqT1bW","Seller 02","0909987673","456 Nguyễn Thị Minh Khai, Quận 3, TP.HCM", "2024-11-02 07:43:19", null,true,1);
+value("5ab548eb-98b5-11ef-8472-2c6dc10e488b",0,"seller02@gmail.com","$2a$12$POP2vZ4faMkKMrkFHeUij.yhY4Z0aePuAUbrKNg69FcUR3xCqT1bW","Người bán hàng 02","0909987673","456 Nguyễn Thị Minh Khai, Quận 3, TP.HCM", "2024-11-02 07:43:19", null,true,1);
 
 -- Shop
 insert into `shop`(`description`,shop_address,`shop_name`,user_id) 

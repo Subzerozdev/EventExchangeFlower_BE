@@ -14,5 +14,5 @@ public interface PostRepository extends JpaRepository<Post, Long>,
     Post findPostById(Long id);
     List<Post> findPostsByUserId(String sellerID);
     Page<Post> findAll(Pageable pageable);
-    List<Post> findPostsByStartDateIsBeforeAndStatusEquals(LocalDateTime expiredDate, POST_STATUS status);
+    List<Post> findPostsByEndDateIsBeforeAndStatusEquals(LocalDateTime expiredDate, POST_STATUS status);
 }

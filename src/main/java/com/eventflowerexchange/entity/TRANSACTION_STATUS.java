@@ -1,6 +1,7 @@
 package com.eventflowerexchange.entity;
 
-public enum TransactionsEnum {
+public enum TRANSACTION_STATUS {
+    PENDING,
     SUCCESS,
     FAIL,
 }

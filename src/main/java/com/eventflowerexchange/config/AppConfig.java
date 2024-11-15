@@ -4,6 +4,7 @@ import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.repository.UserRepository;
+import com.eventflowerexchange.service.TransactionService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
@@ -34,6 +35,7 @@ public class AppConfig {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final OrderRepository orderRepository;
+    private final TransactionService transactionService;
     public static final String[] WHITELIST = {
             "/auth/**", "/verification/**", "/categories", "/posts", "/types"
     };
@@ -96,22 +98,13 @@ public class AppConfig {
     @Scheduled(cron = "0 0 0 * * ?")
     public void scheduleTaskWithCronExpression() {
         deletePost();
-        completeOrder();
     }
 
     private void deletePost(){
-        List<Post> posts = postRepository.findPostsByStartDateIsBeforeAndStatusEquals(LocalDateTime.now().plusDays(1), POST_STATUS.APPROVE);
+        List<Post> posts = postRepository.findPostsByEndDateIsBeforeAndStatusEquals(LocalDateTime.now().plusDays(1), POST_STATUS.APPROVE);
         posts.forEach(post -> {
             post.setStatus(POST_STATUS.DELETED);
             postRepository.save(post);
-        });
-    }
-
-    private void completeOrder(){
-        List<Order> orders = orderRepository.findOrdersByStatus(ORDER_STATUS.PICKED_UP);
-        orders.forEach(order -> {
-            order.setStatus(ORDER_STATUS.COMPLETED);
-            orderRepository.save(order);
         });
     }
 }

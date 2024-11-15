@@ -19,7 +19,7 @@ public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    // này Khánh comment cho nó nhiều code thôi chứ không có gì đâu.
+
     @Column(name = "name", nullable = false)
     private String name;
 

@@ -19,9 +19,8 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     private final PostRepository postRepository;
 
     @Override
-    public void saveOrderDetails(List<OrderDetailRequestDTO> orderDetails, Order order) {
-        orderDetails.forEach(orderDetail -> {
-            Post post = postRepository.findPostById(orderDetail.getPostID());
+    public void saveOrderDetails(List<Post> posts, Order order) {
+        posts.forEach(post -> {
             OrderDetail orderDetailSaved = OrderDetail.builder()
                     .totalMoney(post.getPrice())
                     .post(post)
@@ -34,25 +33,5 @@ public class OrderDetailServiceImpl implements OrderDetailService {
     @Override
     public List<OrderDetail> getOrderDetailsByOrderId(Long orderId) {
         return orderDetailRepository.findByOrderId(orderId);
-    }
-
-    @Override
-    public boolean isSameShopOrSameSeller(List<OrderDetailRequestDTO> orderDetails, String userID){
-        boolean result = true;
-        String sellerId = null;
-        for (OrderDetailRequestDTO orderDetail : orderDetails) {
-            Post post = postRepository.findPostById(orderDetail.getPostID());
-            if(sellerId==null){
-                sellerId = post.getUser().getId();
-            } else if (!post.getUser().getId().equals(sellerId)) {
-                result = false;
-                break;
-            }
-            if (post.getUser().getId().equals(userID)){
-                result = false;
-                break;
-            }
-        }
-        return result;
     }
 }

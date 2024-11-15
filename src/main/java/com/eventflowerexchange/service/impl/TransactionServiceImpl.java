@@ -22,10 +22,10 @@ public class TransactionServiceImpl implements TransactionService {
         float feeAmount = feeService.getFeeAmountById(order.getFeeId());
         User customer = order.getUser();
         User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
-        Transactions transactions02 = createTransaction(customer, admin, "CUSTOMER TO ADMIN");
+        Transactions transaction = createTransaction(order, customer, admin, "CUSTOMER TO ADMIN", TRANSACTION_STATUS.SUCCESS);
         float newBalance = admin.getBalance() + order.getTotalMoney() * feeAmount;
-        transactions02.setAmount(order.getTotalMoney() * feeAmount);
-        transactionRepository.save(transactions02);
+        transaction.setAmount(order.getTotalMoney() * feeAmount);
+        transactionRepository.save(transaction);
         admin.setBalance(newBalance);
         userRepository.save(admin);
     }
@@ -35,20 +35,28 @@ public class TransactionServiceImpl implements TransactionService {
         float feeAmount = feeService.getFeeAmountById(order.getFeeId());
         User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
         User owner = order.getOrderDetails().get(0).getPost().getUser();
-        Transactions transaction03 = createTransaction(admin, owner, "ADMIN TO OWNER");
+        Transactions transaction = createTransaction(order, admin, owner, "ADMIN TO OWNER", TRANSACTION_STATUS.PENDING);
         float newShopBalance = owner.getBalance() + order.getTotalMoney() * (1.0f-feeAmount);
-        transaction03.setAmount(order.getTotalMoney() * (1.0f-feeAmount));
-        transactionRepository.save(transaction03);
+        transaction.setAmount(order.getTotalMoney() * (1.0f-feeAmount));
+        transactionRepository.save(transaction);
         owner.setBalance(newShopBalance);
         userRepository.save(owner);
     }
 
-    private Transactions createTransaction(User userFrom, User userTo
-            , String description) {
+    @Override
+    public void updateStatusFromAdminToSeller(Long transactionId) {
+        Transactions transaction = transactionRepository.findTransactionsById(transactionId);
+        transaction.setStatus(TRANSACTION_STATUS.SUCCESS);
+        transactionRepository.save(transaction);
+    }
+
+    private Transactions createTransaction(Order order, User userFrom, User userTo
+            , String description, TRANSACTION_STATUS status) {
         return Transactions.builder()
+                .order(order)
                 .from(userFrom)
                 .to(userTo)
-                .status(TransactionsEnum.SUCCESS)
+                .status(status)
                 .createAt(LocalDateTime.now())
                 .description(description)
                 .build();

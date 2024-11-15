@@ -50,7 +50,7 @@ public class Post {
     private User user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post")
     private List<OrderDetail> orderDetails;
 
     @ManyToMany
@@ -59,7 +59,7 @@ public class Post {
     private List<Type> types;
 
     @JsonProperty("imageUrls")
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post")
     private List<PostImage> images;
 
 }

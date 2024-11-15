@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
@@ -23,21 +24,26 @@ public class PaymentAPI {
     @GetMapping("/vnpay/callback")
     public ResponseEntity<Object> payCallbackHandler(HttpServletRequest request) {
         String status = request.getParameter("vnp_ResponseCode");
-        String orderID = request.getParameter("orderID");
-        Order order = orderRepository.findOrderById(Long.parseLong(orderID));
+        String[] orderIDList = request.getParameterValues("orderID");
         if (status.equals("00")) {
-            order.setStatus(ORDER_STATUS.AWAITING_PICKUP);
-            orderRepository.save(order);
-            List<OrderDetail> orderDetails = order.getOrderDetails();
-            for (OrderDetail orderDetail : orderDetails) {
-                Post post = orderDetail.getPost();
-                post.setStatus(POST_STATUS.SOLD_OUT);
-                postRepository.save(post);
+            for (String orderID : orderIDList) {
+                Order order = orderRepository.findOrderById(Long.parseLong(orderID));
+                order.setStatus(ORDER_STATUS.AWAITING_PICKUP);
+                orderRepository.save(order);
+                List<OrderDetail> orderDetails = order.getOrderDetails();
+                for (OrderDetail orderDetail : orderDetails) {
+                    Post post = orderDetail.getPost();
+                    post.setStatus(POST_STATUS.SOLD_OUT);
+                    postRepository.save(post);
+                }
             }
             return new ResponseEntity<>("Order Successfully", HttpStatus.OK);
         } else {
-            order.setStatus(ORDER_STATUS.CANCELLED);
-            orderRepository.save(order);
+            for (String orderID : orderIDList) {
+                Order order = orderRepository.findOrderById(Long.parseLong(orderID));
+                order.setStatus(ORDER_STATUS.CANCELLED);
+                orderRepository.save(order);
+            }
             return new ResponseEntity<>("Order failed", HttpStatus.BAD_REQUEST);
         }
     }

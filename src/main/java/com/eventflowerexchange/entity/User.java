@@ -65,12 +65,16 @@ public class User {
     private OTPEmail otpEmail;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Order> orders;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private Shop shop;
 
     @JsonIgnore
     @OneToMany (mappedBy = "from")

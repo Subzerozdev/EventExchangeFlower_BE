@@ -32,7 +32,8 @@ public class Order {
     private String fullName;
     private String address;
     private String note;
-    private Long totalMoney;
+    private String validationImage;
+    private float totalMoney;
     private LocalDateTime orderDate;
     private ORDER_STATUS status;
 
@@ -41,11 +42,11 @@ public class Order {
     private User user;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order")
     private List<Transactions> transactions;
 
     @JsonIgnore

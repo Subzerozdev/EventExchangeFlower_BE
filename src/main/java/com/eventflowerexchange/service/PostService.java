@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PostService {
     Post createPost(PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception;
-    Post getPostById(Long id) throws Exception;
+    Post getPostById(Long id);
     List<Post> getAllPosts();
     List<Post> getSellerPosts(String sellerID);
     Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception;

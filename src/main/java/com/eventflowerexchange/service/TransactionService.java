@@ -5,4 +5,5 @@ import com.eventflowerexchange.entity.Order;
 public interface TransactionService {
     void createTransaction01(Order order);
     void createTransaction02(Order order);
+    void updateStatusFromAdminToSeller(Long transactionId);
 }

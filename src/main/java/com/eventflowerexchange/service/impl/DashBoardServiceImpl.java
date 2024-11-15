@@ -1,6 +1,6 @@
 package com.eventflowerexchange.service.impl;
 
-import com.eventflowerexchange.entity.TransactionsEnum;
+import com.eventflowerexchange.entity.TRANSACTION_STATUS;
 import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.repository.TransactionRepository;
@@ -33,7 +33,7 @@ public class DashBoardServiceImpl implements DashBoardService {
     public Map <String,Object> getMonthlyRevenue(String userID) {
         Map<String,Object> revenueDate = new HashMap<>();
 
-        List<Object[]> monthlyRevenue = transactionRepository.calculateMonthlyRevenue(TransactionsEnum.SUCCESS, userID);
+        List<Object[]> monthlyRevenue = transactionRepository.calculateMonthlyRevenue(TRANSACTION_STATUS.SUCCESS, userID);
         List<Map<String,Object>> monthlyRevenueList = new ArrayList<>();
 
         float totalBalance = 0.0f;

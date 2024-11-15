@@ -2,11 +2,11 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
-import com.eventflowerexchange.entity.Fee;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.service.FeeService;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.PostService;
+import com.eventflowerexchange.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +22,7 @@ public class AdminAPI {
     private final PostService postService;
     private final OrderService orderService;
     private final FeeService feeService;
+    private final TransactionService transactionService;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(
@@ -39,28 +40,31 @@ public class AdminAPI {
         for (Order order : orders) {
             OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
                     .order(order)
-                    .totalFee(feeService.getFeeAmountById(order.getFeeId())* order.getTotalMoney())
+                    .bankNumber(order.getOrderDetails().get(0).getPost().getUser().getShop().getBankNumber())
+                    .transaction(order.getTransactions().get(order.getTransactions().size() - 1))
+                    .totalFee(feeService.getFeeAmountById(order.getFeeId()) * order.getTotalMoney())
                     .build();
             ordersResponse.add(orderResponseDTO);
         }
         return new ResponseEntity<>(ordersResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/fee")
-    public ResponseEntity<Object> getFee() {
-        Fee fee = feeService.getFeeById(1);
-        return new ResponseEntity<>(fee, HttpStatus.OK);
-    }
-
     @PutMapping("/fee")
     public ResponseEntity<String> updateFee(
             @RequestBody FeeRequestDTO feeRequestDTO
     ) {
-        if(feeRequestDTO.getAmount()<0f || feeRequestDTO.getAmount()>0.25f) {
+        if (feeRequestDTO.getAmount() < 0f || feeRequestDTO.getAmount() > 0.25f) {
             return new ResponseEntity<>("Invalid Amount", HttpStatus.BAD_REQUEST);
         }
         feeService.updateFeeAmount(1, feeRequestDTO.getAmount());
         return new ResponseEntity<>("Successfully Update Fee", HttpStatus.OK);
     }
 
+    @PutMapping("/transaction/{id}")
+    public ResponseEntity<String> updateTransactionToSeller(
+            @PathVariable Long id
+    ) {
+        transactionService.updateStatusFromAdminToSeller(id);
+        return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
+    }
 }

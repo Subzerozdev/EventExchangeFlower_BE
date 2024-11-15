@@ -30,17 +30,18 @@ public class OrderServiceImpl implements OrderService {
     private final OrderDetailService orderDetailService;
 
     @Override
-    public Order createOrder(OrderRequestDTO orderRequestDTO, User user) {
-        Order order = null;
-        if (orderDetailService.isSameShopOrSameSeller(orderRequestDTO.getOrderDetails(), user.getId())){
-            order = orderMapper.toOrder(orderRequestDTO);
-            order.setOrderDate(LocalDateTime.now());
-            order.setFeeId(1);
-            order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
-            order.setUser(user);
-            orderRepository.save(order);
+    public Order createOrder(OrderRequestDTO orderRequestDTO, User user, List<Post> postsInOrder) {
+        float money = 0f;
+        for (Post post : postsInOrder) {
+            money += post.getPrice();
         }
-        return order;
+        Order order = orderMapper.toOrder(orderRequestDTO);
+        order.setOrderDate(LocalDateTime.now());
+        order.setTotalMoney(money);
+        order.setFeeId(1);
+        order.setStatus(ORDER_STATUS.AWAITING_PAYMENT);
+        order.setUser(user);
+        return orderRepository.save(order);
     }
 
     @Override
@@ -64,10 +65,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatus(Long orderID, Boolean status) {
+    public void updateOrderStatusIsPicked(Long orderID, String image) {
         Order order = orderRepository.findOrderById(orderID);
         FieldValidation.checkObjectExist(order, "Order");
-        if (status && order.getStatus().equals(ORDER_STATUS.PICKED_UP)) {
+        if (order.getStatus().equals(ORDER_STATUS.AWAITING_PICKUP)) {
+            order.setValidationImage(image);
             order.setStatus(ORDER_STATUS.COMPLETED);
             transactionService.createTransaction02(order);
         }
@@ -88,20 +90,22 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String createUrl(Order order, User user) throws Exception {
+    public String createUrl(List<Order> orders, float totalMoney, User user) throws Exception {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         LocalDateTime createDate = LocalDateTime.now();
         String formattedCreateDate = createDate.format(formatter);
 
-        float money = order.getTotalMoney()*100;
+        StringBuilder orderIdListParam = new StringBuilder();
+        for (Order order : orders) {
+            orderIdListParam.append("orderID=").append(order.getId()).append("&");
+        }
 
-        String amount = String.valueOf( (int) money);
-
+        String totalAmount = String.valueOf((int) totalMoney*100);
         String tmnCode = "BWGP25D7";
         String secretKey = "N4UOZEEJMHX04953JVHQ3Z0SIU5ESVE0";
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        String returnUrl = "http://localhost:5173/loadingPage?orderID=" + order.getId();
-       // String returnUrl = "http://flowershop-ten.vercel.app/loadingPage?orderID=" + order.getId();
+        String returnUrl = "http://localhost:5173/loadingPage?" + orderIdListParam.substring(0,orderIdListParam.length()-1);
+        // String returnUrl = "http://flowershop-ten.vercel.app/loadingPage?orderID=" + order.getId();
         String currCode = "VND";
 
         Map<String, String> vnpParams = new TreeMap<>();
@@ -110,10 +114,10 @@ public class OrderServiceImpl implements OrderService {
         vnpParams.put("vnp_TmnCode", tmnCode);
         vnpParams.put("vnp_Locale", "vn");
         vnpParams.put("vnp_CurrCode", currCode);
-        vnpParams.put("vnp_TxnRef", order.getId().toString());
-        vnpParams.put("vnp_OrderInfo", "Thanh toan cho ma GD: " + order.getId());
+        vnpParams.put("vnp_TxnRef", orderIdListParam.substring(0,orderIdListParam.length()-1));
+        vnpParams.put("vnp_OrderInfo", "Thanh toan cho ma GD: " + orderIdListParam.substring(0,orderIdListParam.length()-1));
         vnpParams.put("vnp_OrderType", "other");
-        vnpParams.put("vnp_Amount",amount);
+        vnpParams.put("vnp_Amount", totalAmount);
 
         vnpParams.put("vnp_ReturnUrl", returnUrl);
         vnpParams.put("vnp_CreateDate", formattedCreateDate);
@@ -145,5 +149,4 @@ public class OrderServiceImpl implements OrderService {
 
         return urlBuilder.toString();
     }
-
 }

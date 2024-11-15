@@ -5,5 +5,4 @@ public enum ORDER_STATUS {
     AWAITING_PICKUP,
     COMPLETED,
     CANCELLED,
-    PICKED_UP
 }

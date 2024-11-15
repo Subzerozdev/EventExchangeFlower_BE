@@ -1,7 +1,7 @@
 package com.eventflowerexchange.repository;
 
 import com.eventflowerexchange.entity.Transactions;
-import com.eventflowerexchange.entity.TransactionsEnum;
+import com.eventflowerexchange.entity.TRANSACTION_STATUS;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +15,7 @@ public interface TransactionRepository extends JpaRepository<Transactions, Long>
             "GROUP BY YEAR(t.createAt), MONTH (t.createAt)" +
             "ORDER BY YEAR(t.createAt), MONTH (t.createAt)")
     List<Object[]> calculateMonthlyRevenue(
-            @Param("status") TransactionsEnum status,
+            @Param("status") TRANSACTION_STATUS status,
             @Param("shop_id") String shop_id);
-
+    Transactions findTransactionsById(Long transactionId);
 }

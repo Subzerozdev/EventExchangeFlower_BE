@@ -7,9 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShopRequestDTO {
-    private String shopName;
-    private String description;
-    private String shopAddress;
-    private String bankNumber;
+public class UpdateValidationImageRequest {
+    private String image;
 }
