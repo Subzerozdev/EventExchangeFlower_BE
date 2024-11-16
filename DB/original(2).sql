@@ -35,6 +35,8 @@ create table `shop`
     shop_address nvarchar(255),
     shop_name nvarchar(150),
     bank_number nvarchar(150),
+    owner_bank nvarchar(150),
+    bank_name varchar(150),
     user_id CHAR(36) NOT NULL,
     FOREIGN KEY  (user_id) REFERENCES `users`(id)
 );

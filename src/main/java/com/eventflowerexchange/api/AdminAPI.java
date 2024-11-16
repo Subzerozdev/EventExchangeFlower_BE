@@ -40,7 +40,7 @@ public class AdminAPI {
         for (Order order : orders) {
             OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
                     .order(order)
-                    .bankNumber(order.getOrderDetails().get(0).getPost().getUser().getShop().getBankNumber())
+                    .shop(order.getOrderDetails().get(0).getPost().getUser().getShop())
                     .transaction(order.getTransactions().get(order.getTransactions().size() - 1))
                     .totalFee(feeService.getFeeAmountById(order.getFeeId()) * order.getTotalMoney())
                     .build();

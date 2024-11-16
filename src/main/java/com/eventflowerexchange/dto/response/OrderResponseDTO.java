@@ -1,6 +1,7 @@
 package com.eventflowerexchange.dto.response;
 
 import com.eventflowerexchange.entity.Order;
+import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.Transactions;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,5 +16,5 @@ public class OrderResponseDTO {
     private Order order;
     private float totalFee;
     private Transactions transaction;
-    private String bankNumber;
+    private Shop shop;
 }

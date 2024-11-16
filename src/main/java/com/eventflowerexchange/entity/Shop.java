@@ -21,7 +21,9 @@ public class Shop {
     private String shopName;
     private String description;
     private String shopAddress;
+    private String ownerBank;
     private String bankNumber;
+    private String bankName;
 
     @JsonIgnore
     @OneToOne
