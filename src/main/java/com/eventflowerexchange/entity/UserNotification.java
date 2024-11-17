@@ -1,5 +1,6 @@
 package com.eventflowerexchange.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,13 +14,18 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "otp_email")
-public class OTPEmail {
+@Table(name = "user_notification")
+public class UserNotification {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long OTP;
-    private LocalDateTime expiryDate;
-    @OneToOne
+
+    private String message;
+    private LocalDateTime createDate;
+    private NOTIFICATION_TYPE notificationType;
+
+    @JsonIgnore
+    @ManyToOne
     private User user;
 }

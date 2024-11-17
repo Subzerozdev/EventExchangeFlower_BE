@@ -51,4 +51,8 @@ public class Order {
 
     @JsonIgnore
     private int feeId;
+
+    @JsonIgnore
+    @OneToOne
+    private Report report;
 }

@@ -1,13 +1,16 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
+import com.eventflowerexchange.dto.request.ReportRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
 import com.eventflowerexchange.entity.Fee;
 import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.service.FeeService;
 import com.eventflowerexchange.service.JwtService;
+import com.eventflowerexchange.service.ReportService;
 import com.eventflowerexchange.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ public class UserAPI {
     private final UserService userService;
     private final JwtService jwtService;
     private final FeeService feeService;
+    private final ReportService reportService;
 
     @PutMapping("")
     public ResponseEntity<Object> updateUserProfile(
@@ -45,9 +49,9 @@ public class UserAPI {
     @PostMapping("/token")
     public ResponseEntity<Object> updateSellerToken(
             @RequestHeader("Authorization") String jwt
-    ){
+    ) {
         User user = jwtService.getUserFromJwtToken(jwt);
-        if (user.getRole().equals(USER_ROLE.ROLE_SELLER)){
+        if (user.getRole().equals(USER_ROLE.ROLE_SELLER)) {
             AuthResponseDTO authResponseDTO = userService.updateSellerToken(user);
             return ResponseEntity.ok(authResponseDTO);
         }
@@ -58,5 +62,15 @@ public class UserAPI {
     public ResponseEntity<Object> getFee() {
         Fee fee = feeService.getFeeById(1);
         return new ResponseEntity<>(fee, HttpStatus.OK);
+    }
+
+    @PostMapping("/report")
+    public ResponseEntity<Object> reportOrder(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody ReportRequestDTO reportRequestDTO
+    ) {
+        User user = jwtService.getUserFromJwtToken(jwt);
+        reportService.createReport(reportRequestDTO, user);
+        return new ResponseEntity<>("Report successfully", HttpStatus.OK);
     }
 }

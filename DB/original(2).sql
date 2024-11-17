@@ -118,7 +118,7 @@ create table `typeandpost`
     foreign key (post_id) references `posts`(id)
 );
 
-create table otpemail
+create table otp_email
 (
 id bigint auto_increment not null primary key,
 OTP int not null,
@@ -150,4 +150,33 @@ CREATE TABLE feedback (
 	shop_id CHAR(36),
     FOREIGN KEY (shop_id) REFERENCES shop(id)
 );
+
+CREATE TABLE notification
+(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    `type` NVARCHAR(50)
+);
+
+CREATE TABLE user_notification
+(
+	id bigint AUTO_INCREMENT PRIMARY KEY,
+    message NVARCHAR(255),
+    create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+	user_id CHAR(36),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    notification_id INT,
+    FOREIGN KEY (notification_id) REFERENCES notification(id)
+);
+
+CREATE TABLE report
+(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    problem NVARCHAR(255),
+    content NVARCHAR(255),
+    `status` INT,
+	user_id CHAR(36),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+	order_id BIGINT,
+    FOREIGN KEY (order_id) REFERENCES orders(id)
+)
 

@@ -3,10 +3,7 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.entity.Order;
-import com.eventflowerexchange.service.FeeService;
-import com.eventflowerexchange.service.OrderService;
-import com.eventflowerexchange.service.PostService;
-import com.eventflowerexchange.service.TransactionService;
+import com.eventflowerexchange.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +20,7 @@ public class AdminAPI {
     private final OrderService orderService;
     private final FeeService feeService;
     private final TransactionService transactionService;
+    private final ReportService reportService;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(
@@ -65,6 +63,14 @@ public class AdminAPI {
             @PathVariable Long id
     ) {
         transactionService.updateStatusFromAdminToSeller(id);
+        return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
+    }
+
+    @PutMapping("/report/{id}")
+    public ResponseEntity<String> updateReportIsSolved(
+            @PathVariable int id
+    ) {
+        reportService.solveReport(id);
         return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
     }
 }

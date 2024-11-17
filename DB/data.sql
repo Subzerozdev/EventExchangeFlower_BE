@@ -42,6 +42,11 @@ insert into `types`(id,`name`) value(3,"Hoa Cát Tường");
 insert into `types`(id,`name`) value (4,"Hoa Thủy Tiên");
 insert into `types`(id,`name`) value(5,"Hoa Bách Hợp");
 
+-- notification
+insert into `types`(id,`type`) value(0,"Lời nhắc");
+insert into `types`(id,`type`) value(1,"Cảnh báo");
+insert into `types`(id,`type`) value(2,"Thông tin");
+
 -- create table `posts`
 -- (
 -- 	id BIGINT AUTO_INCREMENT NOT  NULL PRIMARY KEY,

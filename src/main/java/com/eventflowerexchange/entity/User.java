@@ -30,7 +30,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private float balance =0;
+    private float balance = 0;
 
     @Email(message = " Invalid Email !!!! ")
     @Column(unique = true)
@@ -77,10 +77,17 @@ public class User {
     private Shop shop;
 
     @JsonIgnore
-    @OneToMany (mappedBy = "from")
+    @OneToMany(mappedBy = "from")
     private Set<Transactions> transactionsFrom;
 
     @JsonIgnore
-    @OneToMany (mappedBy = "to")
+    @OneToMany(mappedBy = "to")
     private Set<Transactions> transactionsTo;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserNotification> notifications;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Report> reports;
 }
