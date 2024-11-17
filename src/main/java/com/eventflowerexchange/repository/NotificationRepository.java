@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface NotificationRepository extends JpaRepository<UserNotification, Integer> {
-    List<UserNotification> getUserNotificationByUserId(String userId);
+    List<UserNotification> getUserNotificationByReceiverUserId(String userId);
+    List<UserNotification> getUserNotificationBySender(String sender);
 }

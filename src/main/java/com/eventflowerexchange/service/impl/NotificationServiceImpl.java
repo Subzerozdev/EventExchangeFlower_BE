@@ -1,6 +1,8 @@
 package com.eventflowerexchange.service.impl;
 
 import com.eventflowerexchange.dto.request.NotificationRequest;
+import com.eventflowerexchange.entity.NOTIFICATION_TYPE;
+import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.entity.UserNotification;
 import com.eventflowerexchange.repository.NotificationRepository;
 import com.eventflowerexchange.service.NotificationService;
@@ -18,18 +20,25 @@ public class NotificationServiceImpl implements NotificationService {
     private final UserService userService;
 
     @Override
-    public void createNotification(NotificationRequest notificationRequest) {
+    public void createNotification(User receiverUser, String sender,
+                                   NOTIFICATION_TYPE type, String message) {
         UserNotification userNotification = UserNotification.builder()
-                .user(userService.findUserById(notificationRequest.getReceiver()))
+                .receiverUser(receiverUser)
+                .sender(sender)
                 .createDate(LocalDateTime.now())
-                .notificationType(notificationRequest.getType())
-                .message(notificationRequest.getMessage())
+                .notificationType(type)
+                .message(message)
                 .build();
         notificationRepository.save(userNotification);
     }
 
     @Override
     public List<UserNotification> getUserNotifications(String userID) {
-        return notificationRepository.getUserNotificationByUserId(userID);
+        return notificationRepository.getUserNotificationByReceiverUserId(userID);
+    }
+
+    @Override
+    public List<UserNotification> getAdminNotifications(String sender) {
+        return notificationRepository.getUserNotificationBySender(sender);
     }
 }

@@ -84,7 +84,7 @@ public class User {
     @OneToMany(mappedBy = "to")
     private Set<Transactions> transactionsTo;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "receiverUser")
     private List<UserNotification> notifications;
 
     @JsonIgnore

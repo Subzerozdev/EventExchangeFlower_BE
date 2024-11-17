@@ -22,10 +22,12 @@ public class UserNotification {
     private Long id;
 
     private String message;
+    private String sender;
     private LocalDateTime createDate;
     private NOTIFICATION_TYPE notificationType;
 
     @JsonIgnore
     @ManyToOne
-    private User user;
+    private User receiverUser;
+
 }

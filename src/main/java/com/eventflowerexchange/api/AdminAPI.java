@@ -2,7 +2,10 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
+import com.eventflowerexchange.dto.response.ReportResponseDTO;
 import com.eventflowerexchange.entity.Order;
+import com.eventflowerexchange.entity.Report;
+import com.eventflowerexchange.mapper.ReportMapper;
 import com.eventflowerexchange.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ public class AdminAPI {
     private final FeeService feeService;
     private final TransactionService transactionService;
     private final ReportService reportService;
+    private final ReportMapper reportMapper;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(
@@ -72,5 +76,18 @@ public class AdminAPI {
     ) {
         reportService.solveReport(id);
         return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<Object> getUserReport() {
+        List<Report> reports = reportService.getUserReport();
+        List<ReportResponseDTO> reportListResponseDTO = new ArrayList<>();
+        reports.forEach(report -> {
+            ReportResponseDTO reportResponseDTO = reportMapper.toReportResponseDTO(report);
+            reportResponseDTO.setUserEmail(report.getUser().getEmail());
+            reportResponseDTO.setOrderId(report.getOrder().getId());
+            reportListResponseDTO.add(reportResponseDTO);
+        });
+        return new ResponseEntity<>(reportListResponseDTO, HttpStatus.OK);
     }
 }

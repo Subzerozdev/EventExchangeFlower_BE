@@ -3,6 +3,7 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.repository.OrderRepository;
 import com.eventflowerexchange.repository.PostRepository;
+import com.eventflowerexchange.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.*;
 public class PaymentAPI {
     private final OrderRepository orderRepository;
     private final PostRepository postRepository;
+    private final NotificationService notificationService;
 
     @GetMapping("/vnpay/callback")
     public ResponseEntity<Object> payCallbackHandler(HttpServletRequest request) {
@@ -36,6 +38,7 @@ public class PaymentAPI {
                     post.setStatus(POST_STATUS.SOLD_OUT);
                     postRepository.save(post);
                 }
+                notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Bạn đã thanh toán thành công cho đơn hàng " + orderID + ". Đơn hàng sẽ được giao sau ngày kết thúc sự kiện của bài đăng");
             }
             return new ResponseEntity<>("Order Successfully", HttpStatus.OK);
         } else {
@@ -43,6 +46,7 @@ public class PaymentAPI {
                 Order order = orderRepository.findOrderById(Long.parseLong(orderID));
                 order.setStatus(ORDER_STATUS.CANCELLED);
                 orderRepository.save(order);
+                notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + orderID + " đã bị hủy do thanh toán không thành công");
             }
             return new ResponseEntity<>("Order failed", HttpStatus.BAD_REQUEST);
         }

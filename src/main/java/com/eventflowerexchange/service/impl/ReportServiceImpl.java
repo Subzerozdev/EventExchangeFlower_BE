@@ -10,6 +10,8 @@ import com.eventflowerexchange.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService {
@@ -32,5 +34,10 @@ public class ReportServiceImpl implements ReportService {
         Report report = reportRepository.getReportById(reportId);
         report.setStatus(REPORT_STATUS.COMPLETED);
         reportRepository.save(report);
+    }
+
+    @Override
+    public List<Report> getUserReport() {
+        return reportRepository.getReports();
     }
 }

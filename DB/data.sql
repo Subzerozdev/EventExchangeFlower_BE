@@ -43,9 +43,9 @@ insert into `types`(id,`name`) value (4,"Hoa Thủy Tiên");
 insert into `types`(id,`name`) value(5,"Hoa Bách Hợp");
 
 -- notification
-insert into `types`(id,`type`) value(0,"Lời nhắc");
-insert into `types`(id,`type`) value(1,"Cảnh báo");
-insert into `types`(id,`type`) value(2,"Thông tin");
+insert into `notification`(id,`type`) value(0,"Lời nhắc");
+insert into `notification`(id,`type`) value(1,"Cảnh báo");
+insert into `notification`(id,`type`) value(2,"Thông tin");
 
 -- create table `posts`
 -- (
