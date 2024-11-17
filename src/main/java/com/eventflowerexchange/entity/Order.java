@@ -45,7 +45,6 @@ public class Order {
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "order")
     private List<Transactions> transactions;
 

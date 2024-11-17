@@ -30,6 +30,9 @@ public class NotificationAPI {
             @RequestBody NotificationRequest notificationRequest
     ) {
         User receiverUser = userService.findUserById(userService.getUserIdByEmail(notificationRequest.getReceiver()));
+        if (receiverUser == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         notificationService.createNotification(receiverUser, "Admin", notificationRequest.getType(), notificationRequest.getMessage());
         return new ResponseEntity<>("Create successfully", HttpStatus.OK);
     }

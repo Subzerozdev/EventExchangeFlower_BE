@@ -44,10 +44,15 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void updateStatusFromAdminToSeller(Long transactionId) {
+    public boolean updateStatusFromAdminToSeller(Long transactionId) {
+        boolean result = false;
         Transactions transaction = transactionRepository.findTransactionsById(transactionId);
-        transaction.setStatus(TRANSACTION_STATUS.SUCCESS);
-        transactionRepository.save(transaction);
+        if(transaction.getOrder().getStatus().equals(ORDER_STATUS.COMPLETED)){
+            transaction.setStatus(TRANSACTION_STATUS.SUCCESS);
+            transactionRepository.save(transaction);
+            result = true;
+        }
+        return result;
     }
 
     private Transactions createTransaction(Order order, User userFrom, User userTo

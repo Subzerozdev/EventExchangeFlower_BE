@@ -66,8 +66,12 @@ public class AdminAPI {
     public ResponseEntity<String> updateTransactionToSeller(
             @PathVariable Long id
     ) {
-        transactionService.updateStatusFromAdminToSeller(id);
-        return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
+        boolean result = transactionService.updateStatusFromAdminToSeller(id);
+        if(result){
+            return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Unsuccessfully Update Transaction Status", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/report/{id}")
