@@ -30,14 +30,19 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public void solveReport(int reportId) {
+    public User solveReport(int reportId, boolean status) {
         Report report = reportRepository.getReportById(reportId);
-        report.setStatus(REPORT_STATUS.COMPLETED);
+        if (status) {
+            report.setStatus(REPORT_STATUS.COMPLETED);
+        } else {
+            report.setStatus(REPORT_STATUS.REJECTED);
+        }
         reportRepository.save(report);
+        return report.getUser();
     }
 
     @Override
     public List<Report> getUserReport() {
-        return reportRepository.getReports();
+        return reportRepository.findAll();
     }
 }

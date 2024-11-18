@@ -3,8 +3,10 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.dto.response.ReportResponseDTO;
+import com.eventflowerexchange.entity.NOTIFICATION_TYPE;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.Report;
+import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.mapper.ReportMapper;
 import com.eventflowerexchange.service.*;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class AdminAPI {
     private final TransactionService transactionService;
     private final ReportService reportService;
     private final ReportMapper reportMapper;
+    private final NotificationService notificationService;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(
@@ -67,18 +70,20 @@ public class AdminAPI {
             @PathVariable Long id
     ) {
         boolean result = transactionService.updateStatusFromAdminToSeller(id);
-        if(result){
+        if (result) {
             return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Unsuccessfully Update Transaction Status", HttpStatus.BAD_REQUEST);
         }
     }
 
-    @PutMapping("/report/{id}")
+    @PutMapping("/report/{id}/{status}")
     public ResponseEntity<String> updateReportIsSolved(
-            @PathVariable int id
+            @PathVariable int id,
+            @PathVariable boolean status
     ) {
-        reportService.solveReport(id);
+        User user = reportService.solveReport(id, status);
+        notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn khiếu nại số " + id + " của bạn đã được xử lí");
         return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
     }
 

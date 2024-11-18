@@ -4,6 +4,7 @@ import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.repository.TransactionRepository;
 import com.eventflowerexchange.repository.UserRepository;
 import com.eventflowerexchange.service.FeeService;
+import com.eventflowerexchange.service.NotificationService;
 import com.eventflowerexchange.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final FeeService feeService;
     private final UserRepository userRepository;
     private final TransactionRepository transactionRepository;
+    private final NotificationService notificationService;
 
     @Override
     public void createTransaction01(Order order) {
@@ -36,8 +38,8 @@ public class TransactionServiceImpl implements TransactionService {
         User admin = userRepository.findUserByEmail("hoaloicuofficial@gmail.com");
         User owner = order.getOrderDetails().get(0).getPost().getUser();
         Transactions transaction = createTransaction(order, admin, owner, "ADMIN TO OWNER", TRANSACTION_STATUS.PENDING);
-        float newShopBalance = owner.getBalance() + order.getTotalMoney() * (1.0f-feeAmount);
-        transaction.setAmount(order.getTotalMoney() * (1.0f-feeAmount));
+        float newShopBalance = owner.getBalance() + order.getTotalMoney() * (1.0f - feeAmount);
+        transaction.setAmount(order.getTotalMoney() * (1.0f - feeAmount));
         transactionRepository.save(transaction);
         owner.setBalance(newShopBalance);
         userRepository.save(owner);
@@ -47,9 +49,10 @@ public class TransactionServiceImpl implements TransactionService {
     public boolean updateStatusFromAdminToSeller(Long transactionId) {
         boolean result = false;
         Transactions transaction = transactionRepository.findTransactionsById(transactionId);
-        if(transaction.getOrder().getStatus().equals(ORDER_STATUS.COMPLETED)){
+        if (transaction.getOrder().getStatus().equals(ORDER_STATUS.COMPLETED)) {
             transaction.setStatus(TRANSACTION_STATUS.SUCCESS);
             transactionRepository.save(transaction);
+            notificationService.createNotification(transaction.getTo(), "System", NOTIFICATION_TYPE.INFORMATION, "Bạn nhận được " + transaction.getAmount() + " cho đơn hàng với mã số " + transaction.getOrder().getId());
             result = true;
         }
         return result;

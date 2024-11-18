@@ -24,9 +24,11 @@ public class UserNotification {
     private String message;
     private String sender;
     private LocalDateTime createDate;
+    @Column(name = "notification_id")
     private NOTIFICATION_TYPE notificationType;
 
     @JsonIgnore
+    @JoinColumn(name = "receiver_user")
     @ManyToOne
     private User receiverUser;
 

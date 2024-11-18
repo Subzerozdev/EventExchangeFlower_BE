@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface ReportService {
     void createReport(ReportRequestDTO reportRequestDTO, User user);
-    void solveReport(int reportId);
+    User solveReport(int reportId, boolean status);
     List<Report> getUserReport();
 }

@@ -4,7 +4,6 @@ import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.repository.OrderRepository;
-import com.eventflowerexchange.service.OrderDetailService;
 import com.eventflowerexchange.service.OrderService;
 import com.eventflowerexchange.service.TransactionService;
 import com.eventflowerexchange.util.FieldValidation;
@@ -27,7 +26,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final TransactionService transactionService;
-    private final OrderDetailService orderDetailService;
 
     @Override
     public Order createOrder(OrderRequestDTO orderRequestDTO, User user, List<Post> postsInOrder) {

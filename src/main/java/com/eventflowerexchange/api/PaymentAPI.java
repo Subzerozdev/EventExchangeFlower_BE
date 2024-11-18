@@ -39,6 +39,7 @@ public class PaymentAPI {
                     postRepository.save(post);
                 }
                 notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Bạn đã thanh toán thành công cho đơn hàng " + orderID + ". Đơn hàng sẽ được giao sau ngày kết thúc sự kiện của bài đăng");
+                notificationService.createNotification(order.getOrderDetails().get(0).getPost().getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Bạn nhận được 1 đơn hàng mới từ người mua với mã đơn: " + orderID);
             }
             return new ResponseEntity<>("Order Successfully", HttpStatus.OK);
         } else {

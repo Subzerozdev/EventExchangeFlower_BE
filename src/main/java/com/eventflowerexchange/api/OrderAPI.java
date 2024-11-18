@@ -4,10 +4,7 @@ import com.eventflowerexchange.dto.SellerInformation;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateValidationImageRequest;
 import com.eventflowerexchange.dto.response.OrderDetailResponseDTO;
-import com.eventflowerexchange.entity.Order;
-import com.eventflowerexchange.entity.OrderDetail;
-import com.eventflowerexchange.entity.Post;
-import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.service.*;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +27,7 @@ public class OrderAPI {
     private final TransactionService transactionService;
     private final FeeService feeService;
     private final PostService postService;
+    private final NotificationService notificationService;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -43,15 +41,15 @@ public class OrderAPI {
 
         List<Order> orders = new ArrayList<>();
         Map<String, List<Post>> postListInOrder = posts.stream().collect(
-                Collectors.groupingBy(p->p.getUser().getId()));
+                Collectors.groupingBy(p -> p.getUser().getId()));
         for (var entry : postListInOrder.entrySet()) {
             if (entry.getValue().get(0).getUser().getId().equals(user.getId())) {
                 StringBuilder message = new StringBuilder();
                 for (Post post : entry.getValue()) {
                     message.append(post.getName()).append("; ");
                 }
-                System.out.println(message.substring(0,message.length()-2));
-                return new ResponseEntity<>(message.substring(0,message.length()-2) ,HttpStatus.BAD_REQUEST);
+                System.out.println(message.substring(0, message.length() - 2));
+                return new ResponseEntity<>(message.substring(0, message.length() - 2), HttpStatus.BAD_REQUEST);
             }
             Order order = orderService.createOrder(orderRequestDTO, user, entry.getValue());
             orderDetailService.saveOrderDetails(entry.getValue(), order);
@@ -83,7 +81,7 @@ public class OrderAPI {
                 .order(order)
                 .orderDetail(orderDetails)
                 .sellerInformation(sellerInformation)
-                .totalFee(feeService.getFeeAmountById(order.getFeeId())*order.getTotalMoney())
+                .totalFee(feeService.getFeeAmountById(order.getFeeId()) * order.getTotalMoney())
                 .build();
         return new ResponseEntity<>(orderDetailResponseDTO, HttpStatus.OK);
     }
@@ -103,8 +101,9 @@ public class OrderAPI {
             @RequestBody UpdateValidationImageRequest validationImage
     ) {
         String image = validationImage.getImage();
-        if(image!=null && !image.isEmpty()){
+        if (image != null && !image.isEmpty()) {
             orderService.updateOrderStatusIsPicked(id, validationImage.getImage());
+            notificationService.createNotification(orderService.getOrderById(id).getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng " + id + " của bạn đã giao thành công");
             return new ResponseEntity<>("Update Success", HttpStatus.OK);
         }
         return new ResponseEntity<>("Image is invalid!", HttpStatus.BAD_REQUEST);
@@ -113,8 +112,8 @@ public class OrderAPI {
     @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction(
             @RequestParam(name = "orderID") List<String> orderIDList
-    ){
-        for(String orderID : orderIDList){
+    ) {
+        for (String orderID : orderIDList) {
             Order order = orderService.getOrderById(Long.valueOf(orderID));
             FieldValidation.checkObjectExist(order, "Order");
             transactionService.createTransaction01(order);
