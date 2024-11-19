@@ -99,7 +99,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void updatePostStatus(Long id, Boolean status) {
+    public Post updatePostStatus(Long id, Boolean status) {
         // Get Post
         Post post = postRepository.findPostById(id);
         // Check If Post is Existed
@@ -112,7 +112,7 @@ public class PostServiceImpl implements PostService {
                 post.setStatus(POST_STATUS.DISAPPROVE);
             }
         }
-        postRepository.save(post);
+        return postRepository.save(post);
     }
 
     private List<Type> validateType(List<Long> typeID) throws DataNotFoundException {

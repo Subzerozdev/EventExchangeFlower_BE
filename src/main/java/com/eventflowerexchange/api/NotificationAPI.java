@@ -47,7 +47,7 @@ public class NotificationAPI {
     }
 
     @PutMapping("/notification/{id}")
-    public ResponseEntity<Object> getUserNotification(
+    public ResponseEntity<Object> readNotification(
             @PathVariable Long id
     ) {
         notificationService.readNotification(id);

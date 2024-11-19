@@ -27,9 +27,7 @@ public class Report {
     private String content;
     private REPORT_STATUS status;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "report")
-    private Order order;
+    private Long orderID;
 
     @JsonIgnore
     @ManyToOne

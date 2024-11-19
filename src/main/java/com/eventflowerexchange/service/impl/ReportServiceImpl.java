@@ -23,7 +23,8 @@ public class ReportServiceImpl implements ReportService {
         Report report = Report.builder()
                 .content(reportRequestDTO.getContent())
                 .problem(reportRequestDTO.getProblem())
-                .order(orderService.getOrderById(reportRequestDTO.getOrderId()))
+                .orderID(reportRequestDTO.getOrderId())
+                .user(user)
                 .status(REPORT_STATUS.PROCESSING)
                 .build();
         reportRepository.save(report);

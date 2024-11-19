@@ -58,6 +58,11 @@ public class TransactionServiceImpl implements TransactionService {
         return result;
     }
 
+    @Override
+    public Transactions getTransactionsFromAdmin(Order order, User admin) {
+        return transactionRepository.findTransactionsByOrderAndFrom(order, admin);
+    }
+
     private Transactions createTransaction(Order order, User userFrom, User userTo
             , String description, TRANSACTION_STATUS status) {
         return Transactions.builder()

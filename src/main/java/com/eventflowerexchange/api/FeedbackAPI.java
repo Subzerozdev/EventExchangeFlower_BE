@@ -3,10 +3,12 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.dto.request.FeedbackRequestDTO;
 import com.eventflowerexchange.dto.response.FeedbackResponse;
 import com.eventflowerexchange.entity.Feedback;
+import com.eventflowerexchange.entity.NOTIFICATION_TYPE;
 import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.User;
 import com.eventflowerexchange.service.FeedbackService;
 import com.eventflowerexchange.service.JwtService;
+import com.eventflowerexchange.service.NotificationService;
 import com.eventflowerexchange.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ public class FeedbackAPI {
     private final JwtService jwtService;
     private final FeedbackService feedbackService;
     private final ShopService shopService;
+    private final NotificationService notificationService;
 
     @PostMapping()
     public ResponseEntity<Object> createFeedback(
@@ -29,6 +32,7 @@ public class FeedbackAPI {
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
         Feedback feedback = feedbackService.createNewFeedback(feedbackRequestDTO, user);
+        notificationService.createNotification(feedback.getShop().getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Bạn nhận được 1 đánh giá từ khách hàng");
         return ResponseEntity.ok(feedback);
     }
 

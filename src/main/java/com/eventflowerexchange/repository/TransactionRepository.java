@@ -1,7 +1,9 @@
 package com.eventflowerexchange.repository;
 
+import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.Transactions;
 import com.eventflowerexchange.entity.TRANSACTION_STATUS;
+import com.eventflowerexchange.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,4 +20,5 @@ public interface TransactionRepository extends JpaRepository<Transactions, Long>
             @Param("status") TRANSACTION_STATUS status,
             @Param("shop_id") String shop_id);
     Transactions findTransactionsById(Long transactionId);
+    Transactions findTransactionsByOrderAndFrom(Order order, User from);
 }

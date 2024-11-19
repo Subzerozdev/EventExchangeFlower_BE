@@ -32,14 +32,14 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void readNotification(Long notificationId) {
-        UserNotification userNotification = notificationRepository.getUserNotificationById(notificationId);
+        UserNotification userNotification = notificationRepository.getUserNotificationByIdAndIsReadFalse(notificationId);
         userNotification.setRead(true);
         notificationRepository.save(userNotification);
     }
 
     @Override
     public List<UserNotification> getUserNotifications(String userID) {
-        return notificationRepository.getUserNotificationByReceiverUserId(userID);
+        return notificationRepository.getUserNotificationByReceiverUserIdAndIsReadFalseOrderByCreateDateDesc(userID);
     }
 
     @Override

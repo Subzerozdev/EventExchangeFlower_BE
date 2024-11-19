@@ -3,10 +3,7 @@ package com.eventflowerexchange.api;
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.dto.response.ReportResponseDTO;
-import com.eventflowerexchange.entity.NOTIFICATION_TYPE;
-import com.eventflowerexchange.entity.Order;
-import com.eventflowerexchange.entity.Report;
-import com.eventflowerexchange.entity.User;
+import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.ReportMapper;
 import com.eventflowerexchange.service.*;
 import lombok.RequiredArgsConstructor;
@@ -26,27 +23,38 @@ public class AdminAPI {
     private final FeeService feeService;
     private final TransactionService transactionService;
     private final ReportService reportService;
-    private final ReportMapper reportMapper;
+    private final JwtService jwtService;
     private final NotificationService notificationService;
+    private final ReportMapper reportMapper;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(
             @PathVariable("id") Long id,
             @PathVariable("status") Boolean status
     ) throws Exception {
-        postService.updatePostStatus(id, status);
+        Post post = postService.updatePostStatus(id, status);
+        String message;
+        if (status) {
+            message = "Bài đăng số "+id+" của bạn đã được duyệt và đang được đăng bán";
+        } else {
+            message = "Bài đăng số "+id+" của bạn không được duyệt do vi phạm chính sách của trang web";
+        }
+        notificationService.createNotification(post.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, message);
         return new ResponseEntity<>("Successfully Update Status", HttpStatus.OK);
     }
 
     @GetMapping("/orders")
-    public ResponseEntity<Object> getAllOrders() {
+    public ResponseEntity<Object> getAllOrders(
+            @RequestHeader("Authorization") String jwt
+    ) {
+        User admin = jwtService.getUserFromJwtToken(jwt);
         List<Order> orders = orderService.getAllOrders();
         List<OrderResponseDTO> ordersResponse = new ArrayList<>();
         for (Order order : orders) {
             OrderResponseDTO orderResponseDTO = OrderResponseDTO.builder()
                     .order(order)
                     .shop(order.getOrderDetails().get(0).getPost().getUser().getShop())
-                    .transaction(order.getTransactions().get(order.getTransactions().size() - 1))
+                    .transaction(transactionService.getTransactionsFromAdmin(order, admin))
                     .totalFee(feeService.getFeeAmountById(order.getFeeId()) * order.getTotalMoney())
                     .build();
             ordersResponse.add(orderResponseDTO);
@@ -84,7 +92,7 @@ public class AdminAPI {
     ) {
         User user = reportService.solveReport(id, status);
         notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn khiếu nại số " + id + " của bạn đã được xử lí");
-        return new ResponseEntity<>("Successfully Update Transaction Status", HttpStatus.OK);
+        return new ResponseEntity<>("Successfully Update Report Status", HttpStatus.OK);
     }
 
     @GetMapping("/report")
@@ -94,7 +102,7 @@ public class AdminAPI {
         reports.forEach(report -> {
             ReportResponseDTO reportResponseDTO = reportMapper.toReportResponseDTO(report);
             reportResponseDTO.setUserEmail(report.getUser().getEmail());
-            reportResponseDTO.setOrderId(report.getOrder().getId());
+            reportResponseDTO.setOrderId(report.getOrderID());
             reportListResponseDTO.add(reportResponseDTO);
         });
         return new ResponseEntity<>(reportListResponseDTO, HttpStatus.OK);

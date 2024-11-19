@@ -13,5 +13,5 @@ public interface PostService {
     List<Post> getSellerPosts(String sellerID);
     Post updatePost(Long id, PostRequestDTO postRequestDTO, String userID, List<Long> typeID) throws Exception;
     boolean deletePost(Long id, String sellerID);
-    void updatePostStatus (Long id, Boolean status) throws DataNotFoundException;
+    Post updatePostStatus (Long id, Boolean status) throws DataNotFoundException;
 }

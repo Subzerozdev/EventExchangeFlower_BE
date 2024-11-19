@@ -165,7 +165,7 @@ CREATE TABLE user_notification
     is_read bit,
 	sender NVARCHAR(50),
 	receiver_user CHAR(36),
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (receiver_user) REFERENCES users(id),
     notification_id INT,
     FOREIGN KEY (notification_id) REFERENCES notification(id)
 );
