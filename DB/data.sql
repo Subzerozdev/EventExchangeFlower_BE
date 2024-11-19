@@ -22,11 +22,11 @@ insert into `users`(id,balance,email,`password`,full_name,phone,address,created_
 value("5ab548eb-98b5-11ef-8472-2c6dc10e488b",0,"seller02@gmail.com","$2a$12$POP2vZ4faMkKMrkFHeUij.yhY4Z0aePuAUbrKNg69FcUR3xCqT1bW","Người bán hàng 02","0909987673","456 Nguyễn Thị Minh Khai, Quận 3, TP.HCM", "2024-11-02 07:43:19", null,true,1);
 
 -- Shop
-insert into `shop`(`description`,shop_address,`shop_name`,user_id) 
-value("Shop bán các bộ hoa sự kiện phục vụ khách hàng","234 Cách Mạng Tháng 8, Quận 10, TP.HCM","Shop Hoa Xinh","5ab4992a-98b5-11ef-8472-2c6dc10e488b");
+insert into `shop`(`description`,shop_address,`shop_name`, bank_number, owner_bank, bank_name,user_id) 
+VALUES ('Shop bán các bộ hoa sự kiện phục vụ khách hàng', '234 Cách Mạng Tháng 8, Quận 10, TP.HCM', 'Cozy Shop', '987654321', 'Trần Thị B', 'NCB', "5ab4992a-98b5-11ef-8472-2c6dc10e488b");
 
-insert into `shop`(`description`,shop_address,`shop_name`,user_id) 
-value("Shop bán các bộ hoa sự kiện phục vụ khách hàng","234 Cách Mạng Tháng 8, Quận 10, TP.HCM","Shop An Bình","5ab548eb-98b5-11ef-8472-2c6dc10e488b");
+insert into `shop`(`description`,shop_address,`shop_name`, bank_number, owner_bank, bank_name,user_id) 
+VALUES ('Shop bán các bộ hoa sự kiện phục vụ khách hàng', '234 Cách Mạng Tháng 8, Quận 10, TP.HCM', 'Shop An Bình', '567891234', 'Lê Văn C', 'NCB', "5ab548eb-98b5-11ef-8472-2c6dc10e488b");
 
 -- eventcategories
 insert into `eventcategories`(id,`name`) value(1,"Sự kiện đám cưới");
@@ -118,15 +118,6 @@ insert into `notification`(id,`type`) value(2,"Thông tin");
 -- expiry_date datetime,
 -- user_id CHAR(36) ,
 -- foreign key (user_id) references `users`(id)
--- );
-
--- CREATE TABLE payment(
--- 	id BIGINT PRIMARY KEY AUTO_INCREMENT,
--- 	create_at datetime,
--- 	`payment_method` INT DEFAULT 0,
---     total FLOAT CHECK (total >=0),
--- 	order_id BIGINT,
--- 	FOREIGN KEY (order_id) REFERENCES orders(id)
 -- );
 
 -- CREATE TABLE transactions (

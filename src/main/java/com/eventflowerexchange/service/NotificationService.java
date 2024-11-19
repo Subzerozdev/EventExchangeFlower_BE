@@ -10,6 +10,8 @@ import java.util.List;
 public interface NotificationService {
     void createNotification(User receiverUser, String sender,
                             NOTIFICATION_TYPE type, String message);
+    void readNotification(Long notificationId);
     List<UserNotification> getUserNotifications(String userID);
     List<UserNotification> getAdminNotifications(String sender);
+
 }

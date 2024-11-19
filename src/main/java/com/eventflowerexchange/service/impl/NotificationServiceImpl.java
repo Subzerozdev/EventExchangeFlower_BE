@@ -23,9 +23,17 @@ public class NotificationServiceImpl implements NotificationService {
                 .receiverUser(receiverUser)
                 .sender(sender)
                 .createDate(LocalDateTime.now())
+                .isRead(false)
                 .notificationType(type)
                 .message(message)
                 .build();
+        notificationRepository.save(userNotification);
+    }
+
+    @Override
+    public void readNotification(Long notificationId) {
+        UserNotification userNotification = notificationRepository.getUserNotificationById(notificationId);
+        userNotification.setRead(true);
         notificationRepository.save(userNotification);
     }
 

@@ -24,6 +24,7 @@ public class UserNotification {
     private String message;
     private String sender;
     private LocalDateTime createDate;
+    private boolean isRead;
     @Column(name = "notification_id")
     private NOTIFICATION_TYPE notificationType;
 

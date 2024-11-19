@@ -46,6 +46,14 @@ public class NotificationAPI {
         return new ResponseEntity<>(userNotifications, HttpStatus.OK);
     }
 
+    @PutMapping("/notification/{id}")
+    public ResponseEntity<Object> getUserNotification(
+            @PathVariable Long id
+    ) {
+        notificationService.readNotification(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
     @GetMapping("/admin/notification")
     public ResponseEntity<Object> getAdminNotification() {
         List<UserNotification> userNotifications = notificationService.getAdminNotifications("Admin");

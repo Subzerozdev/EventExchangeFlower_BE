@@ -162,6 +162,7 @@ CREATE TABLE user_notification
 	id bigint AUTO_INCREMENT PRIMARY KEY,
     message NVARCHAR(255),
     create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_read bit,
 	sender NVARCHAR(50),
 	receiver_user CHAR(36),
     FOREIGN KEY (user_id) REFERENCES users(id),

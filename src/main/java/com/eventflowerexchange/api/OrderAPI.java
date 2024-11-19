@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,7 +49,6 @@ public class OrderAPI {
                 for (Post post : entry.getValue()) {
                     message.append(post.getName()).append("; ");
                 }
-                System.out.println(message.substring(0, message.length() - 2));
                 return new ResponseEntity<>(message.substring(0, message.length() - 2), HttpStatus.BAD_REQUEST);
             }
             Order order = orderService.createOrder(orderRequestDTO, user, entry.getValue());
