@@ -1,6 +1,7 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.SellerInformation;
+import com.eventflowerexchange.dto.request.ApplicationRequestDTO;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateValidationImageRequest;
 import com.eventflowerexchange.dto.response.OrderDetailResponseDTO;
@@ -29,6 +30,7 @@ public class OrderAPI {
     private final FeeService feeService;
     private final PostService postService;
     private final NotificationService notificationService;
+    private final ApplicationService applicationService;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -109,10 +111,18 @@ public class OrderAPI {
         return new ResponseEntity<>("Image is invalid!", HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/seller/orders")
+    @DeleteMapping("/seller/orders/{id}")
     public ResponseEntity<Object> cancelOrder(
+            @PathVariable Long id,
+            @RequestBody ApplicationRequestDTO applicationRequestDTO,
+            @RequestHeader("Authorization") String jwt
     ) {
-        return new ResponseEntity<>("Image is invalid!", HttpStatus.BAD_REQUEST);
+        User seller = jwtService.getUserFromJwtToken(jwt);
+        Order order = orderService.cancelOrder(id);
+        applicationService.createReport(applicationRequestDTO, seller, APPLICATION_TYPE.DELETE_ORDER);
+        notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số "+ id + " của bạn đã bị hủy do sự cố. Hãy nhấp vào đường dẫn sau để chúng tôi có thể hỗ trợ hoàn tiền cho bạn");
+        notificationService.createNotification(seller, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số "+ id + " của bạn đã được hủy thành công và thông báo tới người mua");
+        return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
     }
 
     @PostMapping("/transactions")
