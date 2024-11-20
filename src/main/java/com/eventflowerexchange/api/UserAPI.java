@@ -1,16 +1,16 @@
 package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.AuthRequestDTO;
-import com.eventflowerexchange.dto.request.ReportRequestDTO;
+import com.eventflowerexchange.dto.request.ApplicationRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
+import com.eventflowerexchange.entity.APPLICATION_TYPE;
 import com.eventflowerexchange.entity.Fee;
 import com.eventflowerexchange.entity.USER_ROLE;
 import com.eventflowerexchange.entity.User;
-import com.eventflowerexchange.mapper.UserMapper;
 import com.eventflowerexchange.service.FeeService;
 import com.eventflowerexchange.service.JwtService;
-import com.eventflowerexchange.service.ReportService;
+import com.eventflowerexchange.service.ApplicationService;
 import com.eventflowerexchange.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class UserAPI {
     private final UserService userService;
     private final JwtService jwtService;
     private final FeeService feeService;
-    private final ReportService reportService;
+    private final ApplicationService applicationService;
 
     @PutMapping("")
     public ResponseEntity<Object> updateUserProfile(
@@ -67,10 +67,21 @@ public class UserAPI {
     @PostMapping("/report")
     public ResponseEntity<Object> reportOrder(
             @RequestHeader("Authorization") String jwt,
-            @RequestBody ReportRequestDTO reportRequestDTO
+            @RequestBody ApplicationRequestDTO applicationRequestDTO
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
-        reportService.createReport(reportRequestDTO, user);
+        applicationService.createReport(applicationRequestDTO, user, APPLICATION_TYPE.REPORT);
+        return new ResponseEntity<>("Report successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/refund")
+    public ResponseEntity<Object> refundOrder(
+            @RequestHeader("Authorization") String jwt,
+            @RequestBody ApplicationRequestDTO applicationRequestDTO
+    ) {
+        applicationRequestDTO.setProblem(applicationRequestDTO.getBankName() + ", " + applicationRequestDTO.getOwnerBank() + ", " + applicationRequestDTO.getBankNumber());
+        User user = jwtService.getUserFromJwtToken(jwt);
+        applicationService.createReport(applicationRequestDTO, user, APPLICATION_TYPE.REFUND);
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);
     }
 }

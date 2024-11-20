@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReportRequestDTO {
+public class ApplicationRequestDTO {
     private String problem;
     private String content;
     private Long orderId;
+    private String ownerBank;
+    private String bankNumber;
+    private String bankName;
 }

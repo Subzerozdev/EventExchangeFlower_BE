@@ -2,7 +2,7 @@ package com.eventflowerexchange.api;
 
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
-import com.eventflowerexchange.dto.response.ReportResponseDTO;
+import com.eventflowerexchange.dto.response.ApplicationResponseDTO;
 import com.eventflowerexchange.entity.*;
 import com.eventflowerexchange.mapper.ReportMapper;
 import com.eventflowerexchange.service.*;
@@ -22,7 +22,7 @@ public class AdminAPI {
     private final OrderService orderService;
     private final FeeService feeService;
     private final TransactionService transactionService;
-    private final ReportService reportService;
+    private final ApplicationService applicationService;
     private final JwtService jwtService;
     private final NotificationService notificationService;
     private final ReportMapper reportMapper;
@@ -90,20 +90,20 @@ public class AdminAPI {
             @PathVariable int id,
             @PathVariable boolean status
     ) {
-        User user = reportService.solveReport(id, status);
+        User user = applicationService.solveReport(id, status);
         notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn khiếu nại số " + id + " của bạn đã được xử lí");
         return new ResponseEntity<>("Successfully Update Report Status", HttpStatus.OK);
     }
 
     @GetMapping("/report")
     public ResponseEntity<Object> getUserReport() {
-        List<Report> reports = reportService.getUserReport();
-        List<ReportResponseDTO> reportListResponseDTO = new ArrayList<>();
-        reports.forEach(report -> {
-            ReportResponseDTO reportResponseDTO = reportMapper.toReportResponseDTO(report);
-            reportResponseDTO.setUserEmail(report.getUser().getEmail());
-            reportResponseDTO.setOrderId(report.getOrderID());
-            reportListResponseDTO.add(reportResponseDTO);
+        List<Application> applications = applicationService.getUserReport();
+        List<ApplicationResponseDTO> reportListResponseDTO = new ArrayList<>();
+        applications.forEach(report -> {
+            ApplicationResponseDTO applicationResponseDTO = reportMapper.toReportResponseDTO(report);
+            applicationResponseDTO.setUserEmail(report.getUser().getEmail());
+            applicationResponseDTO.setOrderId(report.getOrderID());
+            reportListResponseDTO.add(applicationResponseDTO);
         });
         return new ResponseEntity<>(reportListResponseDTO, HttpStatus.OK);
     }

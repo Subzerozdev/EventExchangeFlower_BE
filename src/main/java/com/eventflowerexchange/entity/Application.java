@@ -2,15 +2,10 @@ package com.eventflowerexchange.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
@@ -18,16 +13,18 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "report")
-public class Report {
+public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String problem;
     private String content;
-    private REPORT_STATUS status;
+    private APPLICATION_STATUS status;
 
     private Long orderID;
+    @Column(name = "type_id")
+    private APPLICATION_TYPE type;
 
     @JsonIgnore
     @ManyToOne

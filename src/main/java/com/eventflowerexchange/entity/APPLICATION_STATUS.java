@@ -1,6 +1,6 @@
 package com.eventflowerexchange.entity;
 
-public enum REPORT_STATUS {
+public enum APPLICATION_STATUS {
     PROCESSING,
     COMPLETED,
     REJECTED,

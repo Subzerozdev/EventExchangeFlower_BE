@@ -1,10 +1,10 @@
 package com.eventflowerexchange.mapper;
 
-import com.eventflowerexchange.dto.response.ReportResponseDTO;
-import com.eventflowerexchange.entity.Report;
+import com.eventflowerexchange.dto.response.ApplicationResponseDTO;
+import com.eventflowerexchange.entity.Application;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface ReportMapper {
-    ReportResponseDTO toReportResponseDTO(Report report);
+    ApplicationResponseDTO toReportResponseDTO(Application application);
 }

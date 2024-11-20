@@ -89,5 +89,5 @@ public class User {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<Report> reports;
+    private List<Application> applications;
 }

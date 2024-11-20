@@ -109,6 +109,12 @@ public class OrderAPI {
         return new ResponseEntity<>("Image is invalid!", HttpStatus.BAD_REQUEST);
     }
 
+    @DeleteMapping("/seller/orders")
+    public ResponseEntity<Object> cancelOrder(
+    ) {
+        return new ResponseEntity<>("Image is invalid!", HttpStatus.BAD_REQUEST);
+    }
+
     @PostMapping("/transactions")
     public ResponseEntity<Object> createTransaction(
             @RequestParam(name = "orderID") List<String> orderIDList

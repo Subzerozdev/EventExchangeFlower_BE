@@ -170,15 +170,25 @@ CREATE TABLE user_notification
     FOREIGN KEY (notification_id) REFERENCES notification(id)
 );
 
-CREATE TABLE report
+CREATE TABLE application_type
+(
+	id INT PRIMARY KEY,
+    `type` NVARCHAR(50) NOT  NULL
+);
+
+CREATE TABLE application
 (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     problem NVARCHAR(255),
     content NVARCHAR(255),
     `status` INT,
+    type_id INT,
+    FOREIGN KEY (type_id) REFERENCES application_type(id),
 	user_id CHAR(36),
     FOREIGN KEY (user_id) REFERENCES users(id),
 	order_id BIGINT,
     FOREIGN KEY (order_id) REFERENCES orders(id)
-)
+);
+
+
 
