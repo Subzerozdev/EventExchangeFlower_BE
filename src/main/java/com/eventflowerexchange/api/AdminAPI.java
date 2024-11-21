@@ -1,5 +1,6 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.MailBody;
 import com.eventflowerexchange.dto.request.FeeRequestDTO;
 import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.dto.response.ApplicationResponseDTO;
@@ -26,6 +27,7 @@ public class AdminAPI {
     private final JwtService jwtService;
     private final NotificationService notificationService;
     private final ReportMapper reportMapper;
+    private final EmailService emailService;
 
     @PutMapping("/posts/{id}/{status}")
     public ResponseEntity<String> updatePostStatus(
@@ -35,9 +37,9 @@ public class AdminAPI {
         Post post = postService.updatePostStatus(id, status);
         String message;
         if (status) {
-            message = "Bài đăng số "+id+" của bạn đã được duyệt và đang được đăng bán";
+            message = "Bài đăng số " + id + " của bạn đã được duyệt và đang được đăng bán";
         } else {
-            message = "Bài đăng số "+id+" của bạn không được duyệt do vi phạm chính sách của trang web";
+            message = "Bài đăng số " + id + " của bạn không được duyệt do vi phạm chính sách của trang web";
         }
         notificationService.createNotification(post.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, message);
         return new ResponseEntity<>("Successfully Update Status", HttpStatus.OK);
@@ -91,7 +93,24 @@ public class AdminAPI {
             @PathVariable boolean status
     ) {
         User user = applicationService.solveReport(id, status);
-        notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn khiếu nại số " + id + " của bạn đã được xử lí");
+        Application application = applicationService.getReport(id);
+        String responseMessage;
+        String refundMessage = "";
+        if (status) {
+            responseMessage = "Đơn: " + application.getProblem() + " của bạn đã được xử lí.";
+            Order order = orderService.getOrderById(application.getOrderID());
+            if (application.getType().equals(APPLICATION_TYPE.REFUND)) {
+                refundMessage = " Bạn nhận được " + order.getTotalMoney() + " từ đơn hàng số " + order.getId() + "  bị hủy";
+            } else {
+                MailBody mailBody = emailService.createEmail(user.getEmail(), "Hoàn tiền đơn hàng", "Chúng tôi xin chân thành xin lỗi khi đơn hàng số " + order.getId() + " của quý khách đã bị hủy. " +
+                        "Để hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: http://localhost:5173/backMoney.");
+                emailService.sendEmail(mailBody);
+                refundMessage = "Để hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: http://localhost:5173/backMoney.";
+            }
+        } else {
+            responseMessage = "Đơn: " + application.getProblem() + " của bạn đã bị từ chối xử lí.";
+        }
+        notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, responseMessage + refundMessage);
         return new ResponseEntity<>("Successfully Update Report Status", HttpStatus.OK);
     }
 
@@ -101,8 +120,14 @@ public class AdminAPI {
         List<ApplicationResponseDTO> reportListResponseDTO = new ArrayList<>();
         applications.forEach(report -> {
             ApplicationResponseDTO applicationResponseDTO = reportMapper.toReportResponseDTO(report);
+            if (report.getType().equals(APPLICATION_TYPE.DELETE_ORDER)) {
+                String[] contentArray = report.getContent().split(",");
+                applicationResponseDTO.setBankName(contentArray[0]);
+                applicationResponseDTO.setOwnerBank(contentArray[1]);
+                applicationResponseDTO.setBankNumber(contentArray[2]);
+            }
             applicationResponseDTO.setUserEmail(report.getUser().getEmail());
-            applicationResponseDTO.setOrderId(report.getOrderID());
+            applicationResponseDTO.setOrder(orderService.getOrderById(report.getOrderID()));
             reportListResponseDTO.add(applicationResponseDTO);
         });
         return new ResponseEntity<>(reportListResponseDTO, HttpStatus.OK);

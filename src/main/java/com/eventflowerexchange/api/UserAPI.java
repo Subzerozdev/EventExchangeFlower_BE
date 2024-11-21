@@ -4,14 +4,8 @@ import com.eventflowerexchange.dto.request.AuthRequestDTO;
 import com.eventflowerexchange.dto.request.ApplicationRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateRequestDTO;
 import com.eventflowerexchange.dto.response.AuthResponseDTO;
-import com.eventflowerexchange.entity.APPLICATION_TYPE;
-import com.eventflowerexchange.entity.Fee;
-import com.eventflowerexchange.entity.USER_ROLE;
-import com.eventflowerexchange.entity.User;
-import com.eventflowerexchange.service.FeeService;
-import com.eventflowerexchange.service.JwtService;
-import com.eventflowerexchange.service.ApplicationService;
-import com.eventflowerexchange.service.UserService;
+import com.eventflowerexchange.entity.*;
+import com.eventflowerexchange.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,6 +20,7 @@ public class UserAPI {
     private final JwtService jwtService;
     private final FeeService feeService;
     private final ApplicationService applicationService;
+    private final NotificationService notificationService;
 
     @PutMapping("")
     public ResponseEntity<Object> updateUserProfile(
@@ -72,6 +67,7 @@ public class UserAPI {
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
         applicationService.createReport(applicationRequestDTO, id, user, APPLICATION_TYPE.REPORT);
+        notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn khiếu nại của bạn về vấn đề " + applicationRequestDTO.getProblem() + " đã được gửi đến quản trị viên.");
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);
     }
 
@@ -80,7 +76,7 @@ public class UserAPI {
             @RequestHeader("Authorization") String jwt,
             @RequestBody ApplicationRequestDTO applicationRequestDTO
     ) {
-        applicationRequestDTO.setProblem(applicationRequestDTO.getBankName() + ", " + applicationRequestDTO.getOwnerBank() + ", " + applicationRequestDTO.getBankNumber());
+        applicationRequestDTO.setProblem(applicationRequestDTO.getBankName() + "," + applicationRequestDTO.getOwnerBank() + "," + applicationRequestDTO.getBankNumber());
         User user = jwtService.getUserFromJwtToken(jwt);
         applicationService.createReport(applicationRequestDTO, applicationRequestDTO.getOrderId(), user, APPLICATION_TYPE.REFUND);
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);

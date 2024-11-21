@@ -104,8 +104,9 @@ public class OrderAPI {
     ) {
         String image = validationImage.getImage();
         if (image != null && !image.isEmpty()) {
-            orderService.updateOrderStatusIsPicked(id, validationImage.getImage());
-            notificationService.createNotification(orderService.getOrderById(id).getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng " + id + " của bạn đã giao thành công");
+            Order order = orderService.updateOrderStatusIsPicked(id, validationImage.getImage());
+            notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng " + id + " của bạn đã giao thành công.");
+            notificationService.createNotification(order.getOrderDetails().get(0).getPost().getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng " + id + " của bạn đã giao thành công. Chúng tôi sẽ chuyển tiền cho bạn trong vòng 24 giờ.");
             return new ResponseEntity<>("Update Success", HttpStatus.OK);
         }
         return new ResponseEntity<>("Image is invalid!", HttpStatus.BAD_REQUEST);

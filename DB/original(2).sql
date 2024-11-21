@@ -176,6 +176,10 @@ CREATE TABLE application_type
     `type` NVARCHAR(50) NOT  NULL
 );
 
+INSERT INTO application_type values(0,N'Khiếu nại');
+INSERT INTO application_type values(1,N'Hoàn tiền');
+INSERT INTO application_type values(2,N'Hủy đơn hàng');
+
 CREATE TABLE application
 (
 	id INT AUTO_INCREMENT PRIMARY KEY,

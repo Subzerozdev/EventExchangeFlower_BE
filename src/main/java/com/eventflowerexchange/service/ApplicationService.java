@@ -11,4 +11,5 @@ public interface ApplicationService {
     void createReport(ApplicationRequestDTO applicationRequestDTO, Long orderID, User user, APPLICATION_TYPE applicationType);
     User solveReport(int reportId, boolean status);
     List<Application> getUserReport();
+    Application getReport(int reportId);
 }

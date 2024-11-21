@@ -69,7 +69,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void updateOrderStatusIsPicked(Long orderID, String image) {
+    public Order updateOrderStatusIsPicked(Long orderID, String image) {
         Order order = orderRepository.findOrderById(orderID);
         FieldValidation.checkObjectExist(order, "Order");
         if (order.getStatus().equals(ORDER_STATUS.AWAITING_PICKUP)) {
@@ -77,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
             order.setStatus(ORDER_STATUS.COMPLETED);
             transactionService.createTransaction02(order);
         }
-        orderRepository.save(order);
+        return orderRepository.save(order);
     }
 
     @Override

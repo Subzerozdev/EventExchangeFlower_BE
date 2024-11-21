@@ -13,7 +13,7 @@ public interface OrderService {
     List<Order> getAllOrders();
     List<Order> getCustomerOrders(String userID);
     List<Order> getSellerOrders(String sellerID);
-    void updateOrderStatusIsPicked(Long orderID, String image);
+    Order updateOrderStatusIsPicked(Long orderID, String image);
     Order cancelOrder(Long orderID);
     String createUrl(List<Order> order, float totalMoney, User user) throws Exception;
 }

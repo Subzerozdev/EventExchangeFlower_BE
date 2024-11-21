@@ -46,4 +46,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     public List<Application> getUserReport() {
         return applicationRepository.findAll();
     }
+
+    @Override
+    public Application getReport(int reportId) {
+        return applicationRepository.getReportById(reportId);
+    }
 }
