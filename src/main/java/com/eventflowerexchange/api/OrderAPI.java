@@ -119,7 +119,7 @@ public class OrderAPI {
     ) {
         User seller = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.cancelOrder(id);
-        applicationService.createReport(applicationRequestDTO, seller, APPLICATION_TYPE.DELETE_ORDER);
+        applicationService.createReport(applicationRequestDTO, id, seller, APPLICATION_TYPE.DELETE_ORDER);
         notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số "+ id + " của bạn đã bị hủy do sự cố. Hãy nhấp vào đường dẫn sau để chúng tôi có thể hỗ trợ hoàn tiền cho bạn");
         notificationService.createNotification(seller, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số "+ id + " của bạn đã được hủy thành công và thông báo tới người mua");
         return new ResponseEntity<>("Delete successfully", HttpStatus.OK);

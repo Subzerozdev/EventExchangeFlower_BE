@@ -64,13 +64,14 @@ public class UserAPI {
         return new ResponseEntity<>(fee, HttpStatus.OK);
     }
 
-    @PostMapping("/report")
+    @PostMapping("/report/{id}")
     public ResponseEntity<Object> reportOrder(
             @RequestHeader("Authorization") String jwt,
-            @RequestBody ApplicationRequestDTO applicationRequestDTO
+            @RequestBody ApplicationRequestDTO applicationRequestDTO,
+            @PathVariable Long id
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
-        applicationService.createReport(applicationRequestDTO, user, APPLICATION_TYPE.REPORT);
+        applicationService.createReport(applicationRequestDTO, id, user, APPLICATION_TYPE.REPORT);
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);
     }
 
@@ -81,7 +82,7 @@ public class UserAPI {
     ) {
         applicationRequestDTO.setProblem(applicationRequestDTO.getBankName() + ", " + applicationRequestDTO.getOwnerBank() + ", " + applicationRequestDTO.getBankNumber());
         User user = jwtService.getUserFromJwtToken(jwt);
-        applicationService.createReport(applicationRequestDTO, user, APPLICATION_TYPE.REFUND);
+        applicationService.createReport(applicationRequestDTO, applicationRequestDTO.getOrderId(), user, APPLICATION_TYPE.REFUND);
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);
     }
 }

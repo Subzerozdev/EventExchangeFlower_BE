@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "report")
+@Table(name = "application")
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,7 @@ public class Application {
     private String content;
     private APPLICATION_STATUS status;
 
+    @Column(name = "order_id")
     private Long orderID;
     @Column(name = "type_id")
     private APPLICATION_TYPE type;

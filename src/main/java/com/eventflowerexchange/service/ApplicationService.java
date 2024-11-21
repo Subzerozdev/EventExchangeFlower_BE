@@ -8,7 +8,7 @@ import com.eventflowerexchange.entity.User;
 import java.util.List;
 
 public interface ApplicationService {
-    void createReport(ApplicationRequestDTO applicationRequestDTO, User user, APPLICATION_TYPE applicationType);
+    void createReport(ApplicationRequestDTO applicationRequestDTO, Long orderID, User user, APPLICATION_TYPE applicationType);
     User solveReport(int reportId, boolean status);
     List<Application> getUserReport();
 }
