@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getCustomerOrders(String userID) {
-        return orderRepository.findOrdersByUserId(userID);
+        return orderRepository.findOrdersByUserIdOrderByOrderDate(userID);
     }
 
     @Override

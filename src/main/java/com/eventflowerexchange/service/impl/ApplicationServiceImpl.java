@@ -18,13 +18,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
 
     @Override
-    public void createReport(ApplicationRequestDTO applicationRequestDTO, Long orderID, User user, APPLICATION_TYPE applicationType) {
+    public void createReport(ApplicationRequestDTO applicationRequestDTO, Long orderID,
+                             User user, APPLICATION_TYPE applicationType, APPLICATION_STATUS applicationStatus) {
         Application application = Application.builder()
                 .content(applicationRequestDTO.getContent())
                 .problem(applicationRequestDTO.getProblem())
                 .orderID(orderID)
                 .user(user)
-                .status(APPLICATION_STATUS.PROCESSING)
+                .status(applicationStatus)
                 .type(applicationType)
                 .build();
         applicationRepository.save(application);

@@ -118,7 +118,7 @@ public class OrderAPI {
     ) {
         User seller = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.cancelOrder(id);
-        applicationService.createReport(applicationRequestDTO, id, seller, APPLICATION_TYPE.DELETE_ORDER);
+        applicationService.createReport(applicationRequestDTO, id, seller, APPLICATION_TYPE.DELETE_ORDER, APPLICATION_STATUS.COMPLETED);
         notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + id + " của bạn đã bị hủy với lí do " + applicationRequestDTO.getContent() + ". Hãy nhấp vào đường dẫn sau để được hỗ trợ thực hiện thủ tục hoàn tiền:\n http://localhost:5173/backMoney");
         notificationService.createNotification(seller, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + id + " của bạn đã được hủy thành công và thông báo tới người mua");
         return new ResponseEntity<>("Delete successfully", HttpStatus.OK);

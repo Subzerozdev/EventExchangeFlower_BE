@@ -105,7 +105,7 @@ public class AdminAPI {
                 MailBody mailBody = emailService.createEmail(user.getEmail(), "Hoàn tiền đơn hàng", "Chúng tôi xin chân thành xin lỗi khi đơn hàng số " + order.getId() + " của quý khách đã bị hủy. " +
                         "\nĐể hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: \nhttp://localhost:5173/backMoney.");
                 emailService.sendEmail(mailBody);
-                refundMessage = "\nQuý khách vui lòng truy cập đường dẫn sau để được hỗ trợ thực hiện thủ tục hoàn tiền: \nhttp://localhost:5173/backMoney.";
+                refundMessage = "\nQuý khách vui lòng truy cập đường dẫn sau để được hỗ trợ thực hiện thủ tục hoàn tiền cho đơn hàng "+ order.getId() +": \nhttp://localhost:5173/backMoney.";
             }
         } else {
             responseMessage = "Đơn: " + application.getProblem() + " của bạn đã bị từ chối xử lí.";
