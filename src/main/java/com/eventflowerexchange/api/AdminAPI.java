@@ -103,9 +103,9 @@ public class AdminAPI {
                 refundMessage = " Bạn nhận được " + order.getTotalMoney() + " từ đơn hàng số " + order.getId() + "  bị hủy";
             } else {
                 MailBody mailBody = emailService.createEmail(user.getEmail(), "Hoàn tiền đơn hàng", "Chúng tôi xin chân thành xin lỗi khi đơn hàng số " + order.getId() + " của quý khách đã bị hủy. " +
-                        "Để hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: http://localhost:5173/backMoney.");
+                        "\nĐể hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: \nhttp://localhost:5173/backMoney.");
                 emailService.sendEmail(mailBody);
-                refundMessage = "Để hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: http://localhost:5173/backMoney.";
+                refundMessage = "\nQuý khách vui lòng truy cập đường dẫn sau để được hỗ trợ thực hiện thủ tục hoàn tiền: \nhttp://localhost:5173/backMoney.";
             }
         } else {
             responseMessage = "Đơn: " + application.getProblem() + " của bạn đã bị từ chối xử lí.";
@@ -120,12 +120,6 @@ public class AdminAPI {
         List<ApplicationResponseDTO> reportListResponseDTO = new ArrayList<>();
         applications.forEach(report -> {
             ApplicationResponseDTO applicationResponseDTO = reportMapper.toReportResponseDTO(report);
-            if (report.getType().equals(APPLICATION_TYPE.DELETE_ORDER)) {
-                String[] contentArray = report.getContent().split(",");
-                applicationResponseDTO.setBankName(contentArray[0]);
-                applicationResponseDTO.setOwnerBank(contentArray[1]);
-                applicationResponseDTO.setBankNumber(contentArray[2]);
-            }
             applicationResponseDTO.setUserEmail(report.getUser().getEmail());
             applicationResponseDTO.setOrder(orderService.getOrderById(report.getOrderID()));
             reportListResponseDTO.add(applicationResponseDTO);

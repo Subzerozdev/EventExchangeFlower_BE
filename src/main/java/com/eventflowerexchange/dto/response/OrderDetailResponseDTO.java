@@ -1,6 +1,7 @@
 package com.eventflowerexchange.dto.response;
 
 import com.eventflowerexchange.dto.SellerInformation;
+import com.eventflowerexchange.entity.Application;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.OrderDetail;
 import lombok.AllArgsConstructor;

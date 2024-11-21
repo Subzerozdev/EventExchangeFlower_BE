@@ -5,7 +5,9 @@ import com.eventflowerexchange.dto.request.ApplicationRequestDTO;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateValidationImageRequest;
 import com.eventflowerexchange.dto.response.OrderDetailResponseDTO;
+import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.entity.*;
+import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.service.*;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public class OrderAPI {
     private final PostService postService;
     private final NotificationService notificationService;
     private final ApplicationService applicationService;
+    private final OrderMapper orderMapper;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -41,7 +43,6 @@ public class OrderAPI {
         List<Post> posts = new ArrayList<>();
         orderRequestDTO.getOrderDetails().forEach(orderDetailRequestDTO ->
                 posts.add(postService.getPostById(orderDetailRequestDTO.getPostID())));
-
         List<Order> orders = new ArrayList<>();
         Map<String, List<Post>> postListInOrder = posts.stream().collect(
                 Collectors.groupingBy(p -> p.getUser().getId()));
@@ -121,8 +122,8 @@ public class OrderAPI {
         User seller = jwtService.getUserFromJwtToken(jwt);
         Order order = orderService.cancelOrder(id);
         applicationService.createReport(applicationRequestDTO, id, seller, APPLICATION_TYPE.DELETE_ORDER);
-        notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số "+ id + " của bạn đã bị hủy do sự cố. Hãy nhấp vào đường dẫn sau để chúng tôi có thể hỗ trợ hoàn tiền cho bạn");
-        notificationService.createNotification(seller, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số "+ id + " của bạn đã được hủy thành công và thông báo tới người mua");
+        notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + id + " của bạn đã bị hủy với lí do " + applicationRequestDTO.getContent() + ". Hãy nhấp vào đường dẫn sau để được hỗ trợ thực hiện thủ tục hoàn tiền:\n http://localhost:5173/backMoney");
+        notificationService.createNotification(seller, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + id + " của bạn đã được hủy thành công và thông báo tới người mua");
         return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
     }
 

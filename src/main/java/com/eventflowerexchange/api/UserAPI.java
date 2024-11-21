@@ -59,14 +59,13 @@ public class UserAPI {
         return new ResponseEntity<>(fee, HttpStatus.OK);
     }
 
-    @PostMapping("/report/{id}")
+    @PostMapping("/report")
     public ResponseEntity<Object> reportOrder(
             @RequestHeader("Authorization") String jwt,
-            @RequestBody ApplicationRequestDTO applicationRequestDTO,
-            @PathVariable Long id
+            @RequestBody ApplicationRequestDTO applicationRequestDTO
     ) {
         User user = jwtService.getUserFromJwtToken(jwt);
-        applicationService.createReport(applicationRequestDTO, id, user, APPLICATION_TYPE.REPORT);
+        applicationService.createReport(applicationRequestDTO, applicationRequestDTO.getOrderId(), user, APPLICATION_TYPE.REPORT);
         notificationService.createNotification(user, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn khiếu nại của bạn về vấn đề " + applicationRequestDTO.getProblem() + " đã được gửi đến quản trị viên.");
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);
     }
@@ -76,7 +75,7 @@ public class UserAPI {
             @RequestHeader("Authorization") String jwt,
             @RequestBody ApplicationRequestDTO applicationRequestDTO
     ) {
-        applicationRequestDTO.setProblem(applicationRequestDTO.getBankName() + "," + applicationRequestDTO.getOwnerBank() + "," + applicationRequestDTO.getBankNumber());
+        applicationRequestDTO.setContent("Tên ngân hàng: " + applicationRequestDTO.getBankName() + "\n" + "; Tên chủ tài khoản: " + applicationRequestDTO.getOwnerBank() + "\n" + "; Số tài khoản thụ hưởng: " + applicationRequestDTO.getBankNumber());
         User user = jwtService.getUserFromJwtToken(jwt);
         applicationService.createReport(applicationRequestDTO, applicationRequestDTO.getOrderId(), user, APPLICATION_TYPE.REFUND);
         return new ResponseEntity<>("Report successfully", HttpStatus.OK);

@@ -87,10 +87,12 @@ public class OrderServiceImpl implements OrderService {
         FieldValidation.checkObjectExist(order, "Order");
         order.setStatus(ORDER_STATUS.STOPPED);
         order.getTransactions().forEach(transaction -> {
-            if (transaction.getTo().getId().equals(admin.getId())) {
+            if (transaction.getTo().getId().equals(admin.getId())
+                    && transaction.getStatus().equals(TRANSACTION_STATUS.SUCCESS)) {
                 admin.setBalance(admin.getBalance() - transaction.getAmount());
                 userRepository.save(admin);
-            } else if (transaction.getFrom().getId().equals(admin.getId())) {
+            } else if (transaction.getFrom().getId().equals(admin.getId())
+                    && transaction.getStatus().equals(TRANSACTION_STATUS.SUCCESS)) {
                 User seller = order.getOrderDetails().get(0).getPost().getUser();
                 seller.setBalance(seller.getBalance() - transaction.getAmount());
                 userRepository.save(seller);
