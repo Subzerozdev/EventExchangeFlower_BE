@@ -14,7 +14,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             "FROM Order o " +
             "JOIN OrderDetail od ON o.id = od.order.id " +
             "JOIN Post p ON od.post.id = p.id " +
-            "WHERE p.user.id = ?1 ")
-    List<Order> findOrdersBySellerAndStatusIsNot(String sellerID, ORDER_STATUS status);
+            "WHERE p.user.id = ?1 " +
+            "AND p.status != ?2")
+    List<Order> findOrdersBySeller(String sellerID, ORDER_STATUS status);
     List<Order> findOrdersByStatusIsNotAndStatusIsNot(ORDER_STATUS status1, ORDER_STATUS status2);
 }

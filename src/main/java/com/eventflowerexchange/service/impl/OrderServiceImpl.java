@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getSellerOrders(String sellerID) {
-        return orderRepository.findOrdersBySellerAndStatusIsNot(sellerID, ORDER_STATUS.AWAITING_PAYMENT);
+        return orderRepository.findOrdersBySeller(sellerID, ORDER_STATUS.AWAITING_PAYMENT);
     }
 
     @Override
