@@ -100,6 +100,7 @@ public class AdminAPI {
             responseMessage = "Đơn: " + application.getProblem() + " của bạn đã được xử lí.";
             Order order = orderService.getOrderById(application.getOrderID());
             if (application.getType().equals(APPLICATION_TYPE.REFUND)) {
+                orderService.cancelOrder(order.getId());
                 refundMessage = " Bạn nhận được " + order.getTotalMoney() + " từ đơn hàng số " + order.getId() + "  bị hủy";
             } else if (application.getType().equals(APPLICATION_TYPE.REPORT)){
                 MailBody mailBody = emailService.createEmail(user.getEmail(), "Hoàn tiền đơn hàng", "Chúng tôi xin chân thành xin lỗi khi đơn hàng số " + order.getId() + " của quý khách đã bị hủy. " +

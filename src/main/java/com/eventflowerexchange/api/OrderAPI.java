@@ -1,5 +1,6 @@
 package com.eventflowerexchange.api;
 
+import com.eventflowerexchange.dto.MailBody;
 import com.eventflowerexchange.dto.SellerInformation;
 import com.eventflowerexchange.dto.request.ApplicationRequestDTO;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
@@ -30,6 +31,7 @@ public class OrderAPI {
     private final PostService postService;
     private final NotificationService notificationService;
     private final ApplicationService applicationService;
+    private final EmailService emailService;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(
@@ -120,6 +122,9 @@ public class OrderAPI {
         Order order = orderService.cancelOrder(id);
         applicationService.createReport(applicationRequestDTO, id, seller, APPLICATION_TYPE.DELETE_ORDER, APPLICATION_STATUS.COMPLETED);
         notificationService.createNotification(order.getUser(), "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + id + " của bạn đã bị hủy với lí do " + applicationRequestDTO.getContent() + ". Hãy nhấp vào đường dẫn sau để được hỗ trợ thực hiện thủ tục hoàn tiền:\n http://localhost:5173/backMoney");
+        MailBody mailBody = emailService.createEmail(order.getEmail(), "Hoàn tiền đơn hàng", "Chúng tôi xin chân thành xin lỗi khi đơn hàng số " + order.getId() + " của quý khách đã bị hủy. " +
+                "\nĐể hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: \nhttp://localhost:5173/backMoney.");
+        emailService.sendEmail(mailBody);
         notificationService.createNotification(seller, "System", NOTIFICATION_TYPE.INFORMATION, "Đơn hàng số " + id + " của bạn đã được hủy thành công và thông báo tới người mua");
         return new ResponseEntity<>("Delete successfully", HttpStatus.OK);
     }

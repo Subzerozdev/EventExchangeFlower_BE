@@ -55,17 +55,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders() {
-        return orderRepository.findOrdersByStatusIsNot(ORDER_STATUS.CANCELLED);
+        return orderRepository.findOrdersByStatusIsNotAndStatusIsNot(ORDER_STATUS.CANCELLED, ORDER_STATUS.AWAITING_PAYMENT);
     }
 
     @Override
     public List<Order> getCustomerOrders(String userID) {
-        return orderRepository.findOrdersByUserIdOrderByOrderDate(userID);
+        return orderRepository.findOrdersByUserIdAndStatusIsNotOrderByOrderDate(userID, ORDER_STATUS.AWAITING_PAYMENT);
     }
 
     @Override
     public List<Order> getSellerOrders(String sellerID) {
-        return orderRepository.findOrdersBySeller(sellerID);
+        return orderRepository.findOrdersBySellerAndStatusIsNot(sellerID, ORDER_STATUS.AWAITING_PAYMENT);
     }
 
     @Override

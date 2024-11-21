@@ -8,13 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findOrdersByUserIdOrderByOrderDate(String userID);
+    List<Order> findOrdersByUserIdAndStatusIsNotOrderByOrderDate(String userID, ORDER_STATUS status);
     Order findOrderById(Long id);
     @Query("SELECT o " +
             "FROM Order o " +
             "JOIN OrderDetail od ON o.id = od.order.id " +
             "JOIN Post p ON od.post.id = p.id " +
             "WHERE p.user.id = ?1 ")
-    List<Order> findOrdersBySeller(String sellerID);
-    List<Order> findOrdersByStatusIsNot(ORDER_STATUS status);
+    List<Order> findOrdersBySellerAndStatusIsNot(String sellerID, ORDER_STATUS status);
+    List<Order> findOrdersByStatusIsNotAndStatusIsNot(ORDER_STATUS status1, ORDER_STATUS status2);
 }
