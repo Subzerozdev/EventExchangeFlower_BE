@@ -1,6 +1,5 @@
 package com.eventflowerexchange.dto.response;
 
-import com.eventflowerexchange.entity.Application;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.Shop;
 import com.eventflowerexchange.entity.Transactions;
@@ -17,6 +16,5 @@ public class OrderResponseDTO {
     private Order order;
     private float totalFee;
     private Transactions transaction;
-    private String stopReason;
     private Shop shop;
 }

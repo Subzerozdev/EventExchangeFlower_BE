@@ -1,6 +1,5 @@
 package com.eventflowerexchange.service;
 
-import com.eventflowerexchange.dto.request.OrderDetailRequestDTO;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.OrderDetail;
 import com.eventflowerexchange.entity.Post;

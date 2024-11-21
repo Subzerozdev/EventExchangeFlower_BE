@@ -101,7 +101,7 @@ public class AdminAPI {
             Order order = orderService.getOrderById(application.getOrderID());
             if (application.getType().equals(APPLICATION_TYPE.REFUND)) {
                 refundMessage = " Bạn nhận được " + order.getTotalMoney() + " từ đơn hàng số " + order.getId() + "  bị hủy";
-            } else {
+            } else if (application.getType().equals(APPLICATION_TYPE.REPORT)){
                 MailBody mailBody = emailService.createEmail(user.getEmail(), "Hoàn tiền đơn hàng", "Chúng tôi xin chân thành xin lỗi khi đơn hàng số " + order.getId() + " của quý khách đã bị hủy. " +
                         "\nĐể hỗ trợ quý khách hoàn tiền, vui lòng truy cập đường dẫn sau: \nhttp://localhost:5173/backMoney.");
                 emailService.sendEmail(mailBody);
@@ -115,7 +115,7 @@ public class AdminAPI {
     }
 
     @GetMapping("/report")
-    public ResponseEntity<Object> getUserReport() {
+    public ResponseEntity<Object> getUserApplication() {
         List<Application> applications = applicationService.getUserReport();
         List<ApplicationResponseDTO> reportListResponseDTO = new ArrayList<>();
         applications.forEach(report -> {

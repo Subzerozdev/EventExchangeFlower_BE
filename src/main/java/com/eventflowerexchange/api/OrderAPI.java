@@ -5,9 +5,7 @@ import com.eventflowerexchange.dto.request.ApplicationRequestDTO;
 import com.eventflowerexchange.dto.request.OrderRequestDTO;
 import com.eventflowerexchange.dto.request.UpdateValidationImageRequest;
 import com.eventflowerexchange.dto.response.OrderDetailResponseDTO;
-import com.eventflowerexchange.dto.response.OrderResponseDTO;
 import com.eventflowerexchange.entity.*;
-import com.eventflowerexchange.mapper.OrderMapper;
 import com.eventflowerexchange.service.*;
 import com.eventflowerexchange.util.FieldValidation;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +30,6 @@ public class OrderAPI {
     private final PostService postService;
     private final NotificationService notificationService;
     private final ApplicationService applicationService;
-    private final OrderMapper orderMapper;
 
     @PostMapping("/orders")
     public ResponseEntity<Object> placeOrder(

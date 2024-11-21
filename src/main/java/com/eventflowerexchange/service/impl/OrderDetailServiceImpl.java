@@ -1,11 +1,9 @@
 package com.eventflowerexchange.service.impl;
 
-import com.eventflowerexchange.dto.request.OrderDetailRequestDTO;
 import com.eventflowerexchange.entity.Order;
 import com.eventflowerexchange.entity.OrderDetail;
 import com.eventflowerexchange.entity.Post;
 import com.eventflowerexchange.repository.OrderDetailRepository;
-import com.eventflowerexchange.repository.PostRepository;
 import com.eventflowerexchange.service.OrderDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderDetailServiceImpl implements OrderDetailService {
     private final OrderDetailRepository orderDetailRepository;
-    private final PostRepository postRepository;
 
     @Override
     public void saveOrderDetails(List<Post> posts, Order order) {
